@@ -12,6 +12,7 @@ const posts = [
     likes: 10,
     comments: 5,
     shares: 2,
+    timePost: '1h',
   },
   {
     id: 2,
@@ -22,6 +23,7 @@ const posts = [
     likes: 20,
     comments: 10,
     shares: 5,
+    timePost: '10h',
   },
   {
     id: 3,
@@ -32,6 +34,7 @@ const posts = [
     likes: 30,
     comments: 15,
     shares: 10,
+    timePost: '30m',
   },
 ];
 
@@ -48,8 +51,8 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
+    paddingTop: 30,
+    backgroundColor:'rgb(24, 24, 24)',
   },
 });
 
