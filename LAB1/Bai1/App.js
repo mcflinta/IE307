@@ -13,6 +13,7 @@ const posts = [
     comments: 5,
     shares: 2,
     timePost: '1h',
+    recap: 10,
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ const posts = [
     comments: 10,
     shares: 5,
     timePost: '10h',
+    recap: 20,
   },
   {
     id: 3,
@@ -35,6 +37,7 @@ const posts = [
     comments: 15,
     shares: 10,
     timePost: '30m',
+    recap: 30,
   },
 ];
 
@@ -52,7 +55,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 30,
-    backgroundColor:'rgb(24, 24, 24)',
+    backgroundColor:'rgb(12, 12, 12)',
   },
 });
 
