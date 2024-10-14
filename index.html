@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Like Button Effect</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+        .like-button, .dislike-button {
+            position: relative;
+            background-color: #0084ff;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .dislike-button {
+            background-color: #ff0048;
+        }
+        .like-button:hover, .dislike-button:hover {
+            transform: translateY(-3px);
+        }
+        .like-button:active, .dislike-button:active {
+            transform: translateY(0);
+        }
+        .like-counter {
+            margin-top: 20px;
+            font-size: 24px;
+            color: #333;
+            display: flex;
+            gap: 5px;
+        }
+        .digit {
+            width: 30px;
+            height: 50px;
+            background-color: #ffffff;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+            border: 2px solid #ccc;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease;
+        }
+        .digit span {
+            display: inline-block;
+            will-change: transform;
+        }
+        @keyframes scrollUp {
+            0% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        @keyframes scrollDown {
+            0% {
+                transform: translateY(-100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="button-container">
+        <button class="like-button" onclick="handleLike()">Like</button>
+        <button class="dislike-button" onclick="handleDislike()">Dislike</button>
+    </div>
+    <div class="like-counter" id="likeCounter">
+        <div class="digit"><span>0</span></div>
+        <div class="digit"><span>0</span></div>
+        <div class="digit"><span>0</span></div>
+    </div>
+
+    <script>
+        let likeCount = 0;
+
+        function handleLike() {
+            likeCount++;
+            updateLikeCounter(likeCount, 'scrollDown');
+        }
+
+        function handleDislike() {
+            if (likeCount > 0) {
+                likeCount--;
+                updateLikeCounter(likeCount, 'scrollUp');
+            }
+        }
+
+        function updateLikeCounter(count, animationName) {
+            const digits = document.querySelectorAll('.digit span');
+            const countString = count.toString().padStart(3, '0');
+
+            for (let i = 0; i < digits.length; i++) {
+                if (digits[i].textContent !== countString[i]) {
+                    // Delay higher digits animation for smoother effect
+                    setTimeout(() => {
+                        digits[i].textContent = countString[i];
+                        digits[i].style.animation = 'none';
+                        // Trigger reflow to restart the animation
+                        void digits[i].offsetWidth;
+                        digits[i].style.animation = `${animationName} 0.4s cubic-bezier(0.25, 1, 0.5, 1), bounce 0.3s ease 0.4s`;
+                    }, i * 70);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
