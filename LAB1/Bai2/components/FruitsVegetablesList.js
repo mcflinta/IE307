@@ -57,6 +57,12 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
     ]).start();
   }, [selectedCategory, buttonLayouts]);
 
+  useEffect(() => {
+    if (fruits_vegetables.length > 0) {
+      setSelectedCategory(fruits_vegetables[0].title);
+    }
+  }, []);
+
   const handleButtonLayout = useCallback((event, index) => {
     const { x, width } = event.nativeEvent.layout;
     setButtonLayouts(prevLayouts => {
@@ -91,9 +97,12 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
     );
   };
 
+  const backgroundImage = selectedCategory === 'Fruits'
+    ? require('../assets/fruits.jpg')
+    : require('../assets/vegetable.jpg');
+
   return (
     <>
-      {/* Header section with titles and underline */}
       <View style={styles.headerRow}>
         {fruits_vegetables.map((section, index) => {
           const isSelected = selectedCategory === section.title;
@@ -135,9 +144,8 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
         />
       </View>
 
-      {/* Only SectionList has background image */}
       <ImageBackground
-        source={require('../assets/workout.jpg')} // Đường dẫn tới hình nền
+        source={backgroundImage}
         style={styles.backgroundImage}
       >
         {selectedCategory && (
@@ -189,14 +197,14 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1,
-      resizeMode: 'cover', // Đảm bảo hình nền bao phủ toàn bộ danh sách
+    resizeMode: 'cover', 
     paddingHorizontal: 20,
   },
   itemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Nền có độ trong suốt
+    backgroundColor: 'rgba(255, 255, 255, 0.6)',
     marginVertical: 10,
     borderRadius: 8,
     alignItems: 'center',    
@@ -209,10 +217,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   selectedButton: {
-    backgroundColor: 'rgba(255, 0, 0, 0.6)', // Đỏ trong suốt
+    backgroundColor: 'rgba(255, 0, 0, 0.6)',
   },
   deselectedButton: {
-    backgroundColor: 'rgba(0, 128, 0, 0.6)', // Xanh trong suốt
+    backgroundColor: 'rgba(0, 128, 0, 0.6)',
   },
   buttonText: {
     color: 'white',
