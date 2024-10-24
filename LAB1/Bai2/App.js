@@ -1,3 +1,5 @@
+// Mai Quoc Cuong - 21521901
+
 import React, { useState } from 'react';
 import { SafeAreaView, Text, StyleSheet, View } from 'react-native';
 import WorkoutsList from './components/WorkoutList';
@@ -26,6 +28,7 @@ const App = () => {
   );
 };
 
+// Mai Quoc Cuong - 21521901
 const styles = StyleSheet.create({
   container: {
     flex: 1,

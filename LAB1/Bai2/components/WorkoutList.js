@@ -1,3 +1,4 @@
+// Mai Quoc Cuong - 21521901
 import React, { useState } from 'react';
 import { FlatList, Text, View, TouchableOpacity, StyleSheet, ImageBackground } from 'react-native';
 import { workouts } from '../data/data';
@@ -13,7 +14,7 @@ const WorkoutsList = ({ selectedItems, setSelectedItems }) => {
 
   return (
     <ImageBackground
-      source={require('../assets/workout.jpg')} // Đường dẫn tới hình ảnh nền
+      source={require('../assets/workout.jpg')} 
       style={styles.backgroundFlatList}
     >
       <FlatList
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginVertical: 10,
     padding: 10,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Màu nền trắng với độ trong suốt 60%
+    backgroundColor: 'rgba(255, 255, 255, 0.6)', 
     alignItems: 'center',
     borderRadius: 8,
   },
@@ -57,10 +58,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   selectedButton: {
-    backgroundColor: 'rgba(255, 0, 0, 0.6)', // Nút DESELECT màu đỏ với độ trong suốt 60%
+    backgroundColor: 'rgba(255, 0, 0, 0.6)', 
   },
   deselectedButton: {
-    backgroundColor: 'rgba(0, 128, 0, 0.6)', // Nút SELECT màu xanh với độ trong suốt 60%
+    backgroundColor: 'rgba(0, 128, 0, 0.6)', 
   },
   buttonText: {
     color: 'white',

@@ -1,3 +1,4 @@
+// Mai Quoc Cuong - 21521901
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { SectionList, Text, View, Image, TouchableOpacity, StyleSheet, Animated, ImageBackground } from 'react-native';
 import { fruits_vegetables } from '../data/data';
@@ -17,6 +18,7 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
       setSelectedItems([...selectedItems, item]);
     }
   };
+// Mai Quoc Cuong - 21521901
 
   const filteredSections = fruits_vegetables.filter(section => section.title === selectedCategory);
 
@@ -71,6 +73,7 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
       return newLayouts;
     });
   }, []);
+// Mai Quoc Cuong - 21521901
 
   const renderItem = ({ item }) => {
     const isSelected = selectedItems.includes(item);
@@ -159,7 +162,7 @@ const FruitsVegetablesList = ({ selectedItems, setSelectedItems }) => {
     </>
   );
 };
-
+// Mai Quoc Cuong
 const styles = StyleSheet.create({
   headerRow: {
     flexDirection: 'row',

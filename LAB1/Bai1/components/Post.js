@@ -1,3 +1,4 @@
+// Mai Quoc Cuong - 21521901
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
@@ -32,6 +33,7 @@ const Post = ({ post }) => {
   const handleShare = () => {
     setShares(prevShares => prevShares + 1);
   };
+// Mai Quoc Cuong - 21521901
 
   return (
     <ScrollView>
@@ -116,8 +118,10 @@ const Post = ({ post }) => {
         </View>
       </View>
     </ScrollView>
+    
   );
 };
+// Mai Quoc Cuong - 21521901
 
 const styles = StyleSheet.create({
   postContainer: {

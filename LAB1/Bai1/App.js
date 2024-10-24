@@ -1,3 +1,4 @@
+// Mai Quoc Cuong - 21521901
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import Post from './components/Post';
@@ -5,50 +6,49 @@ import Post from './components/Post';
 const posts = [
   {
     id: 1,
-    username: 'User1',
-    avatar: require('./assets/images/monkey.jpg'),
-    content: 'This is the first post with multiple images',
+    username: 'World',
+    avatar: require('./assets/images/bg_user1.jpg'),
+    content: 'Rome, Italy.\nNight in Athens, Greece.',
     images: [
-      require('./assets/images/monkey.jpg'),
-      require('./assets/images/monkey.jpg'),
-      require('./assets/images/monkey.jpg'),
+      require('./assets/images/Rome.jpg'),
+      require('./assets/images/Night_Athens.jpg')
     ],
-    likes: 10,
-    comments: 5,
-    shares: 2,
-    timePost: '1h',
+    likes: 123,
+    comments: 51,
+    shares: 45,
+    timePost: '2h',
     recap: 10,
   },
   {
     id: 2,
-    username: 'User2',
-    avatar: require('./assets/images/monkey.jpg'),
-    content: 'This is the second post with a single image',
+    username: 'T1 LoL',
+    avatar: require('./assets/images/bg_user2.jpg'),
+    content: "Let's go, T1.🔥",
     images: [
-      require('./assets/images/monkey.jpg'),
+      require('./assets/images/T1_team.jpg'),
     ],
-    likes: 20,
-    comments: 10,
-    shares: 5,
+    likes: 1024,
+    comments: 512,
+    shares: 256,
     timePost: '10h',
-    recap: 20,
+    recap: 128,
   },
   {
     id: 3,
-    username: 'User3',
-    avatar: require('./assets/images/monkey.jpg'),
-    content: 'This is the third post with multiple images',
+    username: 'LoL Esports',
+    avatar: require('./assets/images/bg_user3.jpg'),
+    content: 'A look into the past.',
     images: [
-      require('./assets/images/monkey.jpg'),
-      require('./assets/images/monkey.jpg'),
+      require('./assets/images/post3.jpg'),
     ],
-    likes: 30,
-    comments: 15,
-    shares: 10,
+    likes: 901,
+    comments: 500,
+    shares: 499,
     timePost: '30m',
-    recap: 30,
+    recap: 300,
   },
 ];
+  // Mai Quoc Cuong - 21521901
 
 const App = () => {
   return (
