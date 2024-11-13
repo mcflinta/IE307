@@ -9,6 +9,8 @@ const ToggleSwitch = ({ label, value, onValueChange, textStyle }) => (
       onValueChange={onValueChange}
       thumbColor={value ? '#00C2A8' : '#FFFFFF'}
       trackColor={{ false: '#767577', true: '#00C2A8' }}
+      ios_backgroundColor="#3e3e3e"
+      style={styles.switch}
     />
   </View>
 );
@@ -24,6 +26,9 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: '#FFFFFF',
+  },
+  switch: {
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }],
   },
 });
 

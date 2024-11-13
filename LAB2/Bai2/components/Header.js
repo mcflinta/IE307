@@ -1,11 +1,13 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const Header = () => {
+const Header = ({ darkMode }) => {
+  const textColor = darkMode ? styles.darkText : styles.lightText;
+
   return (
     <View style={styles.headerContainer}>
-      <Image source={require('../assets/logo.jpg')} style={styles.logo} />
-      <Text style={styles.appName}>React Native App</Text>
+      <Image source={require('../assets/images/logo.png')} style={styles.logo} />
+      <Text style={[styles.appName, textColor]}>React Native App</Text>
     </View>
   );
 };
@@ -23,7 +25,12 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+  },
+  darkText: {
+    color: '#fff',
+  },
+  lightText: {
+    color: '#000',
   },
 });
 

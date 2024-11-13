@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Alert, StyleSheet, ScrollView, Text, Image } from 'react-native';
+import { View, Alert, StyleSheet, FlatList } from 'react-native';
 import Header from './components/Header';
 import ToggleSwitch from './components/ToggleSwitch';
 import FeedbackInput from './components/FeedbackInput';
@@ -24,59 +24,49 @@ const SettingsScreen = () => {
     flex: 1,
   };
 
-  const textColor = {
-    color: darkMode ? '#fff' : '#000',
-  };
+  const textColor = darkMode ? styles.darkText : styles.lightText;
+
+  const renderItem = ({ item }) => (
+    <View>
+      {item}
+    </View>
+  );
+
+  const data = [
+    <Header darkMode={darkMode} />,
+    <ToggleSwitch
+      label="Dark Mode"
+      value={darkMode}
+      onValueChange={setDarkMode}
+      textStyle={textColor}
+    />,
+    <ToggleSwitch
+      label="Enable Notifications"
+      value={notificationsEnabled}
+      onValueChange={setNotificationsEnabled}
+      textStyle={textColor}
+    />,
+    <FeedbackInput onSendFeedback={handleSendFeedback} textStyle={textColor} />,
+    <FAQs feedbacks={feedbacks} textStyle={textColor} />
+  ];
 
   return (
     <View style={containerStyle}>
-      <ScrollView>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <Image source={require('./assets/logo.jpg')} style={styles.logo} />
-          <Text style={styles.appName}>React Native App</Text>
-        </View>
-
-        {/* Dark Mode Switch */}
-        <ToggleSwitch
-          label="Dark Mode"
-          value={darkMode}
-          onValueChange={setDarkMode}
-          textStyle={textColor}  // Pass text color to ToggleSwitch
-        />
-
-        {/* Notifications Switch */}
-        <ToggleSwitch
-          label="Enable Notifications"
-          value={notificationsEnabled}
-          onValueChange={setNotificationsEnabled}
-          textStyle={textColor}  // Pass text color to ToggleSwitch
-        />
-
-        {/* Feedback Input */}
-        <FeedbackInput onSendFeedback={handleSendFeedback} textStyle={textColor} />
-
-        {/* FAQs */}
-        <FAQs feedbacks={feedbacks} textStyle={textColor} />
-      </ScrollView>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
+      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    alignItems: 'center',
-    paddingVertical: 30,
+  darkText: {
+    color: '#fff',
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 10,
-  },
-  appName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+  lightText: {
+    color: '#000',
   },
 });
 

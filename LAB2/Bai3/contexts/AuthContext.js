@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (email, password) => {
     // Điều kiện đăng nhập (sử dụng email sinh viên và mật khẩu tên viết liền không dấu)
-    if (email === '21521901@gm.uit.edu.vn' && password === 'maiquoccuong') {
+    if (email === '1' && password === '1') {
       setIsAuthenticated(true);
     } else {
       alert('Invalid email or password');

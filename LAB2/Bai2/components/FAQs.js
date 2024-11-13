@@ -2,16 +2,15 @@ import React, { useRef, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, Animated } from 'react-native';
 
 const FAQs = ({ feedbacks, textStyle }) => {
-  const slideAnim = useRef(new Animated.Value(10)).current; // Bắt đầu với vị trí 10 để tạo hiệu ứng slide-up
+  const slideAnim = useRef(new Animated.Value(10)).current;
 
   useEffect(() => {
-    // Khởi tạo hiệu ứng slide-up cho phản hồi mới
     Animated.timing(slideAnim, {
-      toValue: 0, // Di chuyển lên vị trí ban đầu (0)
-      duration: 500, // Thời gian hiệu ứng
+      toValue: 0,
+      duration: 500,
       useNativeDriver: true,
     }).start();
-  }, [feedbacks]); // Chạy lại mỗi khi feedbacks thay đổi
+  }, [feedbacks]);
 
   const renderFeedbackItem = ({ item }) => {
     return (

@@ -1,7 +1,7 @@
 // App.js
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { AuthProvider, AuthContext } from './components/AuthContext';
+import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import AuthStack from './components/AuthStack';
 import MainBottomTab from './components/MainBottomTab';
 
