@@ -1,4 +1,4 @@
-// App.js
+// 21521901 - Mai Quốc Cường
 import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider, AuthContext } from './contexts/AuthContext';

@@ -1,4 +1,4 @@
-// AuthStack.js
+// 21521901 - Mai Quốc Cường
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/LoginScreen';

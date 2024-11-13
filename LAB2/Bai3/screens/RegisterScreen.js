@@ -1,3 +1,4 @@
+// Mai Quốc Cường - 21521901
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import EmailIcon from '../assets/svg/email';

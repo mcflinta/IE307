@@ -1,3 +1,4 @@
+// 21521901 - Mai Quốc Cường
 import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { AuthContext } from '../contexts/AuthContext';

@@ -1,4 +1,4 @@
-// SimpleScreen.js
+// 21521901 - Mai Quốc Cường
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
