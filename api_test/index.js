@@ -11,7 +11,8 @@ const SERVER_IP = 'http://149.28.146.58';
 // Danh sách dataset (tên file và đường dẫn tải về từ máy local)
 const datasets = [
     { name: 'Corn-Leaf-Diseases-Dataset', link: `${SERVER_IP}:${PORT}/files/Corn-Leaf-Diseases-Dataset.zip` },
-    { name: 'iCassava-2019-Dataset', link: `${SERVER_IP}:${PORT}/files/iCassava-2019-Dataset.zip` }
+    { name: 'iCassava-2019-Dataset', link: `${SERVER_IP}:${PORT}/files/iCassava-2019-Dataset.zip` },
+    { name: 'Banana-Dataset', link: `${SERVER_IP}:${PORT}/files/Banana-Dataset.zip` }
 ];
 
 // Endpoint để trả về danh sách các dataset và đường dẫn tải
