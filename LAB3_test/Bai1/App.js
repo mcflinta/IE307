@@ -2,17 +2,16 @@
 import React, { useContext } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import { SafeAreaView, StyleSheet } from 'react-native';
-import { AuthProvider, AuthContext } from './store/AuthContext';
+import { AuthProvider, AuthContext } from './contexts/AuthContext';
 // import RootNavigator from './navigators/RootNavigator';
-import AuthStack from './navigation/AuthStack';
+import AuthStack from './components/AuthStack';
 import MainBottomTab from './components/MainBottomTab';
-import RootStackHome from './navigation/RootHomeStack';
 
 const App = () => (
   <AuthProvider>
     <SafeAreaView style={styles.container}>
       <NavigationContainer>
-        <RootNavigator />   
+        <RootNavigator />      
       </NavigationContainer>
     </SafeAreaView>
   </AuthProvider>

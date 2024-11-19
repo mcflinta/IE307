@@ -1,13 +1,9 @@
-// 21521901 - Mai Quốc Cường
-import React, { useState, useContext } from 'react';
+// Mai Quốc Cường - 21521901
+import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { AuthContext } from '../store/AuthContext';
-
-import GoogleIcon from '../assets/svg/google';
-import FacebookIcon from '../assets/svg/facebook';
-
 import EmailIcon from '../assets/svg/email';
 import PasswordIcon from '../assets/svg/password';
+import UserIcon from '../assets/svg/user';
 
 const IconTextInput = ({ icon: Icon, placeholder, ...props }) => (
   <View style={styles.iconInputContainer}>
@@ -21,10 +17,19 @@ const IconTextInput = ({ icon: Icon, placeholder, ...props }) => (
   </View>
 );
 
-const LoginScreen = ({ navigation }) => {
-  const { login } = useContext(AuthContext);
+const RegisterScreen = ({ navigation }) => {
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleCreateAccount = () => {
+    if (password !== confirmPassword) {
+      alert('Passwords do not match');
+      return;
+    }
+    console.log('Account Created');
+  };
 
   return (
     <View style={styles.container}>
@@ -32,47 +37,50 @@ const LoginScreen = ({ navigation }) => {
         source={require('../assets/images/logo.png')}
         style={styles.logo} 
       />
-      <Text style={styles.title}>Welcome</Text>
-
+      <Text style={styles.title}>Create New Account</Text>
+      <IconTextInput
+        icon={UserIcon}
+        placeholder="Enter username"
+        value={username}
+        onChangeText={setUsername}
+        placeholderTextColor="#888"
+      />
       <IconTextInput
         icon={EmailIcon}
-        placeholder="Email"
+        placeholder="Enter email"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
+        placeholderTextColor="#888"
       />
       <IconTextInput
         icon={PasswordIcon}
-        placeholder="Password"
+        placeholder="Enter password"
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        placeholderTextColor="#888"
       />
-      
-      <TouchableOpacity style={styles.button} onPress={() => login(email, password)}>
-        <Text style={styles.buttonText}>Log in</Text>
+      <IconTextInput
+        icon={PasswordIcon}
+        placeholder="Confirm password"
+        secureTextEntry
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        placeholderTextColor="#888"
+      />
+
+      <TouchableOpacity style={styles.button} onPress={handleCreateAccount}>
+        <Text style={styles.buttonText}>CREATE</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => console.log('Forgot password pressed')}>
-        <Text style={styles.forgotPasswordText}>Forgot password?</Text>
-      </TouchableOpacity>
-
-      <View style={styles.socialButtonsContainer}>
-        <TouchableOpacity style={styles.socialButton}>
-          <GoogleIcon fill="#4285F4" width={30} height={30} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.socialButton}>
-          <FacebookIcon fill="#3b5998" width={30} height={30} />
-        </TouchableOpacity>
-      </View>
-
-      <Text style={styles.registerText}>
-        Don't have an account? 
+      <Text style={styles.loginText}>
+        Already have an account? 
         <Text 
-          style={styles.signupText} 
-          onPress={() => navigation.navigate('Register')}
+          style={styles.loginNowText} 
+          onPress={() => navigation.navigate('Login')}
         >
-          Sign up here!
+          Login now!
         </Text>
       </Text>
     </View>
@@ -125,38 +133,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  forgotPasswordText: {
-    color: 'pink',
-    textAlign: 'center',
-    marginVertical: 10,
-    fontSize: 16,
-  },
-  socialButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  socialButton: {
-    marginHorizontal: 10,
-    padding: 10,
-    borderRadius: 30,
-    backgroundColor: '#ddd',
-  },
-  socialIcon: {
-    width: 30,
-    height: 30,
-  },
-  registerText: {
+  loginText: {
     marginTop: 20,
     color: 'black',
     textAlign: 'center',
     fontSize: 16,
   },
-  signupText: {
+  loginNowText: {
     fontSize: 16,
     color: 'blue',
     textDecorationLine: 'underline',
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

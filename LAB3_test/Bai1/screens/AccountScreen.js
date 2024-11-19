@@ -1,7 +1,7 @@
 //21521901 - Mai Quốc Cường
 import React, { useContext } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { AuthContext } from '../store/AuthContext';
+import { AuthContext } from '../contexts/AuthContext';
 
 const AccountScreen = () => {
   const { logout } = useContext(AuthContext);

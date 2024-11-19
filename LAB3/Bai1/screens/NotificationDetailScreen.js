@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const HomeDetailsScreen = () => {
+const NotificationDetailsScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home Details Screen</Text>
+      <Text style={styles.text}>Notification Details Screen</Text>
     </View>
   );
 };
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeDetailsScreen;
+export default NotificationDetailsScreen;
