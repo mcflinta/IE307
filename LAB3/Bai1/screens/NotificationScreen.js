@@ -8,8 +8,9 @@ const NotificationScreen = ({ navigation }) => {
       <Text style={styles.title}>Notification Screen</Text>
       <Button
         title="Go to Details"
-        onPress={() => navigation.navigate('NotificationDetailScreen')}
-      />
+        onPress={() => navigation.navigate('NotificationDetailScreen')}>
+        Go to Details
+        </Button>
     </View>
   );
 };

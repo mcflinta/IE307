@@ -26,6 +26,7 @@ const MainBottomTab = () => {
             <HomeIcon fill={focused ? '#000' : '#888'} width={24} height={24} />
           ),
         }}
+
       />
       <Tab.Screen
         name="Category"

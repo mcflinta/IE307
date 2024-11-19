@@ -1,12 +1,14 @@
-// 21521901 - Mai Quốc Cường
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-const SimpleScreen = ({ title }) => (
-  <View style={styles.container}>
-    <Text style={styles.title}>{title}</Text>
-  </View>
-);
+const SimpleScreen = ({ route }) => {
+  const { title } = route.params; // Lấy tham số 'title' từ route.params
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
