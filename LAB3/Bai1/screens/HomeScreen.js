@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet} from 'react-native';
+import { Button } from '@react-navigation/elements';
 
 const HomeScreen = ({ navigation }) => {
   return (
@@ -8,7 +9,7 @@ const HomeScreen = ({ navigation }) => {
       <Button
         title="Go to Details"
         onPress={() => navigation.navigate('HomeDetailsScreen')}
-      />
+      >Go to Details</Button>
     </View>
   );
 };

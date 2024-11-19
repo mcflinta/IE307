@@ -1,7 +1,6 @@
 import React from 'react';
-import SimpleScreen from './SimpleScreen';
-import { View, Text, StyleSheet, Button } from 'react-native';
-
+import { View, Text, StyleSheet } from 'react-native';
+import { Button } from '@react-navigation/elements';
 
 const NotificationScreen = ({ navigation }) => {
   return (
