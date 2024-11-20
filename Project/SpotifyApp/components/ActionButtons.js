@@ -4,22 +4,20 @@ import PhoneIcon from '../assets/svg/PhoneIcon.svg';
 import GoogleIcon from '../assets/svg/GoogleIcon.svg';
 import FacebookIcon from '../assets/svg/FacebookIcon.svg';
 
-const ActionButtons = () => {
+const ActionButtons = ({ navigation }) => {
   return (
     <View style={styles.buttonsContainer}>
-      {/* Button "Sign up for free" */}
       <Pressable
         style={({ pressed }) => [
           styles.button,
           styles.signupButton,
           pressed && styles.buttonPressedSignUp,
         ]}
-        onPress={() => alert('Sign up free pressed!')}
+        onPress={() => navigation.navigate('SignUpScreen')}
       >
         <Text style={[styles.buttonText, { color: '#000' }]}>Sign up for free</Text>
       </Pressable>
 
-      {/* Button "Continue with phone number" */}
       <Pressable
         style={({ pressed }) => [
           styles.button,
@@ -31,7 +29,6 @@ const ActionButtons = () => {
         <Text style={styles.buttonText}>Continue with phone number</Text>
       </Pressable>
 
-      {/* Button "Continue with Google" */}
       <Pressable
         style={({ pressed }) => [
           styles.button,
@@ -43,7 +40,6 @@ const ActionButtons = () => {
         <Text style={styles.buttonText}>Continue with Google</Text>
       </Pressable>
 
-      {/* Button "Continue with Facebook" */}
       <Pressable
         style={({ pressed }) => [
           styles.button,
@@ -55,7 +51,6 @@ const ActionButtons = () => {
         <Text style={styles.buttonText}>Continue with Facebook</Text>
       </Pressable>
 
-      {/* Button "Log in" */}
       <Pressable
         style={({ pressed }) => [
           pressed && styles.buttonPressLogin,

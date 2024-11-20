@@ -16,13 +16,25 @@
 //   );
 // }
 
-
+import { CardStyleInterpolators } from '@react-navigation/stack'; // Đảm bảo import đúng
 import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
+import { LinearGradient } from 'expo-linear-gradient';
 import Splash from './screens/SplashScreen';
-import MainScreen from './screens/InitScreen';
+import InitScreen from './screens/InitScreen';
+import SignUpScreen from './screens/SignUpScreen'; // Import màn hình Sign Up
+import SignUpPwScreen from './screens/SignUpPwScreen'; // Import m
+const Stack = createStackNavigator();
+const MyTheme = { 
+  ...DefaultTheme, 
+  colors: {
+    ...DefaultTheme.colors, 
+    background: '#121212',
+  }
+};
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -30,16 +42,15 @@ const App = () => {
   useEffect(() => {
     const prepareApp = async () => {
       try {
-        await new Promise(resolve => setTimeout(resolve, 3000));
         await Font.loadAsync({
           'Spotify-font': require('./assets/fonts/SpotifyMixUI-Regular.ttf'),
         });
-        setIsAppReady(true);
+        setTimeout(() => setIsAppReady(true), 3000); // Giả lập chờ tải 3 giây
       } catch (error) {
-        console.warn('Error loading app:', error);
+        console.warn('Error loading resources:', error);
       }
     };
-
+  
     prepareApp();
   }, []);
 
@@ -48,12 +59,32 @@ const App = () => {
   }
 
   return (
-    <LinearGradient
-      colors={['#1c1c1c', '#121212']}
-      style={styles.container}
-    >
-      <MainScreen />
-    </LinearGradient>
+    <NavigationContainer theme={MyTheme}>
+      <Stack.Navigator initialRouteName="InitScreen">
+        <Stack.Screen
+          // mode="modal"
+          name="InitScreen"
+          component={InitScreen}
+          options={{ headerShown: false}}
+        />
+        <Stack.Screen
+          
+          // mode="card"
+          name="SignUpScreen"
+          
+          component={SignUpScreen}
+          options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
+        />
+        {/* <Stack.Screen
+          
+          // mode="card"
+          name="SignUpPwScreen"
+          
+          component={SignUpPwScreen}
+          options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
+        /> */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
