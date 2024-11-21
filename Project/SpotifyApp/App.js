@@ -16,18 +16,20 @@
 //   );
 // }
 
-import { CardStyleInterpolators } from '@react-navigation/stack'; // Đảm bảo import đúng
+import { CardStyleInterpolators } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Button } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as Font from 'expo-font';
-import { LinearGradient } from 'expo-linear-gradient';
 import Splash from './screens/SplashScreen';
 import InitScreen from './screens/InitScreen';
-import SignUpScreen from './screens/SignUpScreen'; // Import màn hình Sign Up
-import SignUpPwScreen from './screens/SignUpPwScreen'; // Import m
-const Stack = createStackNavigator();
+import SignUpScreen from './screens/SignUpScreen';
+import SignUpPwScreen from './screens/SignUpPwScreen';
+// import SignUpDateOfBirth from './screens/SignUpDayOfBirth';
+const MainStack = createStackNavigator();
+const SignUpStack = createStackNavigator();
+
 const MyTheme = { 
   ...DefaultTheme, 
   colors: {
@@ -35,6 +37,31 @@ const MyTheme = {
     background: '#121212',
   }
 };
+
+// SignUpFlow Component with Header Hidden
+const SignUpFlow = () => (
+  <SignUpStack.Navigator
+    screenOptions={{
+      headerShown: false, // Hide headers in nested navigator
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }}
+  >
+    <SignUpStack.Screen  
+      name="SignUpScreen" 
+      component={SignUpScreen} 
+    />
+    <SignUpStack.Screen 
+      name="SignUpPwScreen" 
+      component={SignUpPwScreen} 
+    />
+    {/* <SignUpStack.Screen
+      name='SignUpDateOfBirth'
+      component={SignUpDateOfBirth}
+    /> */}
+  </SignUpStack.Navigator>
+);
+
+
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -45,7 +72,7 @@ const App = () => {
         await Font.loadAsync({
           'Spotify-font': require('./assets/fonts/SpotifyMixUI-Regular.ttf'),
         });
-        setTimeout(() => setIsAppReady(true), 3000); // Giả lập chờ tải 3 giây
+        setTimeout(() => setIsAppReady(true), 3000); // Simulate loading delay
       } catch (error) {
         console.warn('Error loading resources:', error);
       }
@@ -57,41 +84,26 @@ const App = () => {
   if (!isAppReady) {
     return <Splash />;
   }
-
   return (
     <NavigationContainer theme={MyTheme}>
-      <Stack.Navigator initialRouteName="InitScreen">
-        <Stack.Screen
-          // mode="modal"
+      <MainStack.Navigator initialRouteName="InitScreen">
+        <MainStack.Screen
           name="InitScreen"
           component={InitScreen}
-          options={{ headerShown: false}}
+          options={{ headerShown: false }} // Hide header for InitScreen
         />
-        <Stack.Screen
-          
-          // mode="card"
-          name="SignUpScreen"
-          
-          component={SignUpScreen}
+    <MainStack.Screen
+          name="SignUpFlow"
+          component={SignUpFlow}
+          // options={{ headerShown: false }} // Hide header for SignUpFlow
           options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
-        />
-        {/* <Stack.Screen
-          
-          // mode="card"
-          name="SignUpPwScreen"
-          
-          component={SignUpPwScreen}
-          options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
-        /> */}
-      </Stack.Navigator>
+      
+    />
+
+
+      </MainStack.Navigator>
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
