@@ -26,7 +26,7 @@ const SignUpPwScreen = ({ navigation }) => {
 
   const handleNext = () => {
     console.log("Password:", password);
-    navigation.navigate('SignUpDateOfBirth'); // Navigate to the next screen
+    navigation.navigate('SignUpGenderScreen'); // Navigate to the next screen
   };
 
   return (

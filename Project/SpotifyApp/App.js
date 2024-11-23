@@ -26,7 +26,7 @@ import Splash from './screens/SplashScreen';
 import InitScreen from './screens/InitScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignUpPwScreen from './screens/SignUpPwScreen';
-// import SignUpDateOfBirth from './screens/SignUpDayOfBirth';
+import SignUpGenderScreen from './screens/SignUpGenderScreen';
 const MainStack = createStackNavigator();
 const SignUpStack = createStackNavigator();
 
@@ -54,10 +54,10 @@ const SignUpFlow = () => (
       name="SignUpPwScreen" 
       component={SignUpPwScreen} 
     />
-    {/* <SignUpStack.Screen
-      name='SignUpDateOfBirth'
-      component={SignUpDateOfBirth}
-    /> */}
+
+    <SignUpStack.Screen
+      name='SignUpGenderScreen'
+      component={SignUpGenderScreen} />
   </SignUpStack.Navigator>
 );
 
@@ -72,7 +72,7 @@ const App = () => {
         await Font.loadAsync({
           'Spotify-font': require('./assets/fonts/SpotifyMixUI-Regular.ttf'),
         });
-        setTimeout(() => setIsAppReady(true), 3000); // Simulate loading delay
+        setTimeout(() => setIsAppReady(true), 500); // Simulate loading delay
       } catch (error) {
         console.warn('Error loading resources:', error);
       }
