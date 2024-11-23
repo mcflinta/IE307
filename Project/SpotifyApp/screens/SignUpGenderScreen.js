@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Pressable} from 'react-native';
 import { color } from 'react-native-elements/dist/helpers';
+
 const SignUpGenderScreen = ({ navigation }) => {
     const [gender, setGender] = React.useState(null);
+
     const selectHandleNext = (gender) => {
         setGender(gender);
-        navigation.navigate();
+        navigation.navigate('SignUpPolicyScreen');
     };
+
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
@@ -15,19 +18,19 @@ const SignUpGenderScreen = ({ navigation }) => {
             <View style={styles.buttonContainer}>
                 <Pressable
                     style={({ pressed }) => [
-                        styles.buttonGender, gender==='Female'&&styles.buttonSelected,
+                        styles.buttonGender, gender==='Female' && styles.buttonSelected,
                         pressed && styles.buttonPressed
                     ]}
                     onPress={() => selectHandleNext('Female')}>
-                    <Text style={[styles.textButton,gender==='Female' &&styles.textSelected]}>Female</Text>
-                    </Pressable>gender==='Famale' &&styles.textSelected
+                    <Text style={[styles.textButton, gender==='Female' && styles.textSelected]}>Female</Text>
+                </Pressable>
                 <Pressable
                     style={({ pressed }) => [
                         styles.buttonGender, gender==='Male' && styles.buttonSelected,
                         pressed && styles.buttonPressed
                     ]}
                     onPress={() => selectHandleNext('Male')}>
-                    <Text style={[styles.textButton, gender==='Male' &&styles.textSelected]}>
+                    <Text style={[styles.textButton, gender==='Male' && styles.textSelected]}>
                         Male
                     </Text>    
                 </Pressable>
@@ -37,7 +40,7 @@ const SignUpGenderScreen = ({ navigation }) => {
                         pressed && styles.buttonPressed
                     ]}
                     onPress={() => selectHandleNext('Non-binary')}>
-                    <Text style={[styles.textButton, gender==='Non-binary' &&styles.textSelected]}>
+                    <Text style={[styles.textButton, gender==='Non-binary' && styles.textSelected]}>
                         Non-binary
                     </Text>    
                 </Pressable>
@@ -47,7 +50,7 @@ const SignUpGenderScreen = ({ navigation }) => {
                         pressed && styles.buttonPressed
                     ]}
                     onPress={() => selectHandleNext('Other')}>
-                    <Text style={[styles.textButton, gender==='Other' &&styles.textSelected]}>
+                    <Text style={[styles.textButton, gender==='Other' && styles.textSelected]}>
                         Other
                     </Text>    
                 </Pressable>
@@ -57,7 +60,7 @@ const SignUpGenderScreen = ({ navigation }) => {
                         pressed && styles.buttonPressed
                     ]}
                     onPress={() => selectHandleNext('Prefer not to say')}>
-                    <Text style={[styles.textButton, gender==='Prefer not to say' &&styles.textSelected]}>
+                    <Text style={[styles.textButton, gender==='Prefer not to say' && styles.textSelected]}>
                         Prefer not to say
                     </Text>    
                 </Pressable>
@@ -65,12 +68,12 @@ const SignUpGenderScreen = ({ navigation }) => {
         </View>
     );
 };
+
 const styles = {
     container: {
         flex: 1,
         backgroundColor: '#121212',
         paddingHorizontal: 20,
-        
     },
     title: {
         marginTop: 40,
@@ -81,13 +84,11 @@ const styles = {
     buttonContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        flex:1,
+        flex: 1,
         marginTop: 10,
         marginBottom: 10,
-        
     },
     buttonGender: {
-        
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
@@ -95,7 +96,6 @@ const styles = {
         marginTop: 20,
         marginRight: 10,
         paddingHorizontal: 15,
-        // width: '30%',
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderColor: '#808080',
@@ -115,7 +115,6 @@ const styles = {
     textSelected: {
         color: '#fff'
     }
+};
 
-}
 export default SignUpGenderScreen;
-

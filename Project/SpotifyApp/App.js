@@ -27,6 +27,8 @@ import InitScreen from './screens/InitScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import SignUpPwScreen from './screens/SignUpPwScreen';
 import SignUpGenderScreen from './screens/SignUpGenderScreen';
+import SignUpPolicyScreen from './screens/SignUpPolicyScreen';
+import LoadingScreen from './screens/LoadingScreen';
 const MainStack = createStackNavigator();
 const SignUpStack = createStackNavigator();
 
@@ -42,7 +44,7 @@ const MyTheme = {
 const SignUpFlow = () => (
   <SignUpStack.Navigator
     screenOptions={{
-      headerShown: false, // Hide headers in nested navigator
+      headerShown: false, 
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
     }}
   >
@@ -58,6 +60,12 @@ const SignUpFlow = () => (
     <SignUpStack.Screen
       name='SignUpGenderScreen'
       component={SignUpGenderScreen} />
+    <SignUpStack.Screen
+      name='SignUpPolicyScreen'
+      component={SignUpPolicyScreen} />
+    <SignUpStack.Screen 
+      name="LoadingScreen"
+      component={LoadingScreen}/>
   </SignUpStack.Navigator>
 );
 
