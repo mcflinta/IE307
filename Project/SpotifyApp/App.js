@@ -62,10 +62,11 @@ const SignUpFlow = () => (
       component={SignUpGenderScreen} />
     <SignUpStack.Screen
       name='SignUpPolicyScreen'
-      component={SignUpPolicyScreen} />
-    <SignUpStack.Screen 
+      component={SignUpPolicyScreen}
+      options={{ backgroundColor: '#121212' }}/>
+    {/* <SignUpStack.Screen 
       name="LoadingScreen"
-      component={LoadingScreen}/>
+      component={LoadingScreen}/> */}
   </SignUpStack.Navigator>
 );
 
@@ -100,14 +101,20 @@ const App = () => {
           component={InitScreen}
           options={{ headerShown: false }} // Hide header for InitScreen
         />
-    <MainStack.Screen
-          name="SignUpFlow"
-          component={SignUpFlow}
-          // options={{ headerShown: false }} // Hide header for SignUpFlow
-          options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
-      
-    />
-
+      <MainStack.Screen
+            name="SignUpFlow"
+            component={SignUpFlow}
+            // options={{ headerShown: false }} // Hide header for SignUpFlow
+            options={{ title: 'Create account', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
+        
+      />
+      <MainStack.Screen
+        name="LoadingScreen"
+        component={LoadingScreen}
+        // options={{ headerShown: false }} // Hide header for SignUpFlow
+        options={{ headerShown: false, backgroundColor: '#121212' }}
+    
+      />
 
       </MainStack.Navigator>
     </NavigationContainer>
