@@ -1,18 +1,17 @@
 import React, {useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useRoute } from '@react-navigation/native';
 const SignUpPwScreen = ({ navigation }) => {
   const [password, setPassword] = React.useState('');
   const [isValid, setIsValid] = React.useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = React.useState(false);
+  const route = useRoute();
+  const { email } = route.params || {};
   useEffect(() => {
-    // Giả sử bạn muốn gửi một giá trị nào đó lên MainStack
-    const someValue = 'SignUpPwScreen';
-
-    // Gửi giá trị lên navigator cha
-    navigation.getParent()?.setParams({ someValue });
-  }, [navigation]);
+    // Log để kiểm tra email nhận được
+    console.log("Email received:", email);
+}, [email]);
 
   const handlePasswordChange = (text) => {
     setPassword(text);
@@ -25,8 +24,8 @@ const SignUpPwScreen = ({ navigation }) => {
   };
 
   const handleNext = () => {
-    console.log("Password:", password);
-    navigation.navigate('SignUpGenderScreen'); // Navigate to the next screen
+    // console.log("Password:", password);
+    navigation.navigate('SignUpGenderScreen', {email, password}); // Navigate to the next screen
   };
 
   return (

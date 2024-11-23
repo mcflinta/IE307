@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import {View, Text, StyleSheet, TouchableOpacity, Pressable} from 'react-native';
 import { color } from 'react-native-elements/dist/helpers';
-
+import { useRoute } from '@react-navigation/native';
 const SignUpGenderScreen = ({ navigation }) => {
     const [gender, setGender] = React.useState(null);
-
+    const route = useRoute();
+    const { email, password } = route.params || {}; 
     const selectHandleNext = (gender) => {
         setGender(gender);
-        navigation.navigate('SignUpPolicyScreen');
+        navigation.navigate('SignUpPolicyScreen', { email, password, gender });
     };
 
     return (

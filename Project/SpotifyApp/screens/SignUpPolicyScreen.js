@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRoute } from '@react-navigation/native';
 import {
     Text,
     View,
@@ -13,6 +14,9 @@ import CircleTickIconDefault from '../assets/svg/CircleTickIconDefault.svg'; // 
 import CircleTickIconChecked from '../assets/svg/CircleTickIconChecked.svg'; // SVG khi tick
 
 const SignUpPolicyScreen = ({ navigation }) => {
+    const route = useRoute();
+    const { email, password,gender } = route.params || {}; 
+
     const [isTerms, setIsTerms] = useState(false);
     const [isPrivacy, setIsPrivacy] = useState(false);
     const [name, setName] = useState('');
@@ -20,6 +24,8 @@ const SignUpPolicyScreen = ({ navigation }) => {
     const buttonBottom = useState(new Animated.Value(20))[0]; // Giá trị khởi tạo margin-bottom
 
     useEffect(() => {
+            // Log để kiểm tra email nhận được
+
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
             setKeyboardVisible(true);
             Animated.timing(buttonBottom, {
@@ -42,11 +48,38 @@ const SignUpPolicyScreen = ({ navigation }) => {
             keyboardDidShowListener.remove();
             keyboardDidHideListener.remove();
         };
-    }, [buttonBottom]);
+    }, [buttonBottom, email, password, gender]);
 
-    const createAccount = () => {
-        if (isTerms && isPrivacy) {
-            navigation.navigate('SignUpFlow');
+    const createAccount = async () => {
+        const userData = {
+            email,
+            password,
+            gender,
+            name,
+        };
+    
+        try {
+            // Gửi yêu cầu POST đến server
+            const response = await fetch('http://192.168.105.35:3000/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                console.log('Account created successfully:', data);
+                navigation.navigate('LoadingScreen'); // Chuyển đến màn hình tiếp theo
+            } else {
+                console.error('Failed to create account:', data);
+                alert(data.message || 'Failed to create account. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating account:', error);
+            alert('An error occurred. Please try again later.');
         }
     };
 
@@ -117,7 +150,7 @@ const SignUpPolicyScreen = ({ navigation }) => {
                         styles.createAccountButton,
                         pressed && styles.buttonPressed,
                     ]}
-                    onPress={() => navigation.navigate('LoadingScreen')}
+                    onPress={createAccount}
                 >
                     <Text style={styles.buttonText}>Create Account</Text>
                 </Pressable>

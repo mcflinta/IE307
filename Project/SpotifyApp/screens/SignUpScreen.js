@@ -149,7 +149,7 @@ const SignUpScreen = ({ navigation }) => {
 
   const handleNext = () => {
     if (isValid && email) {
-      navigation.navigate('SignUpPwScreen'); // Navigate within SignUpFlow
+      navigation.navigate('SignUpPwScreen', {email}); // Navigate within SignUpFlow
     }
   };
 
