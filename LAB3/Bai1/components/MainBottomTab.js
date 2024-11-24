@@ -15,7 +15,7 @@ const MainBottomTab = () => {
   const favoritesCount = 3; // Thay số lượng này bằng dữ liệu thực tế (ví dụ từ Redux, Context API, hoặc API)
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator initialRouteName='Home'>
       <Tab.Screen
         name="Home"
         component={RootHomeStack}

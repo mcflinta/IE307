@@ -1,4 +1,3 @@
-// screens/HomeScreen.js
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
@@ -14,45 +13,63 @@ export default function HomeScreen({ navigation }) {
   const [notes, setNotes] = useState([]);
 
   useEffect(() => {
-    db.withTransactionAsync(tx => {
-      tx.executeSql(
-        `CREATE TABLE IF NOT EXISTS notes (
-          id INTEGER PRIMARY KEY AUTOINCREMENT,
-          title TEXT NOT NULL,
-          content TEXT
-        );`
-      );
-    });
+    // db.withTransactionSync(() => {
+    //   // Tạo bảng nếu chưa tồn tại
+    //   db.execSync(
+    //     `CREATE TABLE IF NOT EXISTS notes (
+    //       id INTEGER PRIMARY KEY AUTOINCREMENT,
+    //       title TEXT,
+    //       content TEXT
+    //     );`
+    //   );
+    // });
+    db.execAsync(
+      `CREATE TABLE IF NOT EXISTS notes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT,
+        content TEXT
+      );`
+    );
     if (isFocused) {
-      fetchNotes();
+      fetchNotes(); // Lấy dữ liệu khi màn hình được focus
     }
   }, [isFocused]);
 
   const fetchNotes = () => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'SELECT * FROM notes;',
-        [],
-        (_, { rows }) => {
-          setNotes(rows._array);
-        },
-        (_, error) => {
-          console.log('Error fetching notes:', error);
-        }
-      );
-    });
+    // db.withTransactionAsync(() => {
+    //   db.execAsync(
+    //     'SELECT * FROM notes;',
+    //     [],
+    //     (_, { rows }) => {
+    //       setNotes(rows._array); // Cập nhật danh sách ghi chú
+    //     },
+    //     (_, error) => {
+    //       console.error('Error fetching notes:', error);
+    //     }
+    //   );
+    // });
+    db.execAsync(
+      'SELECT * FROM notes;',
+      [],
+      (_, { rows }) => {
+        setNotes(rows._array); // Cập nhật danh sách ghi chú
+      },
+      (_, error) => {
+        console.error('Error fetching notes:', error);
+      }
+    );
   };
 
   const deleteNote = (id) => {
-    db.transaction(tx => {
-      tx.executeSql(
+    db.withTransactionAsync((tx) => {
+      tx.execAsync(
         'DELETE FROM notes WHERE id = ?;',
         [id],
         () => {
-          fetchNotes();
+          fetchNotes(); // Cập nhật danh sách sau khi xóa
         },
         (_, error) => {
-          console.log('Error deleting note:', error);
+          console.error('Error deleting note:', error);
         }
       );
     });

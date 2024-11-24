@@ -12,7 +12,7 @@ const Drawer = createDrawerNavigator();
 const HomeDrawer = () => {
   return (
     <Drawer.Navigator initialRouteName="HomeScreen">
-      <Drawer.Screen 
+      <Drawer.Screen
         name="HomeScreen" 
         component={HomeScreen} 
         options={{ 

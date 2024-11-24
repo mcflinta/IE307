@@ -1,4 +1,3 @@
-// screens/AddNoteScreen.js
 import React, { useState, useContext } from 'react';
 import { View, TextInput, Alert, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { SQLiteContext } from '../contexts/SQLiteContext';
@@ -17,19 +16,30 @@ export default function AddNoteScreen({ navigation }) {
       Alert.alert('Lỗi', 'Tiêu đề không được để trống');
       return;
     }
-
-    db.transaction(tx => {
-      tx.executeSql(
-        'INSERT INTO notes (title, content) VALUES (?, ?);',
-        [title, content],
-        () => {
-          navigation.goBack();
-        },
-        (_, error) => {
-          console.log('Error saving note:', error);
-        }
-      );
-    });
+    // console.log('title:', title);/
+    // db.withTransactionSync(() => {
+    //   console.log('title:', title);
+    //   db.runSync(
+    //     'INSERT INTO notes (title, content) VALUES (?, ?);',
+    //     [title, content],
+    //     () => {
+    //       navigation.goBack(); // Quay lại màn hình trước
+    //     },
+    //     (_, error) => {
+    //       console.error('Error saving note:', error);
+    //     }
+    //   );
+    // });
+    db.execSync(
+      'INSERT INTO notes (title, content) VALUES (?, ?);',
+      [title, content],
+      () => {
+        navigation.goBack(); // Quay lại màn hình trước
+      },
+      (_, error) => {
+        console.error('Error saving note:', error);
+      }
+    );
   };
 
   const styles = StyleSheet.create({
@@ -64,27 +74,28 @@ export default function AddNoteScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <TextInput
-        placeholder="Tiêu đề"
-        placeholderTextColor={darkMode ? '#aaa' : '#888'}
         style={styles.input}
+        placeholder="Tiêu đề"
+        placeholderTextColor={darkMode ? '#777' : '#999'}
         value={title}
         onChangeText={setTitle}
       />
       <TextInput
-        placeholder="Nội dung"
-        placeholderTextColor={darkMode ? '#aaa' : '#888'}
         style={styles.input}
+        placeholder="Nội dung"
+        placeholderTextColor={darkMode ? '#777' : '#999'}
         value={content}
         onChangeText={setContent}
         multiline
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.button} onPress={saveNote}>
-          <Icon name="save" size={fontSize + 4} color={darkMode ? '#fff' : '#000'} />
+          <Icon name="save" size={fontSize} color="#2196F3" />
+          
           <Text style={styles.buttonText}>Lưu</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-          <Icon name="close" size={fontSize + 4} color={darkMode ? '#fff' : '#000'} />
+          <Icon name="close" size={fontSize} color="red" />
           <Text style={styles.buttonText}>Hủy</Text>
         </TouchableOpacity>
       </View>
