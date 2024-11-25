@@ -51,13 +51,21 @@ const SignUpPolicyScreen = ({ navigation }) => {
     }, [buttonBottom, email, password, gender]);
 
     const createAccount = async () => {
+        navigation.navigate('LoadingScreen', {
+            email: email.trim(),
+            password: password.trim(),
+            fromScreen: 'SignUpPolicyScreen', // Thêm thông tin màn hình nguồn
+            gender: gender.trim(),
+            name: name.trim(),
+          });
         const userData = {
             email,
             password,
             gender,
             name,
         };
-    
+        console.log('User data:', userData);
+        // console.log('isTerms:', isTerms);
         try {
             // Gửi yêu cầu POST đến server
             const response = await fetch('http://192.168.105.35:3000/api/register', {

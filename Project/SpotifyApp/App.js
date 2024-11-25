@@ -29,9 +29,11 @@ import SignUpPwScreen from './screens/SignUpPwScreen';
 import SignUpGenderScreen from './screens/SignUpGenderScreen';
 import SignUpPolicyScreen from './screens/SignUpPolicyScreen';
 import LoadingScreen from './screens/LoadingScreen';
+import LoginScreen from './screens/LoginScreen';
+import HomeScreen from './screens/HomeScreen';
 const MainStack = createStackNavigator();
 const SignUpStack = createStackNavigator();
-
+const LoginStack = createStackNavigator();
 const MyTheme = { 
   ...DefaultTheme, 
   colors: {
@@ -69,7 +71,19 @@ const SignUpFlow = () => (
       component={LoadingScreen}/> */}
   </SignUpStack.Navigator>
 );
-
+const LoginFlow = () => (
+  <LoginStack.Navigator
+    screenOptions={{
+      headerShown: false, 
+      cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+    }}
+  >
+    <LoginStack.Screen  
+      name="LoginScreen" 
+      component={LoginScreen} 
+    />
+  </LoginStack.Navigator>
+)
 
 
 const App = () => {
@@ -114,8 +128,16 @@ const App = () => {
         // options={{ headerShown: false }} // Hide header for SignUpFlow
         options={{ headerShown: false, backgroundColor: '#121212' }}
     
-      />
-
+        />
+        <MainStack.Screen
+          name="LoginFlow"
+          component={LoginFlow}
+          options={{ title: '', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
+        />
+        <MainStack.Screen
+          name='HomeScreen'
+          component={HomeScreen}
+          options={{ title: 'Home', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}/>
       </MainStack.Navigator>
     </NavigationContainer>
   );

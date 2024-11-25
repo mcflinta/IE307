@@ -176,7 +176,7 @@ const ActionButtons = ({ navigation }) => {
         style={({ pressed }) => [
           pressed && styles.buttonPressLogin,
         ]}
-        onPress={() => alert('Log in pressed!')}
+        onPress={() => navigation.navigate("LoginFlow")}
       >
         <Text style={styles.loginText}>Log in</Text>
       </Pressable>
