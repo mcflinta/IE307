@@ -31,15 +31,99 @@ import SignUpPolicyScreen from './screens/SignUpPolicyScreen';
 import LoadingScreen from './screens/LoadingScreen';
 import LoginScreen from './screens/LoginScreen';
 import HomeScreen from './screens/HomeScreen';
+import SearchScreen from './screens/SearchScreen';
+import LibraryScreen from './screens/LibraryScreen'; 
+import PremiumScreen from './screens/PremiumScreen';
+
+
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeIcon from './assets/svg/HomeIcon';
+import HomeFocusIcon from './assets/svg/HomeFocusIcon';
+import SearchIcon from './assets/svg/SearchIcon';
+import LibraryIcon from './assets/svg/LibraryIcon';
+import LibraryFocusIcon from './assets/svg/LibraryFocusIcon';
+import PremiumIcon from './assets/svg/PremiumIcon';
 const MainStack = createStackNavigator();
 const SignUpStack = createStackNavigator();
 const LoginStack = createStackNavigator();
+// const HomeStack = createStackNavigator();
+
+const HomeBottomTab = createBottomTabNavigator();
+
 const MyTheme = { 
   ...DefaultTheme, 
   colors: {
     ...DefaultTheme.colors, 
     background: '#121212',
   }
+};
+
+const HomeTabs = () => {
+  return (
+    <HomeBottomTab.Navigator
+      initialRouteName="HomeScreen" 
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { 
+          backgroundColor: '#121212', // Đổi màu tab
+          borderTopWidth: 0, // Loại bỏ vạch kẻ trắng
+        },
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#888',
+      }}
+    >
+      <HomeBottomTab.Screen 
+        name="HomeScreen" 
+        component={HomeScreen} 
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size, focused }) => (
+            focused
+              ? <HomeFocusIcon width={size} height={size} fill={color} />
+              : <HomeIcon width={size} height={size} fill={color} />
+          )
+          
+        }} 
+      />
+      <HomeBottomTab.Screen 
+        name="SearchScreen" 
+        component={SearchScreen} 
+        options={{
+          tabBarLabel: 'Search',
+          tabBarIcon: ({ color, size, focused }) => (
+            focused
+              ? <SearchIcon width={size} height={size} fill={color} />
+              : <SearchIcon width={size} height={size} fill={color} />
+          )
+        }} 
+      />
+      <HomeBottomTab.Screen 
+        name="LibraryScreen" 
+        component={LibraryScreen} 
+        options={{
+          tabBarLabel: 'Library',
+          tabBarIcon: ({ color, size, focused }) => (
+            focused
+              ? <LibraryFocusIcon width={size} height={size} fill={color} />
+              : <LibraryIcon width={size} height={size} fill={color} />
+          )
+        }} 
+      />
+      <HomeBottomTab.Screen 
+        name="PremiumScreen" 
+        component={PremiumScreen} 
+        options={{
+          tabBarLabel: 'Premium',
+          tabBarIcon: ({ color, size, focused }) => (
+            focused
+              ? <PremiumIcon width={size} height={size} fill={color} />
+              : <PremiumIcon width={size} height={size} fill={color} />
+          )
+        }} 
+      />
+
+    </HomeBottomTab.Navigator>
+  );
 };
 
 // SignUpFlow Component with Header Hidden
@@ -85,6 +169,9 @@ const LoginFlow = () => (
   </LoginStack.Navigator>
 )
 
+// const HomeFlow = () => (
+
+// )
 
 const App = () => {
   const [isAppReady, setIsAppReady] = useState(false);
@@ -135,9 +222,10 @@ const App = () => {
           options={{ title: '', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}
         />
         <MainStack.Screen
-          name='HomeScreen'
-          component={HomeScreen}
-          options={{ title: 'Home', headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}/>
+          name='HomeTabs'
+          component={HomeTabs}
+          // screenOptions=
+          options={{ headerLeft: () => null, headerTitle: () => null,  headerStyle: { backgroundColor: '#121212' }, headerTintColor: '#fff', cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS, headerTitleAlign: 'center' }}/>
       </MainStack.Navigator>
     </NavigationContainer>
   );

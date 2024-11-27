@@ -174,7 +174,10 @@ const LoadingScreen = ({ navigation, route }) => {
               await AsyncStorage.setItem('userInfo', JSON.stringify(user));
             }
 
-            navigation.replace('HomeScreen', { user });
+            navigation.replace('HomeTabs', { 
+              screen: 'HomeScreen', 
+              params: { user }
+             });
           } else {
             console.error('Login failed with status:', response.status);
             Alert.alert('Error', 'Login failed. Please try again.');
@@ -215,7 +218,10 @@ const LoadingScreen = ({ navigation, route }) => {
               await AsyncStorage.setItem('userInfo', JSON.stringify(user));
             }
 
-            navigation.replace('HomeScreen', { user });
+            navigation.replace('HomeTabs', { 
+              screen: 'HomeScreen',
+              params: { user }
+             });
           } else {
             console.error('Failed to create account with status:', response.status);
             Alert.alert(response.data.message || 'Failed to create account. Please try again.');
