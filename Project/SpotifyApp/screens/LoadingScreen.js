@@ -134,11 +134,183 @@
 
 // export default LoadingScreen;
 
+// import React, { useRef, useEffect, useState } from 'react';
+// import { View, Animated, StyleSheet, Alert } from 'react-native';
+// import axios from '../config/axiosConfig';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+// const LoadingScreen = ({ navigation, route }) => {
+//   const dot1 = useRef(new Animated.Value(1)).current;
+//   const dot2 = useRef(new Animated.Value(1)).current;
+//   const dot3 = useRef(new Animated.Value(1)).current;
+
+//   const { fromScreen } = route.params || {};
+//   const [loading, setLoading] = useState(true); // Quản lý trạng thái loading
+
+//   useEffect(() => {
+//     if (fromScreen === 'LoginScreen') {
+//       const { email, password } = route.params || {};
+
+//       const loginUser = async () => {
+//         try {
+//           const response = await axios.post('/login', { email, password });
+//           if (response.status === 200) {
+//             Alert.alert('Success', 'Login successful');
+//             const { user, token } = response.data;
+
+//             if (token) {
+//               // Lưu token vào AsyncStorage
+//               await AsyncStorage.setItem('userToken', token);
+//             } else {
+//               console.error('Token is undefined in the response.');
+//               Alert.alert('Error', 'Token not received from server.');
+//               navigation.goBack();
+//               return;
+//             }
+
+//             if (user) {
+//               // Lưu thông tin người dùng nếu cần
+//               await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+//             }
+
+//             navigation.replace('HomeTabs', { 
+//               screen: 'HomeScreen', 
+//               params: { user }
+//              });
+//           } else {
+//             console.error('Login failed with status:', response.status);
+//             Alert.alert('Error', 'Login failed. Please try again.');
+//           }
+//         } catch (error) {
+//           console.error('Login failed:', error.response?.data || error.message);
+//           Alert.alert('Error', error.response?.data?.message || 'Login failed');
+//           navigation.goBack();
+//         } finally {
+//           setLoading(false);
+//         }
+//       };
+
+//       loginUser();
+//     } else if (fromScreen === 'SignUpPolicyScreen') {
+//       const { email, password, gender, name } = route.params || {};
+
+//       const registerUser = async () => {
+//         const userData = { email, password, gender, name };
+//         try {
+//           const response = await axios.post('/register', userData);
+//           if (response.status === 201) {
+//             Alert.alert('Success', 'Account created successfully');
+//             const { user, token } = response.data;
+
+//             if (token) {
+//               // Lưu token vào AsyncStorage
+//               await AsyncStorage.setItem('userToken', token);
+//             } else {
+//               console.error('Token is undefined in the response.');
+//               Alert.alert('Error', 'Token not received from server.');
+//               navigation.goBack();
+//               return;
+//             }
+
+//             if (user) {
+//               // Lưu thông tin người dùng nếu cần
+//               await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+//             }
+
+//             navigation.replace('HomeTabs', { 
+//               screen: 'HomeScreen',
+//               params: { user }
+//              });
+//           } else {
+//             console.error('Failed to create account with status:', response.status);
+//             Alert.alert(response.data.message || 'Failed to create account. Please try again.');
+//           }
+//         } catch (error) {
+//           console.error('Error creating account:', error.response?.data || error.message);
+//           Alert.alert('Error', error.response?.data?.message || 'An error occurred. Please try again later.');
+//         } finally {
+//           setLoading(false);
+//         }
+//       };
+
+//       registerUser();
+//     }
+//   }, [fromScreen, navigation, route.params]);
+
+//   useEffect(() => {
+//     const animateDots = () => {
+//       Animated.loop(
+//         Animated.sequence([
+//           Animated.timing(dot1, {
+//             toValue: 1.5,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(dot1, {
+//             toValue: 1,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(dot2, {
+//             toValue: 1.5,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(dot2, {
+//             toValue: 1,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(dot3, {
+//             toValue: 1.5,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//           Animated.timing(dot3, {
+//             toValue: 1,
+//             duration: 300,
+//             useNativeDriver: true,
+//           }),
+//         ])
+//       ).start();
+//     };
+
+//     animateDots();
+//   }, [dot1, dot2, dot3]);
+
+//   return (
+//     <View style={styles.container}>
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot1 }] }]} />
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot2 }] }]} />
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot3 }] }]} />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#000',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     flexDirection: 'row',
+//   },
+//   dot: {
+//     width: 15,
+//     height: 15,
+//     borderRadius: 7.5,
+//     backgroundColor: '#FFF',
+//     marginHorizontal: 10,
+//   },
+// });
+
+// export default LoadingScreen;
+
 import React, { useRef, useEffect, useState } from 'react';
 import { View, Animated, StyleSheet, Alert } from 'react-native';
-import axios from '../config/axiosConfig';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { loginUser, registerUser } from '../services/authService.js';
+import { createDotAnimation } from '../animations/dotAnimation';
 
 const LoadingScreen = ({ navigation, route }) => {
   const dot1 = useRef(new Animated.Value(1)).current;
@@ -146,137 +318,52 @@ const LoadingScreen = ({ navigation, route }) => {
   const dot3 = useRef(new Animated.Value(1)).current;
 
   const { fromScreen } = route.params || {};
-  const [loading, setLoading] = useState(true); // Quản lý trạng thái loading
-
+  const [loading, setLoading] = useState(true);
+  console.log('fromScreen:', fromScreen);
   useEffect(() => {
-    if (fromScreen === 'LoginScreen') {
+    const handleLogin = async () => {
       const { email, password } = route.params || {};
+      try {
+        const { user } = await loginUser({ email, password });
+        Alert.alert('Success', 'Login successful');
+        // console.log('Login successful:', user);
 
-      const loginUser = async () => {
-        try {
-          const response = await axios.post('/login', { email, password });
-          if (response.status === 200) {
-            Alert.alert('Success', 'Login successful');
-            const { user, token } = response.data;
+        navigation.replace('HomeTabs', {user})
 
-            if (token) {
-              // Lưu token vào AsyncStorage
-              await AsyncStorage.setItem('userToken', token);
-            } else {
-              console.error('Token is undefined in the response.');
-              Alert.alert('Error', 'Token not received from server.');
-              navigation.goBack();
-              return;
-            }
+        // navigation.replace('HomeTabs', { user });
+      } catch (error) {
+        console.error('Login failed:', error);
+        Alert.alert('Error', error.message || 'Login failed');
+        navigation.goBack();
+      } finally {
+        setLoading(false);
+      }
+    };
 
-            if (user) {
-              // Lưu thông tin người dùng nếu cần
-              await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-            }
-
-            navigation.replace('HomeTabs', { 
-              screen: 'HomeScreen', 
-              params: { user }
-             });
-          } else {
-            console.error('Login failed with status:', response.status);
-            Alert.alert('Error', 'Login failed. Please try again.');
-          }
-        } catch (error) {
-          console.error('Login failed:', error.response?.data || error.message);
-          Alert.alert('Error', error.response?.data?.message || 'Login failed');
-          navigation.goBack();
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      loginUser();
-    } else if (fromScreen === 'SignUpPolicyScreen') {
+    const handleRegister = async () => {
       const { email, password, gender, name } = route.params || {};
+      try {
+        const { user } = await registerUser({ email, password, gender, name });
+        Alert.alert('Success', 'Account created successfully');
+        navigation.replace('InitScreen');
+      } catch (error) {
+        console.error('Register failed:', error);
+        Alert.alert('Error', error.message || 'Register failed');
+        navigation.goBack();
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      const registerUser = async () => {
-        const userData = { email, password, gender, name };
-        try {
-          const response = await axios.post('/register', userData);
-          if (response.status === 201) {
-            Alert.alert('Success', 'Account created successfully');
-            const { user, token } = response.data;
-
-            if (token) {
-              // Lưu token vào AsyncStorage
-              await AsyncStorage.setItem('userToken', token);
-            } else {
-              console.error('Token is undefined in the response.');
-              Alert.alert('Error', 'Token not received from server.');
-              navigation.goBack();
-              return;
-            }
-
-            if (user) {
-              // Lưu thông tin người dùng nếu cần
-              await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-            }
-
-            navigation.replace('HomeTabs', { 
-              screen: 'HomeScreen',
-              params: { user }
-             });
-          } else {
-            console.error('Failed to create account with status:', response.status);
-            Alert.alert(response.data.message || 'Failed to create account. Please try again.');
-          }
-        } catch (error) {
-          console.error('Error creating account:', error.response?.data || error.message);
-          Alert.alert('Error', error.response?.data?.message || 'An error occurred. Please try again later.');
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      registerUser();
+    if (fromScreen === 'LoginScreen') {
+      handleLogin();
+    } else if (fromScreen === 'SignUpPolicyScreen') {
+      handleRegister();
     }
   }, [fromScreen, navigation, route.params]);
 
   useEffect(() => {
-    const animateDots = () => {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(dot1, {
-            toValue: 1.5,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot1, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot2, {
-            toValue: 1.5,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot2, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot3, {
-            toValue: 1.5,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(dot3, {
-            toValue: 1,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-        ])
-      ).start();
-    };
-
-    animateDots();
+    createDotAnimation(dot1, dot2, dot3);
   }, [dot1, dot2, dot3]);
 
   return (

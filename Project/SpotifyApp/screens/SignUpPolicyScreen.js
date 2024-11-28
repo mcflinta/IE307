@@ -58,37 +58,37 @@ const SignUpPolicyScreen = ({ navigation }) => {
             gender: gender.trim(),
             name: name.trim(),
           });
-        const userData = {
-            email,
-            password,
-            gender,
-            name,
-        };
-        console.log('User data:', userData);
-        // console.log('isTerms:', isTerms);
-        try {
-            // Gửi yêu cầu POST đến server
-            const response = await fetch('http://192.168.105.35:3000/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
-            });
+        // const userData = {
+        //     email,
+        //     password,
+        //     gender,
+        //     name,
+        // };
+        // console.log('User data:', userData);
+        // // console.log('isTerms:', isTerms);
+        // try {
+        //     // Gửi yêu cầu POST đến server
+        //     // const response = await fetch('http://192.168.105.35:3000/api/register', {
+        //     //     method: 'POST',
+        //     //     headers: {
+        //     //         'Content-Type': 'application/json',
+        //     //     },
+        //     //     body: JSON.stringify(userData),
+        //     // });
     
-            const data = await response.json();
+        //     // const data = await response.json();
     
-            if (response.ok) {
-                console.log('Account created successfully:', data);
-                navigation.navigate('LoadingScreen'); // Chuyển đến màn hình tiếp theo
-            } else {
-                console.error('Failed to create account:', data);
-                alert(data.message || 'Failed to create account. Please try again.');
-            }
-        } catch (error) {
-            console.error('Error creating account:', error);
-            alert('An error occurred. Please try again later.');
-        }
+        //     // if (response.ok) {
+        //     //     console.log('Account created successfully:', data);
+        //         navigation.navigate('LoadingScreen'); // Chuyển đến màn hình tiếp theo
+        //     // } else {
+        //     //     console.error('Failed to create account:', data);
+        //     //     alert(data.message || 'Failed to create account. Please try again.');
+        //     // }
+        // } catch (error) {
+        //     console.error('Error creating account:', error);
+        //     alert('An error occurred. Please try again later.');
+        // }
     };
 
     const handleToggle = (key) => {

@@ -118,10 +118,8 @@ const InitScreen = ({ navigation }) => {
 
         if (response.status === 200) {
           const user = response.data.user;
-          navigation.replace('HomeTabs', {
-            screen: 'HomeScreen',
-            params: { user },
-          });
+          // console.log('User:', user);
+          navigation.replace('HomeTabs', {user})
         } else {
           throw new Error('Invalid token');
         }
