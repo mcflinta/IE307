@@ -119,4 +119,31 @@ export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
       console.error('Error fetching albums by artist name:', error);
       throw error;
     }
-  };
+};
+  
+export const fetchAlbumTracks = async (token, albumId) => {
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    // Trích xuất các bài hát và thông tin bổ sung từ API
+    const { items: tracks } = response.data.tracks;
+    const { images } = response.data; // Lấy hình ảnh album
+
+    return {
+      tracks: tracks.map((track) => ({
+        id: track.id,
+        title: track.name,
+        preview_url: track.preview_url,
+        artists: track.artists.map(artist => artist.name),
+      })),
+      images, // Bao gồm hình ảnh album
+    };
+  } catch (error) {
+    console.error(`Error fetching tracks for album with id: ${albumId}`, error);
+    throw error;
+  }
+};

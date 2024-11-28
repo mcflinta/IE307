@@ -2,8 +2,8 @@
 import React from 'react';
 import { Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
-const AlbumCard = ({ album }) => (
-  <TouchableOpacity style={styles.card}>
+const AlbumCard = ({ album, onPress }) => (
+  <TouchableOpacity style={styles.card} onPress={() => onPress(album)}>
     <Image source={{ uri: album.image }} style={styles.image} />
     <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
       {album.title}

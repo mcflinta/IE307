@@ -1,8 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen'; // Màn hình chính của Premium
-import TrackAlbumArtistScreen from '../screens/TrackAlbumArtistScreen'; // Màn hình con
+// import TrackAlbumArtistScreen from '../screens/TrackAlbumArtistScreen'; // Màn hình con
 
+import AlbumTrackDetailScreen from '../screens/AlbumTrackDetailScreen';
 const HomeStack = createStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
@@ -27,12 +28,13 @@ const HomeStackNavigator = ({ route }) => {
                  }}
             />
             <HomeStack.Screen
-                name="TrackAlbumArtistScreen"
-                component={TrackAlbumArtistScreen}
+                name="AlbumTrackDetailScreen"
+                component={AlbumTrackDetailScreen}
                 initialParams={{ user }}
                 options={{
-                    title: 'TrackAlbumArtistScreen',
+                    title: 'AlbumTrackDetailScreen',
                     // headerLeft: () => null,
+                    headerTitle: false,
                     headerTitle: () => null,
                  }}
             />

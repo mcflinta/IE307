@@ -57,31 +57,38 @@
 // src/screens/HomeScreen.js
 
 
-
 import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, Animated, StyleSheet } from 'react-native';
-import { getAccessToken, fetchNewReleases, fetchAlbumsByIds, fetchAlbumsByArtistName } from '../services/spotifyService';
+import { View, FlatList, Animated, StyleSheet, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native'; // Import navigation hook
+import { getAccessToken, fetchAlbumsByArtistName, fetchAlbumTracks } from '../services/spotifyService';
 import AlbumCard from '../components/AlbumCard';
-import { createDotAnimation } from '../animations/dotAnimation'; // Import hàm từ file dotAnimations.js
+import { createDotAnimation } from '../animations/dotAnimation';
 
-const HomeScreen = ({route}) => {
-  const [data, setData] = useState([]);
+const HomeScreen = ({ route }) => {
+  const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigation = useNavigation(); // Get navigation object from hook
   const { user } = route.params || {};
   console.log('User HomeScreen:', user);
+
   // Animation values for dots
   const dot1 = useRef(new Animated.Value(1)).current;
   const dot2 = useRef(new Animated.Value(1)).current;
   const dot3 = useRef(new Animated.Value(1)).current;
-
+  useEffect(() => {
+   
+      StatusBar.setBackgroundColor('#121212');
+      StatusBar.setBarStyle('light-content');
+    }) // Lắng nghe thay đổi của 
+  // Fetch albums by artist name
   useEffect(() => {
     const fetchData = async () => {
       try {
         const token = await getAccessToken();
-        const albums = await fetchAlbumsByArtistName(token, 'Aimer');
-        setData(albums);
+        const fetchedAlbums = await fetchAlbumsByArtistName(token, 'Aimer');
+        setAlbums(fetchedAlbums);
       } catch (error) {
-        console.error(error);
+        console.error('Error fetching albums:', error);
       } finally {
         setLoading(false);
       }
@@ -90,10 +97,38 @@ const HomeScreen = ({route}) => {
     fetchData();
   }, []);
 
+  // Animation
   useEffect(() => {
-    createDotAnimation(dot1, dot2, dot3); // Sử dụng animation từ file dotAnimations.js
+    createDotAnimation(dot1, dot2, dot3);
   }, [dot1, dot2, dot3]);
 
+  const handleAlbumPress = async (album) => {
+    setLoading(true);
+    try {
+      const token = await getAccessToken();
+      const { tracks: fetchedTracks, images } = await fetchAlbumTracks(token, album.id);
+  
+      const artistNames = fetchedTracks
+        .flatMap(track => track.artists)
+        .filter((artist, index, self) => self.indexOf(artist) === index)
+        .join(', ');
+  
+      const albumImage = images?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên
+      console.log('Album image:', fetchedTracks);
+      navigation.navigate('AlbumTrackDetailScreen', {
+        albumName: album.title,
+        artistName: artistNames,
+        tracks: fetchedTracks,
+        albumImage, // Truyền hình ảnh album
+      });
+    } catch (error) {
+      console.error('Error fetching tracks:', error);
+      Alert.alert('Error', 'Unable to fetch tracks for the selected album.');
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -107,8 +142,10 @@ const HomeScreen = ({route}) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={data}
-        renderItem={({ item }) => <AlbumCard album={item} />}
+        data={albums}
+        renderItem={({ item }) => (
+          <AlbumCard album={item} onPress={() => handleAlbumPress(item)} />
+        )}
         keyExtractor={(item) => item.id}
         numColumns={2}
         columnWrapperStyle={styles.row}
@@ -116,6 +153,7 @@ const HomeScreen = ({route}) => {
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

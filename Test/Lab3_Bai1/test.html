@@ -1,0 +1,11 @@
+<img id="myImage" src="https://i.scdn.co/image/ab67616d0000b273c6028f0b12c4f9567035af35" crossorigin="anonymous" style="display: none;" />
+<script>
+    // Sử dụng Color Thief
+    const img = document.getElementById('myImage');
+    const colorThief = new ColorThief();
+
+    img.onload = () => {
+        const dominantColor = colorThief.getColor(img); // Trả về [R, G, B]
+        console.log('Dominant Color:', dominantColor);
+    };
+</script>
