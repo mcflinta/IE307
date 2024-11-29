@@ -21,10 +21,11 @@ import PlayIcon from '../assets/svg/PlayIcon'
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 const AlbumDetailsScreen = ({ route, navigation }) => {
-  const { albumName, artistName, tracks, albumImage, artistImageUrl, releaseYear, fullReleaseDate } = route.params;
+  const { albumName, artistName, tracks, albumImage, artistImageUrl, releaseYear, fullReleaseDate, totalTracks, totalDuration } = route.params;
   const [dominantColors, setDominantColors] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const scrollY = new Animated.Value(0);
+  console.log(totalTracks)
   const fetchDominantColors = async () => {
     try {
       const response = await fetch(
@@ -131,20 +132,19 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
           {albumName}
         </Animated.Text>
       </Animated.View>
-
+  
       {/* Gradient động dưới hình ảnh */}
       <AnimatedLinearGradient
         colors={[dominantColor, 'transparent']}
         style={[styles.gradientOverlay, { opacity: gradientOpacity }]}
       />
-
+  
       {/* FlatList */}
       <FlatList
         data={tracks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.trackItem}>
-            {/* Thông tin bài hát */}
             <View style={styles.trackInfo}>
               <Text style={styles.trackTitle} numberOfLines={1}>
                 {item.title}
@@ -153,7 +153,6 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
                 {artistName}
               </Text>
             </View>
-            {/* Biểu tượng dấu ba chấm */}
             <TouchableOpacity style={styles.moreIcon}>
               <Icon name="ellipsis-vertical" size={20} color="#ffffff" />
             </TouchableOpacity>
@@ -185,13 +184,25 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
                   <Text style={styles.releaseYearText}>Album • {releaseYear}</Text>
                   <AddIcon width={24} height={24} fill="#fff" opacity="0.7" />
                 </View>
-                  <TouchableOpacity style={styles.playButton}>
-                    <PlayIcon  width={24} height={24} />
-                  </TouchableOpacity>
               </View>
-
-
             </View>
+          </View>
+        )}
+        ListFooterComponent={() => (
+          <View style={styles.footerContainer}>
+            <Text style={styles.releaseDate}>{fullReleaseDate}</Text>
+            <Text style={styles.releaseDate}>
+              {totalTracks > 1 ? `${totalTracks} songs` : `${totalTracks} song`} • {totalDuration}
+            </Text>
+            <View style={styles.artistContainer}>
+                {artistImageUrl && (
+                  <Image
+                    source={{ uri: artistImageUrl }}
+                    style={styles.artistImageLarge}
+                  />
+                )}
+                <Text style={styles.artistNameLarge}>{artistName}</Text>
+              </View>
           </View>
         )}
         contentContainerStyle={styles.listContent}
@@ -199,9 +210,34 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
         )}
+
+
       />
+  
+      {/* Nút Play di chuyển */}
+      <Animated.View
+        style={[
+          styles.fixedPlayButton,
+          {
+            transform: [
+              {
+                translateY: scrollY.interpolate({
+                  inputRange: [0, 200], // Từ khi chưa cuộn đến khi header xuất hiện
+                  outputRange: [200, -105], // Di chuyển từ vị trí ban đầu đến vị trí cố định
+                  extrapolate: 'clamp', // Không cho giá trị vượt ngoài khoảng trên
+                }),
+              },
+            ],
+          },
+        ]}
+      >
+        <TouchableOpacity style={styles.playButton}>
+          <PlayIcon width={24} height={24} />
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
@@ -340,7 +376,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  
+  fixedPlayButton: {
+    position: 'absolute',
+    top:160,
+    right: 20,
+    zIndex: 20,
+  },
+  footerContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  releaseDate: {
+    fontSize: 16,
+    color: '#ffffff',
+  },
+  artistImageLarge: {
+    width: 50, // Chiều rộng hình ảnh
+    height: 50, // Chiều cao hình ảnh
+    borderRadius: 30, // Bo tròn để tạo hình tròn
+    marginRight: 12, // Khoảng cách giữa hình ảnh và tên nghệ sĩ
+
+  },
+  artistNameLarge: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'left',
+    // fontWeight: 'bold',
+  },
 });
 
 export default AlbumDetailsScreen;

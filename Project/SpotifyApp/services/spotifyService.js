@@ -310,8 +310,26 @@ export const fetchAlbumTracks = async (token, albumId) => {
       imageUrl: artist.images.length > 0 ? artist.images[0].url : null, // Lấy url của hình ảnh đầu tiên nếu tồn tại
     }));
 
-    console.log('Release Year:', releaseYear);
-    console.log('Full Release Date:', fullReleaseDate);
+    // Tính tổng số lượng track
+    const totalTracks = tracks.length;
+
+    // Tính tổng thời gian các track
+    const totalDurationMs = tracks.reduce((sum, track) => sum + track.duration_ms, 0);
+
+    // Chuyển đổi thời gian dựa trên điều kiện
+    let totalDuration;
+    if (totalDurationMs >= 3600000) { // >= 1 giờ
+      const hours = Math.floor(totalDurationMs / 3600000);
+      const minutes = Math.floor((totalDurationMs % 3600000) / 60000);
+      totalDuration = `${hours}h ${minutes}min`;
+    } else if (totalDurationMs >= 60000) { // >= 1 phút
+      const minutes = Math.floor(totalDurationMs / 60000);
+      const seconds = Math.floor((totalDurationMs % 60000) / 1000);
+      totalDuration = `${minutes}m ${seconds}sec`;
+    } else { // < 1 phút
+      const seconds = Math.floor(totalDurationMs / 1000);
+      totalDuration = `${seconds}sec`;
+    }
 
     // Bước 4: Trả về dữ liệu bao gồm tracks, hình ảnh album, url của hình ảnh nghệ sĩ, năm phát hành và ngày tháng năm phát hành
     return {
@@ -321,17 +339,21 @@ export const fetchAlbumTracks = async (token, albumId) => {
         preview_url: track.preview_url,
         artists: track.artists.map(artist => artist.name),
         artistIds: track.artists.map(artist => artist.id),
+        duration_ms: track.duration_ms, // Thêm thời lượng từng track
       })),
       albumImages,
       artists: artistsWithImageUrl,
-      releaseYear,       // Thêm thông tin năm phát hành
-      fullReleaseDate,   // Đã định dạng theo yêu cầu
+      releaseYear,       // Thông tin năm phát hành
+      fullReleaseDate,   // Ngày tháng năm phát hành định dạng đẹp
+      totalTracks,       // Tổng số lượng track
+      totalDuration,     // Tổng thời gian định dạng phù hợp
     };
   } catch (error) {
     console.error(`Error fetching tracks for album with id: ${albumId}`, error);
     throw error;
   }
 };
+
 
 
 
