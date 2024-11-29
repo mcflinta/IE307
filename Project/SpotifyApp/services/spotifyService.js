@@ -8,7 +8,6 @@ const CLIENT_SECRET = '819383dcb62c4ae09009e2e5186fc7db'; // Thay bằng Client 
 export const getAccessToken = async () => {
   const tokenUrl = 'https://accounts.spotify.com/api/token';
   const credentials = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
-
   try {
     const response = await axios.post(
       tokenUrl,
@@ -20,6 +19,7 @@ export const getAccessToken = async () => {
         },
       }
     );
+    // console.log('Access_token: ', response.data.access_token)
     return response.data.access_token;
   } catch (error) {
     console.error('Error getting access token', error);
@@ -121,29 +121,269 @@ export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
     }
 };
   
+// export const fetchAlbumTracks = async (token, albumId) => {
+//   try {
+//     const response = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     // Trích xuất các bài hát và thông tin bổ sung từ API
+//     const { items: tracks } = response.data.tracks;
+//     const { images } = response.data; // Lấy hình ảnh album
+//     // console.log('Album tracks:', tracks.artists.m;
+//     // console.log('Album artists:', artists);
+//     return {
+//       tracks: tracks.map((track) => ({
+//         id: track.id,
+//         title: track.name,
+//         preview_url: track.preview_url,
+//         artists: track.artists.map(artist => artist.name),
+//         artistId: track.artists.map(artist => artist.id),
+//       })),
+//       images, // Bao gồm hình ảnh album
+//     };
+//   } catch (error) {
+//     console.error(`Error fetching tracks for album with id: ${albumId}`, error);
+//     throw error;
+//   }
+// };
+
+
+// export const fetchAlbumTracks = async (token, albumId) => {
+//   try {
+//     // Bước 1: Lấy thông tin album
+//     const albumResponse = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     const { items: tracks } = albumResponse.data.tracks;
+//     const { images: albumImages, artists: albumArtists } = albumResponse.data; // Lấy hình ảnh album và nghệ sĩ album
+
+//     // Bước 2: Trích xuất các ID nghệ sĩ từ album
+//     const artistIds = albumArtists.map(artist => artist.id).join(',');
+
+//     // Bước 3: Lấy thông tin các nghệ sĩ, bao gồm hình ảnh
+//     const artistsResponse = await axios.get(`https://api.spotify.com/v1/artists`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//       params: {
+//         ids: artistIds,
+//       },
+//     });
+
+//     const artistsData = artistsResponse.data.artists;
+
+//     // Bước 4: Trả về dữ liệu bao gồm tracks, hình ảnh album và hình ảnh nghệ sĩ
+//     return {
+//       tracks: tracks.map((track) => ({
+//         id: track.id,
+//         title: track.name,
+//         preview_url: track.preview_url,
+//         artists: track.artists.map(artist => artist.name),
+//         artistIds: track.artists.map(artist => artist.id),
+//       })),
+//       albumImages,
+//       artists: artistsData.map(artist => ({
+//         id: artist.id,
+//         name: artist.name,
+//         images: artist.images, // Hình ảnh của nghệ sĩ
+//       })),
+//     };
+//   } catch (error) {
+//     console.error(`Error fetching tracks for album with id: ${albumId}`, error);
+//     throw error;
+//   }
+// };
+
+
+
+// export const fetchAlbumTracks = async (token, albumId) => {
+//   try {
+//     // Bước 1: Lấy thông tin album
+//     const albumResponse = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     const { items: tracks } = albumResponse.data.tracks;
+//     const { images: albumImages, artists: albumArtists } = albumResponse.data; // Lấy hình ảnh album và nghệ sĩ album
+
+//     // Bước 2: Trích xuất các ID nghệ sĩ từ album
+//     const artistIds = albumArtists.map(artist => artist.id).join(',');
+
+//     // Bước 3: Lấy thông tin các nghệ sĩ, bao gồm hình ảnh
+//     const artistsResponse = await axios.get(`https://api.spotify.com/v1/artists`, {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//       params: {
+//         ids: artistIds,
+//       },
+//     });
+
+//     const artistsData = artistsResponse.data.artists;
+
+//     // **Lấy nghệ sĩ duy nhất và url của hình ảnh đầu tiên**
+//     const uniqueArtists = Array.from(
+//       new Map(
+//         artistsData.map((artist) => [artist.id, artist]) // Map với key là id để loại bỏ trùng lặp
+//       ).values()
+//     );
+
+//     const artistsWithImageUrl = uniqueArtists.map(artist => ({
+//       id: artist.id,
+//       name: artist.name,
+//       imageUrl: artist.images.length > 0 ? artist.images[0].url : null, // Lấy url của hình ảnh đầu tiên nếu tồn tại
+//     }));
+
+//     // Bước 4: Trả về dữ liệu bao gồm tracks, hình ảnh album và url của hình ảnh nghệ sĩ
+//     return {
+//       tracks: tracks.map((track) => ({
+//         id: track.id,
+//         title: track.name,
+//         preview_url: track.preview_url,
+//         artists: track.artists.map(artist => artist.name),
+//         artistIds: track.artists.map(artist => artist.id),
+//       })),
+//       albumImages,
+//       artists: artistsWithImageUrl,
+//     };
+//   } catch (error) {
+//     console.error(`Error fetching tracks for album with id: ${albumId}`, error);
+//     throw error;
+//   }
+// };
+
 export const fetchAlbumTracks = async (token, albumId) => {
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+    // Bước 1: Lấy thông tin album
+    const albumResponse = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
 
-    // Trích xuất các bài hát và thông tin bổ sung từ API
-    const { items: tracks } = response.data.tracks;
-    const { images } = response.data; // Lấy hình ảnh album
+    const { items: tracks } = albumResponse.data.tracks;
+    const { images: albumImages, artists: albumArtists, release_date } = albumResponse.data;
 
+    // Trích xuất năm phát hành
+    const releaseYear = new Date(release_date).getFullYear();
+
+    // Định dạng ngày phát hành đầy đủ
+    const fullReleaseDate = new Intl.DateTimeFormat('en-US', {
+      month: 'long',  // Định dạng tháng theo chữ
+      day: 'numeric', // Ngày
+      year: 'numeric' // Năm
+    }).format(new Date(release_date));
+
+    // Bước 2: Trích xuất các ID nghệ sĩ từ album
+    const artistIds = albumArtists.map(artist => artist.id).join(',');
+
+    // Bước 3: Lấy thông tin các nghệ sĩ, bao gồm hình ảnh
+    const artistsResponse = await axios.get(`https://api.spotify.com/v1/artists`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        ids: artistIds,
+      },
+    });
+
+    const artistsData = artistsResponse.data.artists;
+
+    // **Lấy nghệ sĩ duy nhất và url của hình ảnh đầu tiên**
+    const uniqueArtists = Array.from(
+      new Map(
+        artistsData.map((artist) => [artist.id, artist]) // Map với key là id để loại bỏ trùng lặp
+      ).values()
+    );
+
+    const artistsWithImageUrl = uniqueArtists.map(artist => ({
+      id: artist.id,
+      name: artist.name,
+      imageUrl: artist.images.length > 0 ? artist.images[0].url : null, // Lấy url của hình ảnh đầu tiên nếu tồn tại
+    }));
+
+    console.log('Release Year:', releaseYear);
+    console.log('Full Release Date:', fullReleaseDate);
+
+    // Bước 4: Trả về dữ liệu bao gồm tracks, hình ảnh album, url của hình ảnh nghệ sĩ, năm phát hành và ngày tháng năm phát hành
     return {
       tracks: tracks.map((track) => ({
         id: track.id,
         title: track.name,
         preview_url: track.preview_url,
         artists: track.artists.map(artist => artist.name),
+        artistIds: track.artists.map(artist => artist.id),
       })),
-      images, // Bao gồm hình ảnh album
+      albumImages,
+      artists: artistsWithImageUrl,
+      releaseYear,       // Thêm thông tin năm phát hành
+      fullReleaseDate,   // Đã định dạng theo yêu cầu
     };
   } catch (error) {
     console.error(`Error fetching tracks for album with id: ${albumId}`, error);
+    throw error;
+  }
+};
+
+
+
+
+// Hàm lấy thông tin nghệ sĩ
+export const fetchArtistOverview = async () => {
+  try {
+    // Lấy Client-Token tự động
+
+    // URL API để lấy thông tin nghệ sĩ
+    const url = 'https://api-partner.spotify.com/pathfinder/v1/query';
+
+    // Các tham số truy vấn
+    const params = {
+      operationName: 'queryArtistOverview',
+      variables: JSON.stringify({
+        uri: 'spotify:artist:0TnOYISbd1XYRBk9myaseg',
+        locale: '',
+      }),
+      extensions: JSON.stringify({
+        persistedQuery: {
+          version: 1,
+          sha256Hash: '4bc52527bb77a5f8bbb9afe491e9aa725698d29ab73bff58d49169ee29800167',
+        },
+      }),
+    };
+
+    // Header với Client-Token được lấy động
+    const headers = {
+      'sec-ch-ua-platform': '"Windows"',
+      'authorization': `Bearer BQD-NVQuMiRG2Gb4XOng3qhGNHYZ3wZ9Z-mlzKeNhSdkcfLdLUE8CzZOUFFywIJ6fyl0Tcle5JCrX9XbDDvbtHt8D4rJXVh1XgqvDAN9QqJn69PkSJSSaFU6V0OMwq6Nsxi24xVLP8rDdeMDXMHm4OrjSKmX_r2olFQ9T0zH_mKyjOlvcwwuyrrDPQbNlU7J3B91y5mm2PY6DlYLFtLQ-jyBvQF1bqTG9alMAmB6FCNSfp2hNV0igVy_U7iPBv8XEJ5xn2OghBrrh3-uY6L79Wf-Cx5C99YArIFvMdIlgHZoPuUR8Kacy_Bicy6xPjt00ZigpOFe63qTkpJ0-VlI6jz1lH23zzuyhnZD`, // Token của bạn
+      'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A_Brand";v="24"',
+      'client-token': 'AAB4HQhirfyGT0dPBDohNakVuACbvr9BYOYHWbQNRAtTLz7vmbnnDH0YFtOQLTP6EGqIkTAbTn1NXZeyl74yCDD1oqc9myrDhJiHI+5/uw1+QxLWSEZiRik63kYon1rfdoqDMGBN2ZcJvIjeZWCRkD9680biFdVFDdf/ZyPZytha7Z6sfjWvLBLjrOMiRDpGbBZMiYWzJbQF0d1Aog9JacC8lUJm2Cy+DfmGddTS5gWdLFfRGVuPmWk5Gs4uIVCeUsxNT+wxuM5BqQiLdztL+R4d885Izng3U+LCTdz7qA==', // Token được lấy tự động
+      'spotify-app-version': '89600000',
+      'sec-ch-ua-mobile': '?0',
+      'app-platform': 'WebPlayer',
+      'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131 Safari/537.36',
+      'accept': 'application/json',
+      'content-type': 'application/json;charset=UTF-8',
+    };
+
+    // Gửi yêu cầu GET với axios
+    const response = await axios.get(url, {
+      headers,
+      params,
+    });
+
+    // Xử lý dữ liệu trả về
+    console.log('Dữ liệu trả về:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Lỗi khi gọi API:', error.message);
     throw error;
   }
 };

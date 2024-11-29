@@ -60,7 +60,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { View, FlatList, Animated, StyleSheet, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hook
-import { getAccessToken, fetchAlbumsByArtistName, fetchAlbumTracks } from '../services/spotifyService';
+import { getAccessToken, fetchAlbumsByArtistName, fetchAlbumTracks, fetchArtistOverview } from '../services/spotifyService';
 import AlbumCard from '../components/AlbumCard';
 import { createDotAnimation } from '../animations/dotAnimation';
 
@@ -102,24 +102,73 @@ const HomeScreen = ({ route }) => {
     createDotAnimation(dot1, dot2, dot3);
   }, [dot1, dot2, dot3]);
 
+  // const handleAlbumPress = async (album) => {
+  //   setLoading(true);
+  //   try {
+  //     const token = await getAccessToken();
+      
+  //     const { tracks: fetchedTracks, images } = await fetchAlbumTracks(token, album.id);
+  //     console.log('Album tracks:', fetchedTracks);
+  //     // const { artists } = await fetchArtistDetails(token, fetchedTracks[0].artists[0].id);
+  //     // console.log('Album artists:', artists);
+  //     const artistNames = fetchedTracks
+  //       .flatMap(track => track.artists)
+  //       .filter((artist, index, self) => self.indexOf(artist) === index)
+  //       .join(', ');
+
+  //     const albumImage = images?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên
+  //     // console.log('Album image:', fetchedTracks);
+  //     navigation.navigate('AlbumTrackDetailScreen', {
+  //       albumName: album.title,
+  //       artistName: artistNames,
+  //       tracks: fetchedTracks,
+  //       albumImage, // Truyền hình ảnh album
+  //     });
+  //   } catch (error) {
+  //     console.error('Error fetching tracks:', error);
+  //     Alert.alert('Error', 'Unable to fetch tracks for the selected album.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const handleAlbumPress = async (album) => {
     setLoading(true);
     try {
+      
       const token = await getAccessToken();
-      const { tracks: fetchedTracks, images } = await fetchAlbumTracks(token, album.id);
   
-      const artistNames = fetchedTracks
-        .flatMap(track => track.artists)
-        .filter((artist, index, self) => self.indexOf(artist) === index)
+      // Bước 1: Gọi API fetchAlbumTracks
+      const { tracks: fetchedTracks, albumImages, artists, releaseYear, fullReleaseDate} = await fetchAlbumTracks(token, album.id);
+  
+      // Bước 2: Trích xuất tên nghệ sĩ duy nhất để hiển thị
+      const artistNames = artists
+        .map(artist => artist.name)
+        .filter((name, index, self) => self.indexOf(name) === index)
         .join(', ');
+      // console.log(fullReleaseDate)
+      // console.log(releaseYear)
+      // Bước 3: Trích xuất URL hình ảnh album
+      const albumImage = albumImages?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên của album nếu có
+      fetchArtistOverview()
+
+      // Bước 4: Trích xuất URL hình ảnh nghệ sĩ
+      const artistImageUrls = artists.map(artist => artist.imageUrl).filter(url => url); // Lọc bỏ các giá trị null
   
-      const albumImage = images?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên
-      console.log('Album image:', fetchedTracks);
+      // Kiểm tra giá trị trả về
+      // console.log('Album ID:', album.id);
+      // console.log('Artists:', artistNames);
+      // console.log('Artist Images:', artistImageUrls?.[0]);
+  
+      // Bước 5: Truyền thông tin vào màn hình chi tiết album
       navigation.navigate('AlbumTrackDetailScreen', {
         albumName: album.title,
         artistName: artistNames,
         tracks: fetchedTracks,
-        albumImage, // Truyền hình ảnh album
+        albumImage, // Hình ảnh album
+        artistImageUrl: artistImageUrls?.[0] || null, // Lấy URL hình ảnh đầu tiên của nghệ sĩ,
+        releaseYear,
+        fullReleaseDate,
       });
     } catch (error) {
       console.error('Error fetching tracks:', error);
@@ -128,6 +177,7 @@ const HomeScreen = ({ route }) => {
       setLoading(false);
     }
   };
+  
   
   if (loading) {
     return (
