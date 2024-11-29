@@ -58,7 +58,7 @@
 
 
 import React, { useEffect, useState, useRef } from 'react';
-import { View, FlatList, Animated, StyleSheet, Alert } from 'react-native';
+import { View, FlatList, Animated, StyleSheet, Alert, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hook
 import { getAccessToken, fetchAlbumsByArtistName, fetchAlbumTracks } from '../services/spotifyService';
 import AlbumCard from '../components/AlbumCard';
@@ -75,12 +75,12 @@ const HomeScreen = ({ route }) => {
   const dot1 = useRef(new Animated.Value(1)).current;
   const dot2 = useRef(new Animated.Value(1)).current;
   const dot3 = useRef(new Animated.Value(1)).current;
-  useEffect(() => {
+  // useEffect(() => {
    
-      StatusBar.setBackgroundColor('#121212');
-      StatusBar.setBarStyle('light-content');
-    }) // Lắng nghe thay đổi của 
-  // Fetch albums by artist name
+  //     StatusBar.setBackgroundColor('#121212');
+  //     StatusBar.setBarStyle('light-content');
+  //   }) // Lắng nghe thay đổi của 
+  // // Fetch albums by artist name
   useEffect(() => {
     const fetchData = async () => {
       try {

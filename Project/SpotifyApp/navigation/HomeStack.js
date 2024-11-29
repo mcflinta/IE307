@@ -23,8 +23,9 @@ const HomeStackNavigator = ({ route }) => {
                 initialParams={{ user }}
                 options={{
                     title: 'HomeScreen',
-                    headerLeft: () => null,
-                    headerTitle: () => null,
+                    // headerLeft: () => null,
+                    // headerTitle: () => null,
+                    headerShown: false,
                  }}
             />
             <HomeStack.Screen
@@ -32,10 +33,11 @@ const HomeStackNavigator = ({ route }) => {
                 component={AlbumTrackDetailScreen}
                 initialParams={{ user }}
                 options={{
-                    title: 'AlbumTrackDetailScreen',
+                    // title: 'AlbumTrackDetailScreen',
+                    // headerLeft: true
                     // headerLeft: () => null,
-                    headerTitle: false,
-                    headerTitle: () => null,
+                    // headerTitle: false,
+                    // headerTitle: () => null,
                  }}
             />
         </HomeStack.Navigator>

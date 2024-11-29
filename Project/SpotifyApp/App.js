@@ -232,13 +232,64 @@
 // };
 
 // export default App;
+// import React, { useState, useEffect } from 'react';
+// import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
+// import * as Font from 'expo-font';
+// import MainStack from './navigation/MainStack';
+// import Splash from './screens/SplashScreen';
+// // import { SafeAreaView, StatusBar } from 'react-native-safe-area-context';
+// import { SafeAreaView, StatusBar } from 'react-native';
+// const MyTheme = { 
+//   ...DefaultTheme, 
+//   colors: {
+//     ...DefaultTheme.colors, 
+//     background: '#121212',
+//   },
+// };
+
+// const App = () => {
+//   const [isAppReady, setIsAppReady] = useState(false);
+
+//   useEffect(() => {
+//     const prepareApp = async () => {
+//       try {
+//         await Font.loadAsync({
+//           'Spotify-font': require('./assets/fonts/SpotifyMixUI-Regular.ttf'),
+//         });
+//         setIsAppReady(true);
+//       } catch (error) {
+//         console.warn('Error loading resources:', error);
+//       }
+//     };
+//     prepareApp();
+//   }, []);
+
+//   if (!isAppReady) {
+//     return <Splash />;
+//   }
+
+//   return (
+//     <SafeAreaView style={{ flex: 1, backgroundColor: '#121212' }}>
+//       <StatusBar
+//         barStyle="light-content" // Dùng chữ sáng trên nền tối
+//         backgroundColor="t" // Màu nền của StatusBar
+//       />
+//       <NavigationContainer theme={MyTheme}>
+//         <MainStack />
+//       </NavigationContainer>
+//     </SafeAreaView>
+//   );
+// };
+
+// export default App;
+
 import React, { useState, useEffect } from 'react';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import * as Font from 'expo-font';
 import MainStack from './navigation/MainStack';
 import Splash from './screens/SplashScreen';
-// import { SafeAreaView, StatusBar } from 'react-native-safe-area-context';
 import { SafeAreaView, StatusBar } from 'react-native';
+
 const MyTheme = { 
   ...DefaultTheme, 
   colors: {
@@ -269,10 +320,11 @@ const App = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#121212' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
       <StatusBar
-        barStyle="light-content" // Dùng chữ sáng trên nền tối
-        backgroundColor="#121212" // Màu nền của StatusBar
+        barStyle="light-content" // Sử dụng chữ sáng trên nền tối
+        backgroundColor="transparent" // Màu nền của StatusBar là trong suốt
+        translucent={true} // Đặt StatusBar nằm đè lên giao diện
       />
       <NavigationContainer theme={MyTheme}>
         <MainStack />
@@ -282,4 +334,3 @@ const App = () => {
 };
 
 export default App;
-
