@@ -5,7 +5,9 @@ const cors = require('cors');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-
+const Song = require('./models/Song'); // Model bài hát
+const path = require('path');
+const fs = require('fs');
 dotenv.config(); // Tải các biến môi trường từ file .env
 
 const app = express();
@@ -142,10 +144,101 @@ app.get('/api/verify-token', authenticateToken, (req, res) => {
     res.status(200).json({ user: req.user });
 });
 
+
+
 // Trang chủ để kiểm tra server đang chạy
 app.get('/', (req, res) => {
     res.send('Signup Server is running.');
 });
+
+
+app.post('/songs', async (req, res) => {
+    try {
+        const { id, name, path } = req.body;
+        const song = new Song({ id, name, path });
+        await song.save();
+        res.status(201).json(song);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/songs', async (req, res) => {
+    try {
+        const songs = await Song.find();
+        res.json(songs);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/music/:filename', (req, res) => {
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, 'music', filename);
+
+    fs.stat(filePath, (err, stats) => {
+        if (err) {
+            console.error(`Error finding file: ${filePath}`);
+            res.status(404).send('File not found');
+            return;
+        }
+
+        const range = req.headers.range;
+        if (!range) {
+            // Nếu không có header Range, trả về toàn bộ tệp
+            res.writeHead(200, {
+                'Content-Length': stats.size,
+                'Content-Type': 'audio/mpeg',
+            });
+            fs.createReadStream(filePath).pipe(res);
+            return;
+        }
+
+        const positions = range.replace(/bytes=/, "").split("-");
+        const start = parseInt(positions[0], 10);
+        const total = stats.size;
+        const end = positions[1] ? parseInt(positions[1], 10) : total - 1;
+
+        // Kiểm tra các giá trị start và end hợp lệ
+        if (start >= total || end >= total) {
+            res.writeHead(416, {
+                'Content-Range': `bytes */${total}`,
+            });
+            return res.end();
+        }
+
+        const chunkSize = (end - start) + 1;
+        const stream = fs.createReadStream(filePath, { start, end });
+
+        res.writeHead(206, {
+            'Content-Range': `bytes ${start}-${end}/${total}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': chunkSize,
+            'Content-Type': 'audio/mpeg',
+        });
+
+        stream.pipe(res);
+    });
+});
+// app.get('/music/:filename', (req, res) => {
+//     const { filename } = req.params;
+//     const filePath = path.join(__dirname, 'music', filename);
+
+//     fs.stat(filePath, (err, stats) => {
+//         if (err) {
+//             console.error(`Error finding file: ${filePath}`);
+//             res.status(404).send('File not found');
+//             return;
+//         }
+
+//         res.setHeader('Content-Length', stats.size);
+//         res.setHeader('Content-Type', 'audio/mpeg');
+
+//         const stream = fs.createReadStream(filePath);
+//         stream.pipe(res);
+//     });
+// });
+
 
 // Khởi động server
 const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
