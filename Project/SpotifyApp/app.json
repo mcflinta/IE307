@@ -1,5 +1,6 @@
 {
   "expo": {
+    "jsEngine": "hermes",
     "name": "SpotifyApp",
     "slug": "SpotifyApp",
     "version": "1.0.0",
@@ -18,7 +19,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.anonymous.SpotifyApp"
+      "package": "com.anonymous.SpotifyApp",
+      "permissions": ["FOREGROUND_SERVICE"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

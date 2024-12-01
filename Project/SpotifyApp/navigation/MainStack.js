@@ -1,15 +1,24 @@
 import React from 'react';
-import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators,TransitionPresets  } from '@react-navigation/stack';
 import InitScreen from '../screens/InitScreen';
 import SignUpFlow from './SignUpFlow';
 import LoginFlow from './LoginFlow';
 import HomeTabs from './HomeTabs';
+import MiniPlayer from '../components/MiniPlayer';
 import LoadingScreen from '../screens/LoadingScreen';
-
+import FullPlayerScreen from '../screens/FullPlayerScreen';
 const MainStack = createStackNavigator();
 
 const MainStackNavigator = () => (
-  <MainStack.Navigator initialRouteName="InitScreen">
+
+  <MainStack.Navigator
+    initialRouteName="InitScreen"
+    screenOptions={{
+      headerShown: false,
+      gestureEnabled: true,
+      ...TransitionPresets.ModalSlideFromBottomIOS, // Hiệu ứng trượt từ dưới lên
+    }}
+  >
     <MainStack.Screen
       name="InitScreen"
       component={InitScreen}
@@ -55,7 +64,11 @@ const MainStackNavigator = () => (
         headerTitleAlign: 'center',
       }}
     />
-  </MainStack.Navigator>
+    <MainStack.Screen name="FullPlayerScreen" component={FullPlayerScreen} />
+
+    </MainStack.Navigator>
+
+
 );
 
 export default MainStackNavigator;

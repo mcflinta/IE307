@@ -71,16 +71,10 @@ const HomeScreen = ({ route }) => {
   const { user } = route.params || {};
   console.log('User HomeScreen:', user);
 
-  // Animation values for dots
   const dot1 = useRef(new Animated.Value(1)).current;
   const dot2 = useRef(new Animated.Value(1)).current;
   const dot3 = useRef(new Animated.Value(1)).current;
-  // useEffect(() => {
-   
-  //     StatusBar.setBackgroundColor('#121212');
-  //     StatusBar.setBarStyle('light-content');
-  //   }) // Lắng nghe thay đổi của 
-  // // Fetch albums by artist name
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -102,35 +96,7 @@ const HomeScreen = ({ route }) => {
     createDotAnimation(dot1, dot2, dot3);
   }, [dot1, dot2, dot3]);
 
-  // const handleAlbumPress = async (album) => {
-  //   setLoading(true);
-  //   try {
-  //     const token = await getAccessToken();
-      
-  //     const { tracks: fetchedTracks, images } = await fetchAlbumTracks(token, album.id);
-  //     console.log('Album tracks:', fetchedTracks);
-  //     // const { artists } = await fetchArtistDetails(token, fetchedTracks[0].artists[0].id);
-  //     // console.log('Album artists:', artists);
-  //     const artistNames = fetchedTracks
-  //       .flatMap(track => track.artists)
-  //       .filter((artist, index, self) => self.indexOf(artist) === index)
-  //       .join(', ');
 
-  //     const albumImage = images?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên
-  //     // console.log('Album image:', fetchedTracks);
-  //     navigation.navigate('AlbumTrackDetailScreen', {
-  //       albumName: album.title,
-  //       artistName: artistNames,
-  //       tracks: fetchedTracks,
-  //       albumImage, // Truyền hình ảnh album
-  //     });
-  //   } catch (error) {
-  //     console.error('Error fetching tracks:', error);
-  //     Alert.alert('Error', 'Unable to fetch tracks for the selected album.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const handleAlbumPress = async (album) => {
     setLoading(true);
@@ -138,31 +104,21 @@ const HomeScreen = ({ route }) => {
       
       const token = await getAccessToken();
   
-      // Bước 1: Gọi API fetchAlbumTracks
       const { tracks: fetchedTracks, albumImages, artists, releaseYear, fullReleaseDate, totalTracks, totalDuration} = await fetchAlbumTracks(token, album.id);
-      // console.log(totalTracks)
-      // console.log(totalDuration)
-      // Bước 2: Trích xuất tên nghệ sĩ duy nhất để hiển thị
+
       const artistNames = artists
         .map(artist => artist.name)
         .filter((name, index, self) => self.indexOf(name) === index)
         .join(', ');
-      // console.log(fullReleaseDate)
-      // console.log(releaseYear)
-      // Bước 3: Trích xuất URL hình ảnh album
+
       const albumImage = albumImages?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên của album nếu có
       fetchArtistOverview()
 
       // Bước 4: Trích xuất URL hình ảnh nghệ sĩ
       const artistImageUrls = artists.map(artist => artist.imageUrl).filter(url => url); // Lọc bỏ các giá trị null
   
-      // Kiểm tra giá trị trả về
-      // console.log('Album ID:', album.id);
-      // console.log('Artists:', artistNames);
-      // console.log('Artist Images:', artistImageUrls?.[0]);
-  
-      // Bước 5: Truyền thông tin vào màn hình chi tiết album
-      console.log('Track', totalTracks)
+
+      // console.log('Track', totalTracks)
       
       navigation.navigate('AlbumTrackDetailScreen', {
         albumName: album.title,
