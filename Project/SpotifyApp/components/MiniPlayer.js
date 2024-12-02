@@ -22,7 +22,7 @@ const MiniPlayer = ({ onPress, user, token }) => {
     const checkSongInPlaylist = async () => {
         if (currentSong && token) {
             try {
-                const response = await axios.get(`http://192.168.105.35:3000/playlists`, {
+                const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const playlists = response.data;
@@ -46,7 +46,7 @@ const MiniPlayer = ({ onPress, user, token }) => {
     if (!currentSong || !token) return;
     try {
       // Lấy danh sách playlist của người dùng
-      const response = await axios.get(`http://192.168.105.35:3000/playlists`, {
+      const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const playlists = response.data;
@@ -57,7 +57,7 @@ const MiniPlayer = ({ onPress, user, token }) => {
       // Nếu chưa có playlist, tạo mới
       if (!defaultPlaylist) {
         const createResponse = await axios.post(
-          `http://192.168.105.35:3000/playlists`,
+          `http://149.28.146.58:3000/playlists`,
           { name: 'My Liked Songs' },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -68,7 +68,7 @@ const MiniPlayer = ({ onPress, user, token }) => {
       if (isAdded) {
         // Xóa bài hát
         await axios.delete(
-          `http://192.168.105.35:3000/playlists/${defaultPlaylist._id}/songs/${currentSong.id}`,
+          `http://149.28.146.58:3000/playlists/${defaultPlaylist._id}/songs/${currentSong.id}`,
           { headers: { Authorization: `Bearer ${token}` } }
       );
         setIsAdded(false);
@@ -76,7 +76,7 @@ const MiniPlayer = ({ onPress, user, token }) => {
       } else {
         // Thêm bài hát
         await axios.post(
-          `http://192.168.105.35:3000/playlists/${defaultPlaylist._id}/songs`,
+          `http://149.28.146.58:3000/playlists/${defaultPlaylist._id}/songs`,
           { songId: currentSong.id }, // Gửi songId từ Spotify
           { headers: { Authorization: `Bearer ${token}` } }
       );

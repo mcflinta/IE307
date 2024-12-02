@@ -3,7 +3,7 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const API_URL = 'http://192.168.1.11:3000'; // Thay bằng địa chỉ IP của bạn
+export const API_URL = 'http://149.28.146.58:3000'; // Thay bằng địa chỉ IP của bạn
 
 const instance = axios.create({
   baseURL: API_URL,

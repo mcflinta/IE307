@@ -111,7 +111,7 @@ const InitScreen = ({ navigation }) => {
         }
 
         // Gửi token trong headers để xác thực
-        const response = await axios.get('http://192.168.105.35:3000/api/verify-token', {
+        const response = await axios.get('http://149.28.146.58:3000/api/verify-token', {
           headers: {
             Authorization: `Bearer ${token}`,
           },

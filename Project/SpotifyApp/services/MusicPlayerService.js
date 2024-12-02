@@ -305,7 +305,7 @@ async loadAndPlaySong(playlist, index = 0) {
 
       console.log('Loading new song from server...');
 
-      const response = await fetch(`http://192.168.105.35:3000/music/by-id/${id}`);
+      const response = await fetch(`http://149.28.146.58:3000/music/by-id/${id}`);
       if (!response.ok) {
           console.error(`Failed to load song: ${response.status}`);
           throw new Error('Server error or song not found');
@@ -319,7 +319,7 @@ async loadAndPlaySong(playlist, index = 0) {
       }
 
       const { sound } = await Audio.Sound.createAsync(
-          { uri: `http://192.168.105.35:3000/music/by-id/${id}` },
+          { uri: `http://149.28.146.58:3000/music/by-id/${id}` },
           { shouldPlay: true },
           this.onPlaybackStatusUpdate
       );

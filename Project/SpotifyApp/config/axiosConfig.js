@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Tạo instance của axios với baseURL
 const instance = axios.create({
-  baseURL: 'http://192.168.105.35:3000/api', // Đảm bảo địa chỉ IP và cổng đúng
+  baseURL: 'http://149.28.146.58:3000/api', // Đảm bảo địa chỉ IP và cổng đúng
 });
 
 // Thêm interceptor để chèn token vào mỗi yêu cầu
