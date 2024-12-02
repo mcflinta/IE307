@@ -191,33 +191,203 @@ class MusicPlayerService {
       console.error('Lỗi khi cấu hình chế độ âm thanh:', error);
     }
   }
-  async loadAndPlaySong(playlist, index = 0) {
-    try {
-      if (this.sound) {
-        await this.sound.unloadAsync();
+  // async loadAndPlaySong(playlist, index = 0) {
+  //   try {
+  //     if (this.sound) {
+  //       await this.sound.unloadAsync();
+  //     }
+  //     this.playlist = playlist;
+  //     this.currentIndex = index;
+  //     this.currentSong = this.playlist[this.currentIndex];
+  //     // const id = '11UsfhNxVm42BxFHwmoiJt'
+  //     // console.log(this.currentSong)
+  //     // console.log(this.currentSong.id)
+  //     const id = this.currentSong.id
+  //     const { sound } = await Audio.Sound.createAsync(
+  //       // { uri: 'http://192.168.105.35:3000/music/by-id/' },
+  //       {uri: `http://192.168.105.35:3000/music/by-id/${id}`},
+  //       { shouldPlay: true },
+  //       this.onPlaybackStatusUpdate
+  //     );
+  //     this.sound = sound;
+  //     this.isPlaying = true;
+
+  //     this.emitter.emit('songChanged', {
+  //       currentSong: this.currentSong,
+  //       isPlaying: this.isPlaying,
+  //       status: this.status,
+  //     });
+  //   } catch (error) {
+  //     console.error('Error loading audio', error);
+  //   }
+  // }
+
+//   async loadAndPlaySong(playlist, index = 0) {
+//     try {
+//       if (this.sound) {
+//         await this.sound.unloadAsync(); // Dừng và giải phóng bài hát trước đó
+//       }
+
+//       this.playlist = playlist;
+//       this.currentIndex = index;
+//       this.currentSong = this.playlist[this.currentIndex];
+//       const id = this.currentSong.id;
+
+//       // Hiển thị trạng thái "Đang tải"
+//       console.log('Loading song from server...');
+
+//       // Kiểm tra phản hồi từ server trước khi phát nhạc
+//       const response = await fetch(`http://192.168.105.35:3000/music/by-id/${id}`);
+//       if (!response.ok) {
+//         console.error(`Failed to load song: ${response.status}`);
+//         throw new Error('Server error or song not found');
+//       }
+
+//       // Nếu server trả về JSON (bài hát chưa được tải), xử lý lỗi
+//       const contentType = response.headers.get('Content-Type');
+//       if (contentType.includes('application/json')) {
+//         const errorData = await response.json();
+//         console.error('Error from server:', errorData);
+//         throw new Error(errorData.error || 'Song is not ready');
+//       }
+
+//       // Phát nhạc nếu phản hồi thành công và là file nhạc
+//       const { sound } = await Audio.Sound.createAsync(
+//         { uri: `http://192.168.105.35:3000/music/by-id/${id}` },
+//         { shouldPlay: true },
+//         this.onPlaybackStatusUpdate
+//       );
+//       this.sound = sound;
+//       this.isPlaying = true;
+//       console.log('This current song:', this.currentSong);
+//       // Phát sự kiện thay đổi bài hát
+//       this.emitter.emit('songChanged', {
+//         currentSong: this.currentSong,
+//         isPlaying: this.isPlaying,
+//         status: this.status,
+//       });
+
+//       console.log('Song is playing!');
+//     } catch (error) {
+//       console.error('Error loading audio', error);
+//     }
+// }
+loading = false;
+async loadAndPlaySong(playlist, index = 0) {
+  try {
+      const newSong = playlist[index];
+      
+      // Kiểm tra nếu bài hát mới trùng với bài hát hiện tại
+      if (this.currentSong && this.currentSong.id === newSong.id) {
+          console.log('Song is already playing. Restarting...');
+          await this.seekToPosition(0); // Đưa về vị trí bắt đầu
+          await this.sound.playAsync(); // Phát lại bài hát
+          this.isPlaying = true;
+
+          // Cập nhật trạng thái và phát sự kiện
+          this.emitter.emit('playbackStatusChanged', {
+              isPlaying: this.isPlaying,
+              status: this.status,
+          });
+
+          return; // Dừng xử lý tiếp
       }
+
+      // Nếu bài hát không trùng, phát bài hát mới
+      if (this.sound) {
+          await this.sound.unloadAsync(); // Dừng và giải phóng bài hát trước đó
+      }
+
       this.playlist = playlist;
       this.currentIndex = index;
-      this.currentSong = this.playlist[this.currentIndex];
-      console.log(this.currentSong)
+      this.currentSong = newSong;
+      const id = this.currentSong.id;
+
+      console.log('Loading new song from server...');
+
+      const response = await fetch(`http://192.168.105.35:3000/music/by-id/${id}`);
+      if (!response.ok) {
+          console.error(`Failed to load song: ${response.status}`);
+          throw new Error('Server error or song not found');
+      }
+
+      const contentType = response.headers.get('Content-Type');
+      if (contentType.includes('application/json')) {
+          const errorData = await response.json();
+          console.error('Error from server:', errorData);
+          throw new Error(errorData.error || 'Song is not ready');
+      }
+
       const { sound } = await Audio.Sound.createAsync(
-        { uri: 'http://192.168.105.35:3000/music/Lady%20Gaga,%20Bruno%20Mars%20-%20Die%20With%20A%20Smile.mp3' },
-        { shouldPlay: true },
-        this.onPlaybackStatusUpdate
+          { uri: `http://192.168.105.35:3000/music/by-id/${id}` },
+          { shouldPlay: true },
+          this.onPlaybackStatusUpdate
       );
       this.sound = sound;
       this.isPlaying = true;
-
+      // console.log('This current song:', this.currentSong);
       this.emitter.emit('songChanged', {
-        currentSong: this.currentSong,
-        isPlaying: this.isPlaying,
-        status: this.status,
+          currentSong: this.currentSong,
+          isPlaying: this.isPlaying,
+          status: this.status,
       });
-    } catch (error) {
-      console.error('Error loading audio', error);
-    }
-  }
 
+      console.log('New song is playing!');
+  } catch (error) {
+      console.error('Error loading audio', error);
+  }
+}
+
+// async loadAndPlaySong(playlist, index = 0) {
+//     if (this.loading) return; // Ngăn lệnh song song
+//     this.loading = true;
+
+//     try {
+//         if (this.sound) {
+//             await this.sound.unloadAsync();
+//         }
+
+//         this.isPlaying = false;
+
+//         this.playlist = playlist;
+//         this.currentIndex = index;
+//         this.currentSong = this.playlist[this.currentIndex];
+//         const id = this.currentSong.id;
+
+//         console.log('Loading song from server...');
+
+//         const response = await fetch(`http://192.168.105.35:3000/music/by-id/${id}`);
+//         if (!response.ok) {
+//             throw new Error('Server error or song not found');
+//         }
+
+//         const contentType = response.headers.get('Content-Type');
+//         if (contentType.includes('application/json')) {
+//             const errorData = await response.json();
+//             throw new Error(errorData.error || 'Song is not ready');
+//         }
+
+//         const { sound } = await Audio.Sound.createAsync(
+//             { uri: `http://192.168.105.35:3000/music/by-id/${id}` },
+//             { shouldPlay: true },
+//             this.onPlaybackStatusUpdate
+//         );
+//         this.sound = sound;
+//         this.isPlaying = true;
+//         console.log('This current song:', this.currentSong);
+//         this.emitter.emit('songChanged', {
+//             currentSong: this.currentSong,
+//             isPlaying: this.isPlaying,
+//             status: this.status,
+//         });
+
+//         console.log('Song is playing!');
+//     } catch (error) {
+//         console.error('Error loading audio', error);
+//     } finally {
+//         this.loading = false; // Giải phóng cờ
+//     }
+// }
   async togglePlayPause() {
     if (this.sound) {
       if (this.isPlaying) {

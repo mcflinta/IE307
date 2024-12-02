@@ -69,7 +69,7 @@ const HomeScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation(); // Get navigation object from hook
   const { user } = route.params || {};
-  console.log('User HomeScreen:', user);
+  // console.log('User HomeScreen:', route.params);
 
   const dot1 = useRef(new Animated.Value(1)).current;
   const dot2 = useRef(new Animated.Value(1)).current;
@@ -112,8 +112,8 @@ const HomeScreen = ({ route }) => {
         .join(', ');
 
       const albumImage = albumImages?.[0]?.url || ''; // Lấy URL hình ảnh đầu tiên của album nếu có
-      fetchArtistOverview()
-
+      // fetchArtistOverview()
+      // console.log('Fetch track:', fetchedTracks)
       // Bước 4: Trích xuất URL hình ảnh nghệ sĩ
       const artistImageUrls = artists.map(artist => artist.imageUrl).filter(url => url); // Lọc bỏ các giá trị null
   

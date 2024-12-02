@@ -330,7 +330,6 @@ export const fetchAlbumTracks = async (token, albumId) => {
       const seconds = Math.floor(totalDurationMs / 1000);
       totalDuration = `${seconds}sec`;
     }
-
     // Bước 4: Trả về dữ liệu bao gồm tracks, hình ảnh album, url của hình ảnh nghệ sĩ, năm phát hành và ngày tháng năm phát hành
     return {
       tracks: tracks.map((track) => ({
@@ -340,6 +339,7 @@ export const fetchAlbumTracks = async (token, albumId) => {
         artists: track.artists.map(artist => artist.name),
         artistIds: track.artists.map(artist => artist.id),
         duration_ms: track.duration_ms, // Thêm thời lượng từng track
+        albumImages: albumImages?.[0]?.url, // Thêm hình ảnh album
       })),
       albumImages,
       artists: artistsWithImageUrl,

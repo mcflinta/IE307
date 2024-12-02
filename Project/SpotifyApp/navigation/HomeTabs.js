@@ -1,144 +1,65 @@
-// // import React from 'react';
-// // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// // import HomeStack from './HomeStack';
 
-// // import MiniPlayer from '../components/MiniPlayer'; // Đường dẫn đến MiniPlayer.js
-// // import SearchScreen from '../screens/SearchScreen';
-// // import LibraryScreen from '../screens/LibraryScreen';
-// // import PremiumScreen from '../screens/PremiumScreen';
-// // import HomeIcon from '../assets/svg/HomeIcon';
-// // import HomeFocusIcon from '../assets/svg/HomeFocusIcon';
-// // import SearchIcon from '../assets/svg/SearchIcon';
-// // import LibraryIcon from '../assets/svg/LibraryIcon';
-// // import LibraryFocusIcon from '../assets/svg/LibraryFocusIcon';
-// // import PremiumIcon from '../assets/svg/PremiumIcon';
-
-// // const HomeBottomTab = createBottomTabNavigator();
-
-// // const HomeTabs = ({ route }) => {
-// //   const { user } = route.params || {};
-// //   console.log('HomeTabs user:', user);
-
-// //   return (
-// //     <HomeBottomTab.Navigator
-// //       initialRouteName="HomeStack"
-// //       screenOptions={{
-// //         header: () => null,
-// //         headerShown: false,
-// //         tabBarStyle: {
-// //           backgroundColor: '#121212',
-// //           borderTopWidth: 0,
-// //         },
-// //         tabBarActiveTintColor: '#fff',
-// //         tabBarInactiveTintColor: '#888',
-// //       }}
-// //     >
-// //       <HomeBottomTab.Screen
-// //         name="HomeStack"
-// //         component={HomeStack}
-// //         options={{
-// //           headerShown: false,
-// //           tabBarLabel: 'Home',
-// //           tabBarIcon: ({ color, size, focused }) =>
-// //             focused ? (
-// //               <HomeFocusIcon width={size} height={size} fill={color} />
-// //             ) : (
-// //               <HomeIcon width={size} height={size} fill={color} />
-// //             ),
-// //         }}
-// //         initialParams={{ user }}
-// //       />
-
-// //       <HomeBottomTab.Screen
-// //         name="SearchScreen"
-// //         component={SearchScreen}
-// //         options={{
-// //           tabBarLabel: 'Search',
-// //           tabBarIcon: ({ color, size }) => (
-// //             <SearchIcon width={size} height={size} fill={color} />
-// //           ),
-// //         }}
-// //         initialParams={{ user }}
-// //       />
-
-// //       <HomeBottomTab.Screen
-// //         name="LibraryScreen"
-// //         component={LibraryScreen}
-// //         options={{
-// //           tabBarLabel: 'Library',
-// //           tabBarIcon: ({ color, size, focused }) =>
-// //             focused ? (
-// //               <LibraryFocusIcon width={size} height={size} fill={color} />
-// //             ) : (
-// //               <LibraryIcon width={size} height={size} fill={color} />
-// //             ),
-// //         }}
-// //         initialParams={{ user }}
-// //       />
-
-// //       <HomeBottomTab.Screen
-// //         name="PremiumScreen"
-// //         component={PremiumScreen}
-// //         options={{
-// //           headerShown: false,
-// //           tabBarLabel: 'Premium',
-// //           tabBarIcon: ({ color, size }) => (
-// //             <PremiumIcon width={size} height={size} fill={color} />
-// //           ),
-// //         }}
-// //         initialParams={{ user }}
-// //       />
-// //     </HomeBottomTab.Navigator>
-// //   );
-// // };
-
-// // export default HomeTabs;
-// import React, { useState } from 'react';
-// import { View, StyleSheet } from 'react-native';
+// import React, { useState, useEffect, useCallback } from 'react';
+// import { View, StyleSheet, Dimensions, BackHandler, Platform } from 'react-native';
 // import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-// import MiniPlayer from '../components/MiniPlayer'; // Đường dẫn đến MiniPlayer.js
+// import MiniPlayer from '../components/MiniPlayer';
 // import HomeStack from './HomeStack';
 // import SearchScreen from '../screens/SearchScreen';
 // import LibraryScreen from '../screens/LibraryScreen';
 // import PremiumScreen from '../screens/PremiumScreen';
+// import FullPlayerScreen from '../screens/FullPlayerScreen';
 // import HomeIcon from '../assets/svg/HomeIcon';
 // import HomeFocusIcon from '../assets/svg/HomeFocusIcon';
 // import SearchIcon from '../assets/svg/SearchIcon';
 // import LibraryIcon from '../assets/svg/LibraryIcon';
 // import LibraryFocusIcon from '../assets/svg/LibraryFocusIcon';
 // import PremiumIcon from '../assets/svg/PremiumIcon';
-// import { useNavigation } from '@react-navigation/native'; // Import useNavigation nếu cần
+
+
 // const HomeBottomTab = createBottomTabNavigator();
+// const screenHeight = Dimensions.get('window').height;
 
-// const HomeTabs = ({ route }) => {
-//   const { user } = route.params || {};
-//   const navigation = useNavigation(); // Lấy đối tượng navigation
-//   const [currentSong, setCurrentSong] = useState({
-//     title: 'Smile',
-//     artist: 'Lady Gaga',
-//   });
-//   const [isPlaying, setIsPlaying] = useState(false);
+// const HomeTabs = () => {
+//   const [isFullPlayerVisible, setIsFullPlayerVisible] = useState(false);
 
-//   const togglePlayPause = () => {
-//     setIsPlaying(!isPlaying);
-//   };
-//   // console.log("Hello")
+//   const showFullPlayer = () => setIsFullPlayerVisible(true);
+//   const hideFullPlayer = () => setIsFullPlayerVisible(false);
+
+//   // Hàm xử lý nút Back
+//   const handleBackPress = useCallback(() => {
+//     if (isFullPlayerVisible) {
+//       hideFullPlayer();
+//       return true; // Chặn hành động mặc định
+//     }
+//     return false; // Cho phép hành động mặc định
+//   }, [isFullPlayerVisible]);
+
+//   useEffect(() => {
+//     if (Platform.OS === 'android') {
+//       // Thêm listener khi FullPlayerScreen hiển thị
+//       if (isFullPlayerVisible) {
+//         BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+//       } else {
+//         BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+//       }
+
+//       // Dọn dẹp listener khi component unmount
+//       return () => {
+//         BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+//       };
+//     }
+//   }, [isFullPlayerVisible, handleBackPress]);
+
 //   return (
 //     <View style={styles.container}>
 //       {/* Bottom Tabs */}
 //       <HomeBottomTab.Navigator
 //         initialRouteName="HomeStack"
 //         screenOptions={{
-//           header: () => null,
 //           headerShown: false,
 //           tabBarStyle: {
-//             backgroundColor: '#fff',
+//             backgroundColor: '#121212',
 //             borderTopWidth: 0,
-//             // height: 60, // Đặt chiều cao cho BottomTab
-//             // position: 'absolute', // Đảm bảo BottomTab nằm sát đáy
-//             // bottom: 0, // Định vị tại đáy màn hình
-//             // left: 0,
-//             // right: 0,
 //           },
 //           tabBarActiveTintColor: '#fff',
 //           tabBarInactiveTintColor: '#888',
@@ -156,7 +77,6 @@
 //                 <HomeIcon width={size} height={size} fill={color} />
 //               ),
 //           }}
-//           initialParams={{ user }}
 //         />
 
 //         <HomeBottomTab.Screen
@@ -168,7 +88,6 @@
 //               <SearchIcon width={size} height={size} fill={color} />
 //             ),
 //           }}
-//           initialParams={{ user }}
 //         />
 
 //         <HomeBottomTab.Screen
@@ -183,7 +102,6 @@
 //                 <LibraryIcon width={size} height={size} fill={color} />
 //               ),
 //           }}
-//           initialParams={{ user }}
 //         />
 
 //         <HomeBottomTab.Screen
@@ -195,18 +113,18 @@
 //               <PremiumIcon width={size} height={size} fill={color} />
 //             ),
 //           }}
-//           initialParams={{ user }}
 //         />
 //       </HomeBottomTab.Navigator>
 
-//       {/* <View style={styles.miniPlayerContainer}> */}
-//         <MiniPlayer 
-//           // song={currentSong} 
-//           // onPlayPause={() => console.log('Play/Pause pressed')} 
-//           // isPlaying={true} 
-//           // navigation={navigation} // Truyền navigation vào MiniPlayer
-//         />
-//       {/* </View> */}
+//       {/* MiniPlayer */}
+//       <View style={styles.miniPlayerContainer}>
+//         <MiniPlayer onPress={showFullPlayer} />
+//       </View>
+
+//       {/* FullPlayerScreen Overlay */}
+//       {isFullPlayerVisible && (
+//         <FullPlayerScreen onClose={hideFullPlayer} />
+//       )}
 //     </View>
 //   );
 // };
@@ -214,55 +132,107 @@
 // const styles = StyleSheet.create({
 //   container: {
 //     flex: 1,
-//     backgroundColor: '#121212',
 //   },
 //   miniPlayerContainer: {
-//     // padding:0,
-//     // // position: 'absolute',
-//     // bottom: 50, // MiniPlayer nằm ngay trên BottomTab
-//     // left: 8,
-//     // right: 8,
-//     // height: 62, // Chiều cao MiniPlayer
-//     // backgroundColor: '#ffffff', // Màu nền MiniPlayer
-//     // justifyContent: 'center',
-//     // zIndex: 100, // Đảm bảo MiniPlayer nằm trên BottomTab
-//     // borderRadius: 5,
-//     // overflow: 'hidden'
+//     position: 'absolute',
+//     bottom: 64, // Điều chỉnh MiniPlayer nằm ngay trên tabBar
+//     left: 0,
+//     right: 0,
+//     height: 60,
+//     backgroundColor: '#121212',
+//     justifyContent: 'center',
+//     alignItems: 'center',
 //   },
 // });
 
 // export default HomeTabs;
 
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+// HomeTabs.js
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StyleSheet, Dimensions, BackHandler, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MiniPlayer from '../components/MiniPlayer';
 import HomeStack from './HomeStack';
 import SearchScreen from '../screens/SearchScreen';
 import LibraryScreen from '../screens/LibraryScreen';
 import PremiumScreen from '../screens/PremiumScreen';
+import FullPlayerScreen from '../screens/FullPlayerScreen';
 import HomeIcon from '../assets/svg/HomeIcon';
 import HomeFocusIcon from '../assets/svg/HomeFocusIcon';
 import SearchIcon from '../assets/svg/SearchIcon';
 import LibraryIcon from '../assets/svg/LibraryIcon';
 import LibraryFocusIcon from '../assets/svg/LibraryFocusIcon';
 import PremiumIcon from '../assets/svg/PremiumIcon';
+import MusicPlayerService from '../services/MusicPlayerService'; // Đảm bảo import dịch vụ phát nhạc
 
 const HomeBottomTab = createBottomTabNavigator();
+// const screenHeight = Dimensions.get('window').height;
 
-const HomeTabs = ({ route }) => {
-  const { user } = route.params || {};
+const HomeTabs = ({route}) => {
+  const { user, token } = route.params || {};
+  const [isFullPlayerVisible, setIsFullPlayerVisible] = useState(false);
+  const [currentSong, setCurrentSong] = useState(MusicPlayerService.currentSong);
+  const [isPlaying, setIsPlaying] = useState(MusicPlayerService.isPlaying);
+
+  const showFullPlayer = () => setIsFullPlayerVisible(true);
+  const hideFullPlayer = () => setIsFullPlayerVisible(false);
+
+  // Hàm xử lý nút Back
+  const handleBackPress = useCallback(() => {
+    if (isFullPlayerVisible) {
+      hideFullPlayer();
+      return true; // Chặn hành động mặc định
+    }
+    return false; // Cho phép hành động mặc định
+  }, [isFullPlayerVisible]);
+
+  useEffect(() => {
+    // Lắng nghe sự kiện từ MusicPlayerService để cập nhật trạng thái phát nhạc
+    const songChangedListener = MusicPlayerService.emitter.addListener(
+      'songChanged',
+      ({ currentSong, isPlaying }) => {
+        setCurrentSong(currentSong);
+        setIsPlaying(isPlaying);
+      }
+    );
+
+    const playbackStatusChangedListener = MusicPlayerService.emitter.addListener(
+      'playbackStatusChanged',
+      ({ isPlaying }) => {
+        setIsPlaying(isPlaying);
+      }
+    );
+
+    // Thêm listener cho nút Back khi FullPlayerScreen hiển thị
+    if (Platform.OS === 'android') {
+      if (isFullPlayerVisible) {
+        BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+      } else {
+        BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+      }
+    }
+
+    // Dọn dẹp listener khi component unmount
+    return () => {
+      songChangedListener.remove();
+      playbackStatusChangedListener.remove();
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPress);
+    };
+  }, [isFullPlayerVisible, handleBackPress]);
 
   return (
     <View style={styles.container}>
+      {/* Bottom Tabs */}
       <HomeBottomTab.Navigator
         initialRouteName="HomeStack"
         screenOptions={{
-          header: () => null,
           headerShown: false,
           tabBarStyle: {
-            backgroundColor: '#121212',
-            borderTopWidth: 0,
+            // backgroundColor: 'transparent',
+            backgroundColor: 'rgba(0, 0, 0, 0.75)', // Trong suốt 50%
+            position: 'absolute', // Đặt tab ở trên nội dung
+            elevation: 0, // Xóa bóng trên Android
+            borderTopWidth: 0, // Xóa đường viền trên
           },
           tabBarActiveTintColor: '#fff',
           tabBarInactiveTintColor: '#888',
@@ -280,7 +250,7 @@ const HomeTabs = ({ route }) => {
                 <HomeIcon width={size} height={size} fill={color} />
               ),
           }}
-          initialParams={{ user }}
+          initialParams={{ user, token }}
         />
 
         <HomeBottomTab.Screen
@@ -292,7 +262,7 @@ const HomeTabs = ({ route }) => {
               <SearchIcon width={size} height={size} fill={color} />
             ),
           }}
-          initialParams={{ user }}
+          initialParams={{ user, token }}
         />
 
         <HomeBottomTab.Screen
@@ -307,7 +277,7 @@ const HomeTabs = ({ route }) => {
                 <LibraryIcon width={size} height={size} fill={color} />
               ),
           }}
-          initialParams={{ user }}
+          initialParams={{ user, token }}
         />
 
         <HomeBottomTab.Screen
@@ -319,30 +289,40 @@ const HomeTabs = ({ route }) => {
               <PremiumIcon width={size} height={size} fill={color} />
             ),
           }}
-          initialParams={{ user }}
+          initialParams={{ user, token }}
         />
       </HomeBottomTab.Navigator>
 
-      {/* MiniPlayer */}
-      <View style={styles.miniPlayerContainer}>
-        <MiniPlayer />
+      {/* MiniPlayer - chỉ hiển thị khi có bài hát và đang phát */}
+      {(currentSong || isPlaying) && (
+        <View style={styles.miniPlayerContainer}>
+          <MiniPlayer onPress={showFullPlayer} user={user} token={token} />
         </View>
+      )}
+
+      {/* FullPlayerScreen Overlay */}
+      {isFullPlayerVisible && (
+        <FullPlayerScreen onClose={hideFullPlayer} user={user} token={token} />
+      )}
     </View>
   );
-  
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+
   },
   miniPlayerContainer: {
     position: 'absolute',
-    bottom: 64, // Điều chỉnh để MiniPlayer nằm trên tabBar
-    left: 0,
-    right: 0,
-    height: 60,
+    bottom: 64, // Điều chỉnh MiniPlayer nằm ngay trên tabBar
+    left: 10,
+    right: 10,
+    height: 24,
+    // borderBottomWidth:0,
+    backgroundColor: 'transparent',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
   },
   welcome: {
     fontSize: 24,
-    marginBottom: 20,
+    marginBottom: 199,
   },
 });
 export default PremiumScreen;

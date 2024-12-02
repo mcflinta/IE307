@@ -480,10 +480,12 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
+import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AddIcon from '../assets/svg/AddIcon';
 import PlayIcon from '../assets/svg/PlayIcon';
+import LikedIcon from '../assets/svg/LikedIcon';
 import MusicPlayerService from '../services/MusicPlayerService';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
@@ -500,9 +502,14 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
     totalTracks,
     totalDuration,
   } = route.params;
-
+  // console.log('AlbumDetailsScreen', route.params.token);
+  const token = route.params.token
+  const [songIds, setSongIds] = useState([]);
+  // console.log(token)
   const [dominantColors, setDominantColors] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isAdded, setIsAdded] = useState(false); // Trạng thái icon
+
   const scrollY = new Animated.Value(0);
 
   const handleTrackPress = useCallback(
@@ -557,7 +564,30 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
   useEffect(() => {
     fetchDominantColors();
   }, [albumImage]);
+  useEffect(() => {
+    const fetchPlaylists = async () => {
+      try {
+        // Gọi API để lấy danh sách playlist
+        const response = await axios.get('http://192.168.105.35:3000/playlists', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
+        const playlists = response.data;
+        // console.log("Play list:", playlists)
+        // Trích xuất tất cả id bài hát từ tất cả playlist
+        const allSongIds = playlists.flatMap(playlist => playlist.songs);
+
+        // console.log("All song id:", allSongIds)
+        setSongIds(allSongIds); // Lưu danh sách id bài hát vào state
+      } catch (error) {
+        console.error('Error fetching playlists:', error);
+      }
+    };
+
+    fetchPlaylists();
+  }, [token]);
+  // console.log(songIds)
+  console.log(songIds)
   const dominantColor =
     dominantColors && dominantColors[dominantColors.length - 1]?.startsWith('#')
       ? dominantColors[dominantColors.length - 1]
@@ -607,22 +637,52 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
     extrapolate: 'clamp',
   });
 
-  const TrackItem = React.memo(({ item, handleTrackPress, artistName }) => (
-    <TouchableOpacity style={styles.trackItem} onPress={() => handleTrackPress(item)}>
-      <View style={styles.trackInfo}>
-        <Text style={styles.trackTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.trackArtist} numberOfLines={1}>
-          {artistName}
-        </Text>
-      </View>
-      <TouchableOpacity style={styles.moreIcon}>
-        <Icon name="ellipsis-vertical" size={20} color="#ffffff" />
+  // const TrackItem = React.memo(({ item, handleTrackPress, artistName }) => (
+  //   <TouchableOpacity style={styles.trackItem} onPress={() => handleTrackPress(item)}>
+  //     <View style={styles.trackInfo}>
+  //       <Text style={styles.trackTitle} numberOfLines={1}>
+  //         {item.title}
+  //       </Text>
+  //       <Text style={styles.trackArtist} numberOfLines={1}>
+  //         {artistName}
+  //       </Text>
+  //     </View>
+  //     {isAdded && (
+  //     <TouchableOpacity style={styles.moreIcon}>
+  //       <LikedIcon width={24} height={24} fill="#1ed760" />
+  //     </TouchableOpacity>
+  //   )}
+  //     <TouchableOpacity style={styles.moreIcon}>
+  //       <Icon name="ellipsis-vertical" size={20} color="#ffffff" />
+  //     </TouchableOpacity>
+  //   </TouchableOpacity>
+  // ));
+  const TrackItem = React.memo(({ item, handleTrackPress, artistName, songIds }) => {
+    console.log(songIds)
+    const isLiked = songIds.includes(item.id); // Kiểm tra xem item.id có trong allSongIds không
+  
+    return (
+      <TouchableOpacity style={styles.trackItem} onPress={() => handleTrackPress(item)}>
+        <View style={styles.trackInfo}>
+          <Text style={styles.trackTitle} numberOfLines={1}>
+            {item.title}
+          </Text>
+          <Text style={styles.trackArtist} numberOfLines={1}>
+            {artistName}
+          </Text>
+        </View>
+        {/* Hiển thị LikedIcon nếu bài hát được thích */}
+        {isLiked && (
+          <TouchableOpacity style={styles.moreIcon}>
+            <LikedIcon width={24} height={24} fill="#1ed760" />
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity style={styles.moreIcon}>
+          <Icon name="ellipsis-vertical" size={20} color="#ffffff" />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
-  ));
-
+    );
+  });
   const ListHeader = React.memo(
     ({
       albumImage,
@@ -688,7 +748,9 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
         data={tracks}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TrackItem item={item} handleTrackPress={handleTrackPress} artistName={artistName} />
+          <TrackItem item={item} handleTrackPress={handleTrackPress} artistName={artistName}
+          songIds={songIds}
+          />
         )}
         ListHeaderComponent={
           <ListHeader
@@ -750,7 +812,6 @@ const styles = StyleSheet.create({
   // (Giữ nguyên các styles hiện có)
   container: {
     flex: 1,
-    paddingBottom: 60,
   },
   listContent: {
     paddingBottom: 20,
@@ -784,7 +845,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: 200,
+    height: 300,
   },
   loaderContainer: {
     flex: 1,

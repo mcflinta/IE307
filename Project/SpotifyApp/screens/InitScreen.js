@@ -104,6 +104,7 @@ const InitScreen = ({ navigation }) => {
     const verifyToken = async () => {
       try {
         const token = await AsyncStorage.getItem('userToken');
+        // console.log('Token:', token);
         if (!token) {
           setIsCheckingToken(false);
           return;
@@ -119,7 +120,7 @@ const InitScreen = ({ navigation }) => {
         if (response.status === 200) {
           const user = response.data.user;
           // console.log('User:', user);
-          navigation.replace('HomeTabs', {user})
+          navigation.replace('HomeTabs', {user, token});
         } else {
           throw new Error('Invalid token');
         }

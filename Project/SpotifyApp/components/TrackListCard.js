@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-
+import LikedIcon from '../assets/svg/LikedIcon';
 const TrackList = ({ tracks, artistName }) => {
   // Hàm render từng mục trong danh sách
   const renderItem = ({ item }) => (
@@ -14,6 +14,11 @@ const TrackList = ({ tracks, artistName }) => {
           {artistName}
         </Text>
       </View>
+      <TouchableOpacity style={styles.moreIcon}>
+        {/* <LikedIcon width={24} height={24} fill="#1ed760"/> */}
+        <LikedIcon width={24} height={24} fill="#1ed760" />
+
+      </TouchableOpacity>
       <TouchableOpacity style={styles.moreIcon}>
         <Icon name="ellipsis-vertical" size={20} color="#ffffff" />
       </TouchableOpacity>

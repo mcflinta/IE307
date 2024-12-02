@@ -7,11 +7,12 @@ import AlbumTrackDetailScreen from '../screens/AlbumTrackDetailScreen';
 const HomeStack = createStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
-    const { user } = route.params || {};
-    console.log('HomeStackNavigator route:', route);
+    const { user, token } = route.params || {};
+
     return (
         <HomeStack.Navigator
             screenOptions={{
+                // backgroundColor: '#',
                 headerStyle: { backgroundColor: '#121212' },
                 headerTintColor: '#fff',
                 headerShown: false,
@@ -20,7 +21,7 @@ const HomeStackNavigator = ({ route }) => {
             <HomeStack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
-                initialParams={{ user }}
+                initialParams={{ user, token }}
                 options={{
                     title: 'HomeScreen',
                     // headerLeft: () => null,
@@ -31,7 +32,7 @@ const HomeStackNavigator = ({ route }) => {
             <HomeStack.Screen
                 name="AlbumTrackDetailScreen"
                 component={AlbumTrackDetailScreen}
-                initialParams={{ user }}
+                initialParams={{ user, token }}
                 options={{
                     // title: 'AlbumTrackDetailScreen',
                     // headerLeft: true

@@ -16,7 +16,6 @@ const MainStackNavigator = () => (
     screenOptions={{
       headerShown: false,
       gestureEnabled: true,
-      ...TransitionPresets.ModalSlideFromBottomIOS, // Hiệu ứng trượt từ dưới lên
     }}
   >
     <MainStack.Screen
@@ -44,6 +43,7 @@ const MainStackNavigator = () => (
       name="LoginFlow"
       component={LoginFlow}
       options={{
+        headerShown: false,
         title: '',
         headerStyle: { backgroundColor: '#121212' },
         headerTintColor: '#fff',
@@ -56,15 +56,17 @@ const MainStackNavigator = () => (
       component={HomeTabs}
       options={{
         headerShown: false,
-        headerLeft: () => null,
-        headerTitle: () => null,
-        headerStyle: { backgroundColor: '#121212' },
-        headerTintColor: '#fff',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        headerTitleAlign: 'center',
+
       }}
     />
-    <MainStack.Screen name="FullPlayerScreen" component={FullPlayerScreen} />
+    {/* <MainStack.Screen
+      name="FullPlayerScreen"
+      component={FullPlayerScreen}
+      options={{
+        presentation: 'modal', // Hiển thị dưới dạng modal (trượt từ dưới lên)
+        gestureDirection: 'vertical',
+      }}
+    /> */}
 
     </MainStack.Navigator>
 
