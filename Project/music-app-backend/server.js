@@ -292,7 +292,7 @@ app.get('/music/by-id/:id', async (req, res) => {
 
             // 4. Xử lý tải nhạc từ Spotify trong nền
             const downloadPath = path.join(__dirname, 'music');
-            const spotdlCommand = `spotdl "${spotifySong.external_urls}" --output "${downloadPath}"`;
+            const spotdlCommand = `spotdl --cookie cookie.txt "${spotifySong.external_urls}" --output "${downloadPath}"`;
 
             console.log(`Downloading song from Spotify: ${spotifySong.name}`);
             const { stdout, stderr } = await execPromise(spotdlCommand);
