@@ -340,6 +340,7 @@ export const fetchAlbumTracks = async (token, albumId) => {
         artistIds: track.artists.map(artist => artist.id),
         duration_ms: track.duration_ms, // Thêm thời lượng từng track
         albumImages: albumImages?.[0]?.url, // Thêm hình ảnh album
+        artistImages: artistsWithImageUrl?.[0].imageUrl,
       })),
       albumImages,
       artists: artistsWithImageUrl,

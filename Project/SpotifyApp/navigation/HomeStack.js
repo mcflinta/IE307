@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../screens/HomeScreen'; // Màn hình chính của Premium
 // import TrackAlbumArtistScreen from '../screens/TrackAlbumArtistScreen'; // Màn hình con
-
+import BioArtistScreen from '../screens/BioArtistScreen';
 import AlbumTrackDetailScreen from '../screens/AlbumTrackDetailScreen';
 const HomeStack = createStackNavigator();
 
@@ -40,6 +40,11 @@ const HomeStackNavigator = ({ route }) => {
                     // headerTitle: false,
                     // headerTitle: () => null,
                  }}
+            />
+            <HomeStack.Screen
+                name="BioArtistScreen"
+                component={BioArtistScreen}
+                // initialParams={{user, token}}
             />
         </HomeStack.Navigator>
     );

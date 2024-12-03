@@ -291,7 +291,7 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import MusicPlayerService from '../services/MusicPlayerService';
 
 const PremiumScreen = ({ route, navigation }) => {
   const { user } = route.params || {};
@@ -299,6 +299,8 @@ const PremiumScreen = ({ route, navigation }) => {
   const handleLogout = async () => {
     await AsyncStorage.removeItem('userToken');
     await AsyncStorage.removeItem('userInfo');
+    const MusicPlayer = MusicPlayerService;
+    await MusicPlayer.stopPlaybackWhenLogout();
     navigation.replace('InitScreen');
   };
 

@@ -69,8 +69,8 @@ const HomeScreen = ({ route }) => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation(); // Get navigation object from hook
   const { user } = route.params || {};
-  // console.log('User HomeScreen:', route.params);
-
+  console.log('User HomeScreen:', route.params);
+  
   const dot1 = useRef(new Animated.Value(1)).current;
   const dot2 = useRef(new Animated.Value(1)).current;
   const dot3 = useRef(new Animated.Value(1)).current;

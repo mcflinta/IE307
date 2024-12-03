@@ -321,16 +321,36 @@ const LoadingScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   console.log('fromScreen:', fromScreen);
   useEffect(() => {
+    // const handleLogin = async () => {
+    //   const { email, password } = route.params || {};
+    //   try {
+    //     const { user } = await loginUser({ email, password });
+    //     Alert.alert('Success', 'Login successful');
+    //     // console.log('Login successful:', user);
+
+    //     navigation.replace('HomeTabs', {user})
+
+    //     // navigation.replace('HomeTabs', { user });
+    //   } catch (error) {
+    //     console.error('Login failed:', error);
+    //     Alert.alert('Error', error.message || 'Login failed');
+    //     navigation.goBack();
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
     const handleLogin = async () => {
+      setLoading(true);
       const { email, password } = route.params || {};
       try {
-        const { user } = await loginUser({ email, password });
+        // Gọi hàm loginUser để xử lý đăng nhập
+        const { user, token } = await loginUser({ email, password });
+    
+        // Điều hướng đến màn hình chính
+        navigation.replace('HomeTabs', { user, token });
+    
         Alert.alert('Success', 'Login successful');
-        // console.log('Login successful:', user);
-
-        navigation.replace('HomeTabs', {user})
-
-        // navigation.replace('HomeTabs', { user });
+        console.log('User:', user);
       } catch (error) {
         console.error('Login failed:', error);
         Alert.alert('Error', error.message || 'Login failed');
@@ -339,7 +359,7 @@ const LoadingScreen = ({ navigation, route }) => {
         setLoading(false);
       }
     };
-
+    
     const handleRegister = async () => {
       const { email, password, gender, name } = route.params || {};
       try {

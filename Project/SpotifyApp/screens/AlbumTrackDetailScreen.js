@@ -487,10 +487,11 @@ import AddIcon from '../assets/svg/AddIcon';
 import PlayIcon from '../assets/svg/PlayIcon';
 import LikedIcon from '../assets/svg/LikedIcon';
 import MusicPlayerService from '../services/MusicPlayerService';
-
+import { useNavigation } from '@react-navigation/native';
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
-const AlbumDetailsScreen = ({ route, navigation }) => {
+const AlbumDetailsScreen = ({ route}) => {
+  const navigation = useNavigation();
   const {
     albumName,
     artistName,
@@ -509,7 +510,7 @@ const AlbumDetailsScreen = ({ route, navigation }) => {
   const [dominantColors, setDominantColors] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isAdded, setIsAdded] = useState(false); // Trạng thái icon
-
+  // console.log("AlbumDetailsScreen", tracks)
   const scrollY = new Animated.Value(0);
 
   const handleTrackPress = useCallback(

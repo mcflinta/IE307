@@ -7,6 +7,7 @@ import HomeTabs from './HomeTabs';
 import MiniPlayer from '../components/MiniPlayer';
 import LoadingScreen from '../screens/LoadingScreen';
 import FullPlayerScreen from '../screens/FullPlayerScreen';
+import BioArtistScreen from '../screens/BioArtistScreen';
 const MainStack = createStackNavigator();
 
 const MainStackNavigator = () => (
@@ -57,6 +58,18 @@ const MainStackNavigator = () => (
       options={{
         headerShown: false,
 
+      }}
+    />
+    <MainStack.Screen
+      name="BioArtistScreen"
+      component={BioArtistScreen}
+      options={{
+        // headerTitleAlign: 'center'
+        title: 'Aimer',
+        headerShown: true,
+        headerStyle: { backgroundColor: '#2a2a2a' },
+        headerTintColor: '#fff',
+        headerTitleAlign: 'center',
       }}
     />
     {/* <MainStack.Screen
