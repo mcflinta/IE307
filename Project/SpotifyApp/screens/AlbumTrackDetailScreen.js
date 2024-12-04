@@ -19,6 +19,7 @@ import PlayIcon from '../assets/svg/PlayIcon';
 import LikedIcon from '../assets/svg/LikedIcon';
 import MusicPlayerService from '../services/MusicPlayerService';
 import { useNavigation } from '@react-navigation/native';
+import tokenManager from '../services/TokenManager';
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
 const AlbumDetailsScreen = ({ route}) => {
@@ -35,7 +36,7 @@ const AlbumDetailsScreen = ({ route}) => {
     totalDuration,
   } = route.params;
   // console.log('AlbumDetailsScreen', route.params.token);
-  const token = route.params.token
+  // const token = route.params.token
   const [songIds, setSongIds] = useState([]);
   // console.log(token)
   const [dominantColors, setDominantColors] = useState(null);
@@ -99,6 +100,11 @@ const AlbumDetailsScreen = ({ route}) => {
   useEffect(() => {
     const fetchPlaylists = async () => {
       try {
+        const token = await tokenManager.getToken();
+        if (!token) {
+          console.error('Token is missing.');
+          return;
+        }
         // Gọi API để lấy danh sách playlist
         const response = await axios.get('http://149.28.146.58:3000/playlists', {
           headers: { Authorization: `Bearer ${token}` },
@@ -117,7 +123,7 @@ const AlbumDetailsScreen = ({ route}) => {
     };
 
     fetchPlaylists();
-  }, [token]);
+  }, []);
   // console.log(songIds)
   console.log(songIds)
   const dominantColor =

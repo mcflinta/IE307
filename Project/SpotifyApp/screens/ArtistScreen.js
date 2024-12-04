@@ -1,6 +1,6 @@
 
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -15,15 +15,15 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import VerifiedIcon from "../assets/svg/VerifiedIcon";
+import axios from "axios";
+import tokenManager from "../services/TokenManager";
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
+const formatPlaycount = (count) => {
+  return Number(count).toLocaleString(); // Thêm dấu phẩy ngăn cách mỗi 3 chữ số
+};
 
-const data = [
-  { id: "1", title: "残響散歌", plays: "252,370,429", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "2", title: "カタオモイ", plays: "124,950,576", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "3", title: "Brave Shine", plays: "78,391,121", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-];
 
 const popularReleasesData = [
   { id: "1", title: "Sign", releaseInfo: "Latest release • EP", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
@@ -73,14 +73,35 @@ const fansAlsoLikeData = [
 ];
 
 
-const ArtistScreen = () => {
+const ArtistScreen = ({ route }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const navigation = useNavigation();
-
+  const [tracks, setTracks] = useState([]); // Lưu danh sách bài hát
+  const [loading, setLoading] = useState(false); // Trạng thái tải
+  // console.log("ArtistScreen:", route.params.currentSong.artistIds[0]);
+  // console.log("ArtistScreen:", route.params.artistId);
+  const artistId = route.params.artistId;
   // Sắp xếp danh sách theo số lượt nghe giảm dần
-  const sortedData = data.sort(
-    (a, b) => parseInt(b.plays.replace(/,/g, "")) - parseInt(a.plays.replace(/,/g, ""))
-  );
+  useEffect(() => {
+    // Dữ liệu JSON mẫu
+    const fetchTracks = async () => {
+        setLoading(true);
+        try {
+            // Thay bằng fetch hoặc axios nếu bạn lấy dữ liệu từ API
+            const data = await fetch('http://192.168.105.35:3000/artist/toptrack/0bAsR2unSRpn6BQPEnNlZm').then(res => res.json());
+            const sortedData = data.sort((a, b) => parseInt(b.playcount) - parseInt(a.playcount));
+            setTracks(sortedData); // Lưu dữ liệu đã sắp xếp
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu:', error);
+            setError('Không thể tải dữ liệu.');
+        } finally {
+          setLoading(false);
+        }
+    };
+
+    fetchTracks();
+}, []);
+  // console.log("ArtistScreen:", tracks);
 
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 200],
@@ -120,12 +141,12 @@ const ArtistScreen = () => {
   const renderSongItem = ({ item, index }) => (
     <View style={styles.songItem}>
       <Text style={styles.songIndex}>{index + 1}</Text>
-      <Image source={{ uri: item.image }} style={styles.songImage} />
+      <Image source={{ uri: item.album_cover }} style={styles.songImage} />
       <View style={styles.songInfo}>
         <Text style={styles.songTitle} numberOfLines={1}>
-          {item.title}
+          {item.name}
         </Text>
-        <Text style={styles.songPlays}>{item.plays} plays</Text>
+        <Text style={styles.songPlays}>{formatPlaycount(item.playcount)}</Text>
       </View>
       <TouchableOpacity>
         <Icon name="ellipsis-vertical" size={20} color="#fff" />
@@ -219,7 +240,7 @@ const ArtistScreen = () => {
     </View>
   );
   
-  
+  // console.log(tracks)
   const renderReleaseItem = ({ item }) => (
     <View style={styles.releaseItem}>
       <Image source={{ uri: item.image }} style={styles.releaseImage} />
@@ -267,19 +288,20 @@ const ArtistScreen = () => {
         </Animated.Text>
       </Animated.View>
 
-      <FlatList
-        data={sortedData}
-        renderItem={renderSongItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.songList}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: false }
-        )}
-        scrollEventThrottle={16}
-        ListHeaderComponent={ListHeader}
-        ListFooterComponent={ListFooter}
-      /> 
+    <FlatList
+    data={tracks}
+    renderItem={renderSongItem}
+    keyExtractor={(item, index) => `${item.id}_${item.track_id}_${index}`} // Tạo key duy nhất
+    contentContainerStyle={styles.songList}
+    onScroll={Animated.event(
+        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        { useNativeDriver: false }
+    )}
+    scrollEventThrottle={16}
+    ListHeaderComponent={ListHeader}
+    ListFooterComponent={ListFooter}
+    />
+
       <View style={{ height: 200 }}></View>
     </View>
   );

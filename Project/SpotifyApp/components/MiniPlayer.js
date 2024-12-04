@@ -9,7 +9,8 @@ import TextTicker from 'react-native-text-ticker'; // Thêm dòng này
 import AddIcon from '../assets/svg/AddIcon';
 import LikedIcon from '../assets/svg/LikedIcon';
 import axios from 'axios';
-const MiniPlayer = ({ onPress, user, token }) => {
+import tokenManager from '../services/TokenManager'; // Import TokenManager
+const MiniPlayer = ({ onPress, user}) => {
   const [currentSong, setCurrentSong] = useState(MusicPlayerService.currentSong);
   const [isPlaying, setIsPlaying] = useState(MusicPlayerService.isPlaying);
   const [isAdded, setIsAdded] = useState(false); // Trạng thái icon
@@ -19,9 +20,15 @@ const MiniPlayer = ({ onPress, user, token }) => {
   // console.log('MiniPlayer', currentSong);
   // console.log("MiniPlayer Token", token);
   useEffect(() => {
+
     const checkSongInPlaylist = async () => {
-        if (currentSong && token) {
+        if (currentSong) {
             try {
+              const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+              if (!token) {
+                console.error('Token is missing.');
+                return;
+              }
                 const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -39,12 +46,17 @@ const MiniPlayer = ({ onPress, user, token }) => {
     };
 
     checkSongInPlaylist();
-}, [currentSong, user]);
+}, [currentSong]);
 
 
   const handleLikedIconPress = async () => {
-    if (!currentSong || !token) return;
+    if (!currentSong) return;
     try {
+      const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+      if (!token) {
+        console.error('Token is missing.');
+        return;
+      }
       // Lấy danh sách playlist của người dùng
       const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
         headers: { Authorization: `Bearer ${token}` },

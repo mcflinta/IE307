@@ -1,0 +1,83 @@
+{
+    "artist_id": "0bAsR2unSRpn6BQPEnNlZm",
+    "artist_name": "Aimer",
+    "popularReleaseAlbums": [
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e0210179936604a42f16280835e",
+            "album_id": "1gfSftIuafqkGu28ely5z6",
+            "name": "残響散歌",
+            "type": "SINGLE",
+            "date": 2021
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02b56ada0ba61d7787fb213f72",
+            "album_id": "336m0kejdM5Fkw2HUX46Bw",
+            "name": "daydream",
+            "type": "ALBUM",
+            "date": 2016
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02e9c7a6eef73e74417c6ef679",
+            "album_id": "4BJ7PY6YSfHY9pu2nDFBiy",
+            "name": "Open α Door",
+            "type": "ALBUM",
+            "date": 2023
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02b54e91cdc2fc4e29efab4e4b",
+            "album_id": "7EHV2huu8yHAsPjzgmUjka",
+            "name": "DAWN",
+            "type": "ALBUM",
+            "date": 2015
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02146ee402c8243cf8db8630e6",
+            "album_id": "3iFkNa8SRNFHD7La40UqUz",
+            "name": "Walpurgis",
+            "type": "ALBUM",
+            "date": 2021
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02ac1a5a83790ba13920affe1e",
+            "album_id": "3PQH45Tw7K3IzTLsGze9UE",
+            "name": "おもかげ (produced by Vaundy)",
+            "type": "SINGLE",
+            "date": 2021
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e0230cf3673464552a8342b6ff3",
+            "album_id": "5WxSamBTcE3P1W6sT9My7B",
+            "name": "Penny Rain",
+            "type": "ALBUM",
+            "date": 2019
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02189f203384af534b6b269e7d",
+            "album_id": "0FNWMFyb0nLCCHucsDfxmA",
+            "name": "Sun Dance",
+            "type": "ALBUM",
+            "date": 2019
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e023808da7201adab42669a26b9",
+            "album_id": "3ZrzXf0SU0XWmxOPBMpccD",
+            "name": "Sleepless Nights",
+            "type": "ALBUM",
+            "date": 2012
+        },
+        {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e0280b034fcb0ee1d2de095d060",
+            "album_id": "1mR8kxKKuBobjRXaZjHWw4",
+            "name": "星の消えた夜に",
+            "type": "ALBUM",
+            "date": 2022
+        }
+    ],
+    "latest": {
+        "coverArt": "https://i.scdn.co/image/ab67616d00001e0216943045e28eb56b11d2ebde",
+        "album_id": "268Fp4sOfh7kFOmChBsT4f",
+        "name": "Sign",
+        "type": "EP",
+        "date": 2024
+    }
+}

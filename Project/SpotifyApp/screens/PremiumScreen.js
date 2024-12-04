@@ -292,17 +292,31 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MusicPlayerService from '../services/MusicPlayerService';
+import tokenManager from '../services/TokenManager';
 
 const PremiumScreen = ({ route, navigation }) => {
   const { user } = route.params || {};
   console.log('User:', user);
+
   const handleLogout = async () => {
-    await AsyncStorage.removeItem('userToken');
-    await AsyncStorage.removeItem('userInfo');
-    const MusicPlayer = MusicPlayerService;
-    await MusicPlayer.stopPlaybackWhenLogout();
-    navigation.replace('InitScreen');
+    try {
+      // Xóa token và thông tin người dùng
+      await tokenManager.clearToken();
+      await AsyncStorage.removeItem('userInfo');
+
+      // Dừng phát nhạc
+      const MusicPlayer = MusicPlayerService;
+      await MusicPlayer.stopPlaybackWhenLogout();
+
+      // Điều hướng người dùng về màn hình khởi tạo
+      navigation.replace('InitScreen');
+      console.log('Logged out successfully!');
+    } catch (error) {
+      console.error('Error during logout:', error.message);
+      // Có thể thêm thông báo lỗi cho người dùng ở đây
+    }
   };
+
 
   return (
     <View style={styles.container}>

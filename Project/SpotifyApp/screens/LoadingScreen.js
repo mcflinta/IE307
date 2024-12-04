@@ -307,9 +307,117 @@
 
 // export default LoadingScreen;
 
-import React, { useRef, useEffect, useState } from 'react';
-import { View, Animated, StyleSheet, Alert } from 'react-native';
-import { loginUser, registerUser } from '../services/authService.js';
+// import React, { useRef, useEffect, useState } from 'react';
+// import { View, Animated, StyleSheet, Alert } from 'react-native';
+// import { loginUser, registerUser } from '../services/authService.js';
+// import { createDotAnimation } from '../animations/dotAnimation';
+// import tokenManager from './TokenManager'; // Singleton quản lý token
+// const LoadingScreen = ({ navigation, route }) => {
+//   const dot1 = useRef(new Animated.Value(1)).current;
+//   const dot2 = useRef(new Animated.Value(1)).current;
+//   const dot3 = useRef(new Animated.Value(1)).current;
+
+//   const { fromScreen } = route.params || {};
+//   const [loading, setLoading] = useState(true);
+//   console.log('fromScreen:', fromScreen);
+//   useEffect(() => {
+//     // const handleLogin = async () => {
+//     //   const { email, password } = route.params || {};
+//     //   try {
+//     //     const { user } = await loginUser({ email, password });
+//     //     Alert.alert('Success', 'Login successful');
+//     //     // console.log('Login successful:', user);
+
+//     //     navigation.replace('HomeTabs', {user})
+
+//     //     // navigation.replace('HomeTabs', { user });
+//     //   } catch (error) {
+//     //     console.error('Login failed:', error);
+//     //     Alert.alert('Error', error.message || 'Login failed');
+//     //     navigation.goBack();
+//     //   } finally {
+//     //     setLoading(false);
+//     //   }
+//     // };
+//     const handleLogin = async () => {
+//       setLoading(true);
+//       const { email, password } = route.params || {};
+//       try {
+//         // Gọi hàm loginUser để xử lý đăng nhập
+//         const { user, token } = await loginUser({ email, password });
+    
+//         // Điều hướng đến màn hình chính
+//         navigation.replace('HomeTabs', { user, token });
+    
+//         Alert.alert('Success', 'Login successful');
+//         console.log('User:', user);
+//       } catch (error) {
+//         console.error('Login failed:', error);
+//         Alert.alert('Error', error.message || 'Login failed');
+//         navigation.goBack();
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+    
+//     const handleRegister = async () => {
+//       const { email, password, gender, name } = route.params || {};
+//       try {
+//         const { user } = await registerUser({ email, password, gender, name });
+//         Alert.alert('Success', 'Account created successfully');
+//         navigation.replace('InitScreen');
+//       } catch (error) {
+//         console.error('Register failed:', error);
+//         Alert.alert('Error', error.message || 'Register failed');
+//         navigation.goBack();
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     if (fromScreen === 'LoginScreen') {
+//       handleLogin();
+//     } else if (fromScreen === 'SignUpPolicyScreen') {
+//       handleRegister();
+//     }
+//   }, [fromScreen, navigation, route.params]);
+
+//   useEffect(() => {
+//     createDotAnimation(dot1, dot2, dot3);
+//   }, [dot1, dot2, dot3]);
+
+//   return (
+//     <View style={styles.container}>
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot1 }] }]} />
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot2 }] }]} />
+//       <Animated.View style={[styles.dot, { transform: [{ scale: dot3 }] }]} />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: '#000',
+//     justifyContent: 'center',
+//     alignItems: 'center',
+//     flexDirection: 'row',
+//   },
+//   dot: {
+//     width: 15,
+//     height: 15,
+//     borderRadius: 7.5,
+//     backgroundColor: '#FFF',
+//     marginHorizontal: 10,
+//   },
+// });
+
+// export default LoadingScreen;
+
+
+import React, { useEffect, useState, useRef } from 'react';
+import { View, StyleSheet, Animated } from 'react-native';
+import { handleLogin, handleRegister } from '../services/authHandler';
 import { createDotAnimation } from '../animations/dotAnimation';
 
 const LoadingScreen = ({ navigation, route }) => {
@@ -319,67 +427,22 @@ const LoadingScreen = ({ navigation, route }) => {
 
   const { fromScreen } = route.params || {};
   const [loading, setLoading] = useState(true);
-  console.log('fromScreen:', fromScreen);
+
   useEffect(() => {
-    // const handleLogin = async () => {
-    //   const { email, password } = route.params || {};
-    //   try {
-    //     const { user } = await loginUser({ email, password });
-    //     Alert.alert('Success', 'Login successful');
-    //     // console.log('Login successful:', user);
-
-    //     navigation.replace('HomeTabs', {user})
-
-    //     // navigation.replace('HomeTabs', { user });
-    //   } catch (error) {
-    //     console.error('Login failed:', error);
-    //     Alert.alert('Error', error.message || 'Login failed');
-    //     navigation.goBack();
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-    const handleLogin = async () => {
-      setLoading(true);
-      const { email, password } = route.params || {};
-      try {
-        // Gọi hàm loginUser để xử lý đăng nhập
-        const { user, token } = await loginUser({ email, password });
-    
-        // Điều hướng đến màn hình chính
-        navigation.replace('HomeTabs', { user, token });
-    
-        Alert.alert('Success', 'Login successful');
-        console.log('User:', user);
-      } catch (error) {
-        console.error('Login failed:', error);
-        Alert.alert('Error', error.message || 'Login failed');
-        navigation.goBack();
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    const handleRegister = async () => {
+    const performAction = async () => {
       const { email, password, gender, name } = route.params || {};
-      try {
-        const { user } = await registerUser({ email, password, gender, name });
-        Alert.alert('Success', 'Account created successfully');
-        navigation.replace('InitScreen');
-      } catch (error) {
-        console.error('Register failed:', error);
-        Alert.alert('Error', error.message || 'Register failed');
+
+      if (fromScreen === 'LoginScreen') {
+        await handleLogin(email, password, navigation, setLoading);
+      } else if (fromScreen === 'SignUpPolicyScreen') {
+        await handleRegister(email, password, gender, name, navigation, setLoading);
+      } else {
+        console.warn('Unknown fromScreen:', fromScreen);
         navigation.goBack();
-      } finally {
-        setLoading(false);
       }
     };
 
-    if (fromScreen === 'LoginScreen') {
-      handleLogin();
-    } else if (fromScreen === 'SignUpPolicyScreen') {
-      handleRegister();
-    }
+    performAction(); // Thực hiện logic dựa trên fromScreen
   }, [fromScreen, navigation, route.params]);
 
   useEffect(() => {

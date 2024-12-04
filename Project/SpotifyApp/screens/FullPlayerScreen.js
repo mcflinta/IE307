@@ -910,7 +910,8 @@ const FullPlayerScreen = ({onClose, user, token }) => {
   const [isSliding, setIsSliding] = useState(false);
   const [repeatMode, setRepeatMode] = useState(MusicPlayerService.repeatMode);
   const [shuffleMode, setShuffleMode] = useState(MusicPlayerService.shuffleMode);
-  // console.log("Full Player  Screen:", currentSong)
+  // console.log("Full Player  Screen:", currentSong.artistIds[0])
+  const  artistId = currentSong.artistIds[0]
   const navigation = useNavigation(); // Get navigation object from hook
   // console.log("Full Player  Screen:", user, token)
   const translateY = useSharedValue(screenHeight);
@@ -989,11 +990,11 @@ const FullPlayerScreen = ({onClose, user, token }) => {
   }));
 
   const handleSlidingStart = () => {
-    setIsSliding(true);
+    setIsSliding(false);
   };
 
   const handleSliding = (value) => {
-    setSliderValue(value);
+    // setSliderValue(value);
   };
 
   const handleSlidingComplete = (value) => {
@@ -1123,11 +1124,9 @@ const FullPlayerScreen = ({onClose, user, token }) => {
                 onClose();
                 navigation.navigate('HomeTabs', {
                   screen: 'HomeStack',
-                  params: user, token,
                   params: {
                     screen: 'ArtistScreen',
-                    params: user, token,
-
+                    params: { artistId: artistId }, // Truyền artistId ở đây
                   },
                 });
             }}>
@@ -1144,10 +1143,9 @@ const FullPlayerScreen = ({onClose, user, token }) => {
                   // console.log("User:", user, token)
                   navigation.navigate('HomeTabs', {
                     screen: 'HomeStack',
-                    params: user, token,
                     params: {
                       screen: 'BioArtistScreen',
-                      params:  user, token,
+                      params: { artistId: artistId }, // Truyền artistId ở đây
                     },
                   });
                 }}>

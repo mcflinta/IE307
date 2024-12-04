@@ -2,7 +2,8 @@ import React from 'react';
 import {View, Text, Image, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import HTMLView from 'react-native-htmlview';
 
-const BioArtistScreen = () => {
+const BioArtistScreen = ({ route }) => {
+  console.log("BIoArtistScreen", route.params);
   const artist = {
     name: 'Aimer',
     monthlyListeners: '3,319,406',

@@ -615,10 +615,80 @@ app.get('/playlists/default/songs', authenticateToken, async (req, res) => {
     }
 });
 
+let tracksData = [];
+fs.readFile('./data/topTrack.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        tracksData = JSON.parse(data);
+    }
+});
 
+// Endpoint truy vấn top tracks theo `id`
+// app.get('/artist/toptrack/:id', (req, res) => {
+//     const { id } = req.params;
+
+//     // Lọc các bài hát có `id` khớp với tham số
+//     const topTracks = tracksData.filter(track => track.id === id);
+
+//     if (topTracks.length === 0) {
+//         return res.status(404).json({ message: `Không tìm thấy bài hát nào với id: ${id}` });
+//     }
+
+//     // Trả về danh sách bài hát
+//     res.json(topTracks);
+// });
+app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    // Lọc các bài hát có `id` khớp với tham số
+    const topTracks = tracksData.filter(track => track.id === id);
+
+    if (topTracks.length === 0) {
+        return res.status(404).json({ message: `Không tìm thấy bài hát nào với id: ${id}` });
+    }
+
+    // Trả về danh sách bài hát
+    res.json(topTracks);
+});
+let albumsData;
+fs.readFile('albums_info.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        albumsData = JSON.parse(data);
+    }
+});
+
+// Endpoint: Lấy thông tin popularReleaseAlbums của nghệ sĩ theo id
+app.get('/artist/popularAlbumRelease/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    // Kiểm tra dữ liệu đã được tải lên
+    if (!albumsData) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+    }
+
+    // Kiểm tra ID có khớp với artist_id trong dữ liệu
+    if (albumsData.artist_id !== id) {
+        return res.status(404).json({ message: `Không tìm thấy nghệ sĩ với id: ${id}` });
+    }
+
+    // Trả về danh sách popularReleaseAlbums
+    const popularReleaseAlbums = albumsData.popularReleaseAlbums;
+    if (!popularReleaseAlbums || popularReleaseAlbums.length === 0) {
+        return res.status(404).json({ message: 'Không có album phổ biến nào.' });
+    }
+
+    res.json({
+        artist_id: albumsData.artist_id,
+        artist_name: albumsData.artist_name,
+        popularReleaseAlbums: popularReleaseAlbums,
+    });
+});
 // Khởi động server
-// const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
-const HOST = '149.28.146.58';
+const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
+// const HOST = '149.28.146.58';
 app.listen(PORT, HOST, () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
 });
