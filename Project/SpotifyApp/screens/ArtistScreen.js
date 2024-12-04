@@ -143,7 +143,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://192.168.105.35:3000/artist/artistInfo/${artistId}`, {
+        const response = await fetch(`http://149.28.146.58:3000/artist/artistInfo/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -172,7 +172,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://192.168.105.35:3000/artist/artistPlaylists/${artistId}`, {
+        const response = await fetch(`http://149.28.146.58:3000/artist/artistPlaylists/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -201,7 +201,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://192.168.105.35:3000/artist/relatedArtists/${artistId}`, {
+        const response = await fetch(`http://149.28.146.58:3000/artist/relatedArtists/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -221,13 +221,13 @@ const ArtistScreen = ({ route }) => {
 
     fetchFanAlsoLike();
   }, [artistId]);
-  console.log("ArtistScreen: ",fansAlsoLike);
   // Format functions
   const formatType = (type) => {
     if (!type) return '';
     return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   };
   const handleItemPress = (item) => {
+    console.log("Item pressed", item.id);
     navigation.navigate('HomeTabs', {
       screen: 'HomeStack',
       params: {
