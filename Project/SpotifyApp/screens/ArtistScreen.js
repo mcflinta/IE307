@@ -77,6 +77,8 @@ const ArtistScreen = ({ route }) => {
   const [scrollY] = useState(new Animated.Value(0));
   const navigation = useNavigation();
   const [tracks, setTracks] = useState([]); // Lưu danh sách bài hát
+  const [albums, setAlbums] = useState([]); // Dữ liệu album
+  const [lastestAlbum, setLastestAlbum] = useState([]); // Dữ liệu album mới nhất
   const [loading, setLoading] = useState(false); // Trạng thái tải
   // console.log("ArtistScreen:", route.params.currentSong.artistIds[0]);
   // console.log("ArtistScreen:", route.params.artistId);
@@ -87,9 +89,19 @@ const ArtistScreen = ({ route }) => {
     const fetchTracks = async () => {
         setLoading(true);
         try {
-            // Thay bằng fetch hoặc axios nếu bạn lấy dữ liệu từ API
-            const data = await fetch('http://192.168.105.35:3000/artist/toptrack/0bAsR2unSRpn6BQPEnNlZm').then(res => res.json());
+          // Thay bằng fetch hoặc axios nếu bạn lấy dữ liệu từ API
+            const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+            if (!token) {
+              console.error('Token is missing.');
+              return;
+            }
+            // const data = await fetch(`http://192.168.105.35:3000/artist/toptrack/${artistId}`),
+            const response = await fetch(`http://192.168.105.35:3000/artist/toptrack/${artistId}`, {
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            const data = await response.json();
             const sortedData = data.sort((a, b) => parseInt(b.playcount) - parseInt(a.playcount));
+            
             setTracks(sortedData); // Lưu dữ liệu đã sắp xếp
         } catch (error) {
             console.error('Lỗi khi lấy dữ liệu:', error);
@@ -102,7 +114,53 @@ const ArtistScreen = ({ route }) => {
     fetchTracks();
 }, []);
   // console.log("ArtistScreen:", tracks);
+  useEffect(() => {
+    const fetchAlbums = async () => {
+        setLoading(true);
+        try {
+            const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+            if (!token) {
+              console.error('Token is missing.');
+              return;
+            }
+            // Gọi API
+            const response = await fetch(`http://192.168.105.35:3000/artist/popularAlbumRelease/${artistId}`, {
+              headers: { Authorization: `Bearer ${token}` },
 
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            // console.log(data)
+            // Lưu dữ liệu trả về
+            setAlbums(data.popularReleaseAlbums); // Lưu danh sách album
+            setLastestAlbum(data.latest); // Lưu album mới nhất
+        } catch (err) {
+            console.error('Lỗi khi lấy dữ liệu:', err);
+            setError('Không thể tải dữ liệu.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    fetchAlbums();
+  }, []);
+  // Hàm chuẩn hóa kiểu chữ của album.type
+  const formatType = (type) => {
+    if (!type) return '';
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  };
+
+  // Sắp xếp dữ liệu theo date giảm dần
+  const sortedAlbums = albums.sort((a, b) => {
+    const dateA = new Date(a.date);
+    const dateB = new Date(b.date);
+    return dateB - dateA; // Sắp xếp giảm dần
+  });
+  console.log('Artist Screen: ', albums);
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 200],
     outputRange: [300, 80],
@@ -174,7 +232,7 @@ const ArtistScreen = ({ route }) => {
     <View>
       <Text style={styles.sectionTitle}>Popular releases</Text>
       <FlatList
-        data={popularReleasesData}
+        data={sortedAlbums}
         renderItem={renderReleaseItem}
         keyExtractor={(item) => item.id}
         scrollEnabled={false}
@@ -183,15 +241,15 @@ const ArtistScreen = ({ route }) => {
         <Text style={styles.discographyButtonText}>See discography</Text>
       </TouchableOpacity>
   
-      <Text style={styles.sectionTitle}>Featuring Aimer</Text>
-      <FlatList
+      {/* <Text style={styles.sectionTitle}>Featuring Aimer</Text> */}
+      {/* <FlatList
         data={featuringData}
         renderItem={renderFeaturingItem}
         keyExtractor={(item) => item.id}
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.featuringList}
-      />
+      /> */}
   
       <Text style={styles.sectionTitle}>About</Text>
   
@@ -241,25 +299,46 @@ const ArtistScreen = ({ route }) => {
   );
   
   // console.log(tracks)
-  const renderReleaseItem = ({ item }) => (
-    <View style={styles.releaseItem}>
-      <Image source={{ uri: item.image }} style={styles.releaseImage} />
-      <View style={styles.releaseInfo}>
-        <Text style={styles.releaseTitle} numberOfLines={1}>
-          {item.title}
-        </Text>
-        <Text style={styles.releaseDetails}>{item.releaseInfo}</Text>
+  const renderReleaseItem = ({ item, index }) => {
+    if (lastestAlbum && index === 0) {
+      // Xử lý riêng thẻ đầu tiên
+      return (
+        <View style={styles.releaseItem}>
+        <Image source={{ uri: lastestAlbum.coverArt }} style={styles.releaseImage} />
+        <View style={styles.releaseInfo}>
+          <Text style={styles.releaseTitle} numberOfLines={1}>
+            {lastestAlbum.name}
+          </Text>
+            <Text style={styles.releaseDetails}>Lastest release • { lastestAlbum.type}</Text>
+        </View>
       </View>
-    </View>
-  );
-  const renderFeaturingItem = ({ item }) => (
-    <View style={styles.featuringItem}>
-      <Image source={{ uri: item.image }} style={styles.featuringImage} />
-      <Text style={styles.featuringTitle} numberOfLines={1}>
-        {item.title}
-      </Text>
-    </View>
-  );
+      );
+    }
+    else if (index <= 4)
+    {
+      return (
+        <View style={styles.releaseItem}>
+          <Image source={{ uri: item.coverArt }} style={styles.releaseImage} />
+          <View style={styles.releaseInfo}>
+            <Text style={styles.releaseTitle} numberOfLines={1}>
+              {item.name}
+            </Text>
+            <Text style={styles.releaseDetails}>{item.date} • {formatType(item.type)}</Text>
+          </View>
+        </View>
+      );
+
+    }
+
+  };
+  // const renderFeaturingItem = ({ item }) => (
+  //   <View style={styles.featuringItem}>
+  //     <Image source={{ uri: item.image }} style={styles.featuringImage} />
+  //     <Text style={styles.featuringTitle} numberOfLines={1}>
+  //       {item.title}
+  //     </Text>
+  //   </View>
+  // );
   const renderPlaylistItem = ({ item }) => (
     <View style={styles.playlistItem}>
       <Image source={{ uri: item.image }} style={styles.playlistImage} />
@@ -401,8 +480,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   releaseImage: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     borderRadius: 8,
     marginRight: 15,
   },
@@ -432,26 +511,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  featuringList: {
-    paddingHorizontal: 15,
-    marginTop: 10,
-  },
-  featuringItem: {
-    marginRight: 15,
-    alignItems: "center",
-  },
-  featuringImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  featuringTitle: {
-    fontSize: 14,
-    color: "#fff",
-    textAlign: "center",
-    width: 120,
-  },
+  // featuringList: {
+  //   paddingHorizontal: 15,
+  //   marginTop: 10,
+  // },
+  // featuringItem: {
+  //   marginRight: 15,
+  //   alignItems: "center",
+  // },
+  // featuringImage: {
+  //   width: 120,
+  //   height: 120,
+  //   borderRadius: 8,
+  //   marginBottom: 8,
+  // },
+  // featuringTitle: {
+  //   fontSize: 14,
+  //   color: "#fff",
+  //   textAlign: "center",
+  //   width: 120,
+  // },
   aboutContainer: {
     flexDirection: "column", // Đặt nội dung theo chiều dọc
     justifyContent: "center",
