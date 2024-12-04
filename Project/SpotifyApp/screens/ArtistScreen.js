@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -21,16 +20,9 @@ const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const formatPlaycount = (count) => {
-  return Number(count).toLocaleString(); // Thêm dấu phẩy ngăn cách mỗi 3 chữ số
+  return Number(count).toLocaleString().toString(); // Thêm dấu phẩy ngăn cách mỗi 3 chữ số
 };
 
-
-const popularReleasesData = [
-  { id: "1", title: "Sign", releaseInfo: "Latest release • EP", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "2", title: "残響散歌", releaseInfo: "2021 • Single", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "3", title: "daydream", releaseInfo: "2016 • Album", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "4", title: "Open a Door", releaseInfo: "2023 • Album", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-];
 
 const featuringData = [
   { id: "1", title: "This Is Aimer", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
@@ -39,13 +31,7 @@ const featuringData = [
 ];
 
 
-const aboutData = {
-  image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f", // Link đến ảnh nghệ sĩ
-  verified: true,
-  listeners: "3,310,930",
-  description:
-    "15歳の頃、歌唱による喉の酷使が原因で突如声が出なくなるアクシデントに見舞われるも、数年後には独特のハスキーで甘い歌声を得ることとなる。2011年にシングル「六等星の夜」でメジャーデビュー。\n代表曲「蝶々結び」などを収録した4thアルバム「daydream」を2016年9月にリリースし、iTunesアルバムチャート1位などを獲得した他、CDショップ大賞2017において準大賞も受賞。2019年には16枚目のシングル「I beg you  / 花びらたちのマーチ / Sailing」をリリースし、自身初のオリコン週間シングルランキング初登場1位を記録する。\n\nAt the age of 15, Aimer suddenly lost her voice due to overuse of her throat by singing, but a few years later she got a unique husky and sweet singing voice. In 2011, she made her major debut with single &#34;<a href=\"spotify:track:57hbqDXNpE9rMmYd2U9dUB\" data-name=\"六等星の夜\">六等星の夜</a> (Rokutosei no yoru)&#34;.\nIn September 2016, she released her 4th album &#34;<a href=\"spotify:album:0gTeVkaC6wyVZEXNQUA4gF\" data-name=\"daydream\">daydream</a>&#34; which includes her representative song &#34;Chouchou Musubi&#34;, and placed #1 on the iTunes album chart. In 2019, she released her 16th single &#34;<a href=\"spotify:album:2YLBHyegPO32zvOWFJzkLN\" data-name=\"I beg you / 花びらたちのマーチ / Sailing\">I beg you / 花びらたちのマーチ / Sailing</a>&#34; which ranked #1 in the weekly single Oricon chart for the first time in her career.  Her song ‘Zankyosanka’ for the worldwide popular anime “Demon Slayer: Kimetsu no Yaiba” as its season 2 opening theme became a global hit soon after release in 2021. She is coming out with mini album titled “Deep down” to celebrate her 10th anniversary since debut, and the album will include CHAINSAW MAN ending theme ‘Deep down’.", // Mô tả ngắn
-};
+
 const artistPlaylistsData = [
   {
     id: "1",
@@ -66,12 +52,12 @@ const artistPlaylistsData = [
     image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f",
   },
 ];
+
 const fansAlsoLikeData = [
   { id: "1", name: "milet", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
   { id: "2", name: "SPYAIR", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
   { id: "3", name: "yama", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
 ];
-
 
 const ArtistScreen = ({ route }) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -79,88 +65,210 @@ const ArtistScreen = ({ route }) => {
   const [tracks, setTracks] = useState([]); // Lưu danh sách bài hát
   const [albums, setAlbums] = useState([]); // Dữ liệu album
   const [lastestAlbum, setLastestAlbum] = useState([]); // Dữ liệu album mới nhất
+  const [artistPlaylists, setArtistPlaylists] = useState([]); // Dữ liệu playlist của nghệ sĩ
+  const [fansAlsoLike, setFansAlsoLike] = useState([]); // Dữ liệu nghệ sĩ cùng thích
+  const [artist, setArtist] = useState([]); // Dữ liệu nghệ sĩ
   const [loading, setLoading] = useState(false); // Trạng thái tải
-  // console.log("ArtistScreen:", route.params.currentSong.artistIds[0]);
-  // console.log("ArtistScreen:", route.params.artistId);
+  const [error, setError] = useState(null); // Thêm state để lưu lỗi nếu cần
+  
   const artistId = route.params.artistId;
-  // Sắp xếp danh sách theo số lượt nghe giảm dần
+
+  // Fetch Tracks
   useEffect(() => {
-    // Dữ liệu JSON mẫu
     const fetchTracks = async () => {
-        setLoading(true);
-        try {
-          // Thay bằng fetch hoặc axios nếu bạn lấy dữ liệu từ API
-            const token = await tokenManager.getToken(); // Lấy token từ TokenManager
-            if (!token) {
-              console.error('Token is missing.');
-              return;
-            }
-            // const data = await fetch(`http://192.168.105.35:3000/artist/toptrack/${artistId}`),
-            const response = await fetch(`http://192.168.105.35:3000/artist/toptrack/${artistId}`, {
-              headers: { Authorization: `Bearer ${token}` },
-            });
-            const data = await response.json();
-            const sortedData = data.sort((a, b) => parseInt(b.playcount) - parseInt(a.playcount));
-            
-            setTracks(sortedData); // Lưu dữ liệu đã sắp xếp
-        } catch (error) {
-            console.error('Lỗi khi lấy dữ liệu:', error);
-            setError('Không thể tải dữ liệu.');
-        } finally {
-          setLoading(false);
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
         }
+        const response = await fetch(`http://149.28.146.58:3000/artist/toptrack/${artistId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await response.json();
+        const sortedData = data.sort((a, b) => parseInt(b.playcount) - parseInt(a.playcount));
+
+        setTracks(sortedData); // Lưu dữ liệu đã sắp xếp
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchTracks();
-}, []);
-  // console.log("ArtistScreen:", tracks);
+  }, [artistId]);
+
+  // Fetch Albums
   useEffect(() => {
     const fetchAlbums = async () => {
-        setLoading(true);
-        try {
-            const token = await tokenManager.getToken(); // Lấy token từ TokenManager
-            if (!token) {
-              console.error('Token is missing.');
-              return;
-            }
-            // Gọi API
-            const response = await fetch(`http://192.168.105.35:3000/artist/popularAlbumRelease/${artistId}`, {
-              headers: { Authorization: `Bearer ${token}` },
-
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            // console.log(data)
-            // Lưu dữ liệu trả về
-            setAlbums(data.popularReleaseAlbums); // Lưu danh sách album
-            setLastestAlbum(data.latest); // Lưu album mới nhất
-        } catch (err) {
-            console.error('Lỗi khi lấy dữ liệu:', err);
-            setError('Không thể tải dữ liệu.');
-        } finally {
-            setLoading(false);
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
         }
+        const response = await fetch(`http://149.28.146.58:3000/artist/popularAlbumRelease/${artistId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setAlbums(data.popularReleaseAlbums); // Lưu danh sách album
+        setLastestAlbum(data.latest); // Lưu album mới nhất
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchAlbums();
-  }, []);
-  // Hàm chuẩn hóa kiểu chữ của album.type
+  }, [artistId]);
+
+  // Fetch Artist Info
+  useEffect(() => {
+    const fetchArtist = async () => {
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
+        }
+        const response = await fetch(`http://192.168.105.35:3000/artist/artistInfo/${artistId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setArtist(data); // Lưu thông tin nghệ sĩ
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtist();
+  }, [artistId]);
+  useEffect(() => {
+    const fetchArtistPlaylists = async () => {
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
+        }
+        const response = await fetch(`http://192.168.105.35:3000/artist/artistPlaylists/${artistId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setArtistPlaylists(data); // Lưu thông tin nghệ sĩ
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtistPlaylists();
+  }, [artistId]);
+  useEffect(() => {
+    const fetchFanAlsoLike = async () => {
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
+        }
+        const response = await fetch(`http://192.168.105.35:3000/artist/relatedArtists/${artistId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setFansAlsoLike(data); // Lưu thông tin nghệ sĩ
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFanAlsoLike();
+  }, [artistId]);
+  console.log("ArtistScreen: ",fansAlsoLike);
+  // Format functions
   const formatType = (type) => {
     if (!type) return '';
     return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
   };
+  const handleItemPress = (item) => {
+    navigation.navigate('HomeTabs', {
+      screen: 'HomeStack',
+      params: {
+        screen: 'ArtistScreen',
+        params: { artistId: item.id }, // Truyền artistId ở đây
+      },
+    });
+  };
+  
+  const formatNumber = (num) => {
+    num = Number(num);
+    if (isNaN(num)) {
+      return '0';
+    }
 
-  // Sắp xếp dữ liệu theo date giảm dần
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    } else if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+
+    return num.toString();
+  };
+
+  const handlePress = () => {
+    navigation.navigate('HomeTabs', {
+      screen: 'HomeStack',
+      params: {
+        screen: 'BioArtistScreen',
+        params: { artistId: artistId },
+      },
+    });
+  };
+
+  // Sort albums by date descending
   const sortedAlbums = albums.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
     return dateB - dateA; // Sắp xếp giảm dần
   });
-  console.log('Artist Screen: ', albums);
+
   const headerHeight = scrollY.interpolate({
     inputRange: [0, 200],
     outputRange: [300, 80],
@@ -190,12 +298,13 @@ const ArtistScreen = ({ route }) => {
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
+
   const handleSeeDiscography = () => {
-    // Xử lý khi người dùng nhấn nút (ví dụ: điều hướng đến màn hình khác)
     console.log("See discography pressed");
-    // navigation.navigate("DiscographyScreen"); // Nếu có màn hình mới
+    // navigation.navigate("DiscographyScreen");
   };
-  
+
+  // Render functions
   const renderSongItem = ({ item, index }) => (
     <View style={styles.songItem}>
       <Text style={styles.songIndex}>{index + 1}</Text>
@@ -220,27 +329,30 @@ const ArtistScreen = ({ route }) => {
           style={[styles.headerBackground, { opacity: headerImageOpacity }]}
         >
           <Animated.Text style={[styles.artistNameLarge, { opacity: largeTitleOpacity }]}>
-            Aimer
+            {artist.name}
           </Animated.Text>
         </AnimatedImageBackground>
       </Animated.View>
-      <Text style={styles.listeners}>3.3M monthly listeners</Text>
-      <Text style={styles.sectionTitle}>Popular</Text>      
+      <Text style={styles.listeners}>
+        {formatNumber(artist.monthlyListeners)} monthly listeners
+      </Text>
+      <Text style={styles.sectionTitle}>Popular</Text>
     </View>
   );
+
   const ListFooter = () => (
     <View>
       <Text style={styles.sectionTitle}>Popular releases</Text>
       <FlatList
         data={sortedAlbums}
         renderItem={renderReleaseItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.id}_${item.album_id}_${index}`}
         scrollEnabled={false}
       />
       <TouchableOpacity style={styles.discographyButton} onPress={handleSeeDiscography}>
         <Text style={styles.discographyButtonText}>See discography</Text>
       </TouchableOpacity>
-  
+
       {/* <Text style={styles.sectionTitle}>Featuring Aimer</Text> */}
       {/* <FlatList
         data={featuringData}
@@ -250,72 +362,74 @@ const ArtistScreen = ({ route }) => {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.featuringList}
       /> */}
-  
+
       <Text style={styles.sectionTitle}>About</Text>
-  
+
       {/* Sử dụng ImageBackground làm nền cho toàn bộ container */}
-      <ImageBackground
-        source={{ uri: aboutData.image }}
-        style={styles.aboutContainer} // Đây sẽ là vùng chứa toàn bộ nội dung
-        imageStyle={{ borderRadius: 8 }} // Bo góc cho ảnh nền
-      >
-        {/* Biểu tượng Verified */}
-        {aboutData.verified && (
-          <View style={styles.verifiedIconContainer}>
-            <VerifiedIcon height={24} width={24} fill="#4cb3ff" />
-            <Text style={{ color: "#fff", fontSize: 14, marginLeft: 10 }}>Verified artist</Text>
+      <TouchableOpacity onPress={handlePress}>
+        <ImageBackground
+          source={{ uri: artist.gallery }}
+          style={styles.aboutContainer}
+          imageStyle={{ borderRadius: 8 }}
+        >
+          {/* Biểu tượng Verified */}
+          {artist.verified && (
+            <View style={styles.verifiedIconContainer}>
+              <VerifiedIcon height={24} width={24} fill="#4cb3ff" />
+              <Text style={{ color: "#fff", fontSize: 14, marginLeft: 10 }}>Verified artist</Text>
+            </View>
+          )}
+
+          {/* Nội dung bên trong */}
+          <View style={styles.aboutContent}>
+            <Text style={styles.aboutListeners}>
+              <Text style={styles.boldText}>{formatPlaycount(artist.monthlyListeners)}</Text> MONTHLY LISTENERS
+            </Text>
+            <Text style={styles.aboutDescription} numberOfLines={3} ellipsizeMode="tail">
+              {artist.biography}
+            </Text>
           </View>
-        )}
-  
-        {/* Nội dung bên trong */}
-        <View style={styles.aboutContent}>
-        <Text style={styles.aboutListeners}>
-          <Text style={styles.boldText}>{aboutData.listeners}</Text> MONTHLY LISTENERS
-        </Text>
-          <Text style={styles.aboutDescription} numberOfLines={3} ellipsizeMode="tail">
-            {aboutData.description}
-          </Text>
-        </View>
-      </ImageBackground>
+        </ImageBackground>
+      </TouchableOpacity>
+
       <Text style={styles.sectionTitle}>Artist Playlists</Text>
-        <FlatList
-          data={artistPlaylistsData}
-          renderItem={renderPlaylistItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.playlistList}
-        />
+      <FlatList
+        data={artistPlaylists}
+        renderItem={renderPlaylistItem}
+        keyExtractor={(item, index) => `${item.id}_${item.uri}_${index}`}
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.playlistList}
+      />
+
       <Text style={styles.sectionTitle}>Fans also like</Text>
-        <FlatList
-          data={fansAlsoLikeData}
-          renderItem={renderFansItem}
-          keyExtractor={(item) => item.id}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.fansList}
-        />
+      <FlatList
+        data={fansAlsoLike}
+        renderItem={renderFansItem}
+        // keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => `${item.id}_${item.uri}_${index}`}
+
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.fansList}
+      />
     </View>
   );
-  
-  // console.log(tracks)
+
   const renderReleaseItem = ({ item, index }) => {
     if (lastestAlbum && index === 0) {
-      // Xử lý riêng thẻ đầu tiên
       return (
         <View style={styles.releaseItem}>
-        <Image source={{ uri: lastestAlbum.coverArt }} style={styles.releaseImage} />
-        <View style={styles.releaseInfo}>
-          <Text style={styles.releaseTitle} numberOfLines={1}>
-            {lastestAlbum.name}
-          </Text>
-            <Text style={styles.releaseDetails}>Lastest release • { lastestAlbum.type}</Text>
+          <Image source={{ uri: lastestAlbum.coverArt }} style={styles.releaseImage} />
+          <View style={styles.releaseInfo}>
+            <Text style={styles.releaseTitle} numberOfLines={1}>
+              {lastestAlbum.name}
+            </Text>
+            <Text style={styles.releaseDetails}>Latest release • {lastestAlbum.type}</Text>
+          </View>
         </View>
-      </View>
       );
-    }
-    else if (index <= 4)
-    {
+    } else if (index <= 4) {
       return (
         <View style={styles.releaseItem}>
           <Image source={{ uri: item.coverArt }} style={styles.releaseImage} />
@@ -327,10 +441,11 @@ const ArtistScreen = ({ route }) => {
           </View>
         </View>
       );
-
+    } else {
+      return null; // Explicitly return null for indices > 4
     }
-
   };
+
   // const renderFeaturingItem = ({ item }) => (
   //   <View style={styles.featuringItem}>
   //     <Image source={{ uri: item.image }} style={styles.featuringImage} />
@@ -339,23 +454,42 @@ const ArtistScreen = ({ route }) => {
   //     </Text>
   //   </View>
   // );
+
   const renderPlaylistItem = ({ item }) => (
     <View style={styles.playlistItem}>
       <Image source={{ uri: item.image }} style={styles.playlistImage} />
       <Text style={styles.playlistTitle} numberOfLines={2} ellipsizeMode="tail">
-        {item.title}
-      </Text>
-    </View>
-  );
-  const renderFansItem = ({ item }) => (
-    <View style={styles.fansItem}>
-      <Image source={{ uri: item.image }} style={styles.fansImage} />
-      <Text style={styles.fansName} numberOfLines={1}>
         {item.name}
       </Text>
     </View>
   );
-  
+
+  const renderFansItem = ({ item }) => (
+    <TouchableOpacity style={styles.fansItem}
+      onPress={() => handleItemPress(item)}>
+      <Image source={{ uri: item.avatar }} style={styles.fansImage} />
+      <Text style={styles.fansName} numberOfLines={2}>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Loading...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.navBar, { backgroundColor: navBarBackgroundColor }]}>
@@ -363,29 +497,28 @@ const ArtistScreen = ({ route }) => {
           <Icon name="arrow-back" size={28} color="#ffffff" />
         </TouchableOpacity>
         <Animated.Text style={[styles.artistNameSmall, { opacity: smallTitleOpacity }]}>
-          Aimer
+          {artist.name}
         </Animated.Text>
       </Animated.View>
 
-    <FlatList
-    data={tracks}
-    renderItem={renderSongItem}
-    keyExtractor={(item, index) => `${item.id}_${item.track_id}_${index}`} // Tạo key duy nhất
-    contentContainerStyle={styles.songList}
-    onScroll={Animated.event(
-        [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-        { useNativeDriver: false }
-    )}
-    scrollEventThrottle={16}
-    ListHeaderComponent={ListHeader}
-    ListFooterComponent={ListFooter}
-    />
+      <FlatList
+        data={tracks}
+        renderItem={renderSongItem}
+        keyExtractor={(item, index) => `${item.id}_${item.track_id}_${index}`}
+        contentContainerStyle={styles.songList}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
+        )}
+        scrollEventThrottle={16}
+        ListHeaderComponent={ListHeader}
+        ListFooterComponent={ListFooter}
+      />
 
       <View style={{ height: 200 }}></View>
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     // flex: 1,

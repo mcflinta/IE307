@@ -35,6 +35,7 @@ const MainStackNavigator = () => (
         headerTintColor: '#fff',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerTitleAlign: 'center',
+        headerShown: true,
       }}
     />
     <MainStack.Screen

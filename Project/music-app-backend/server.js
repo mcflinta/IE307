@@ -732,7 +732,8 @@ fs.readFile('./data/topTrack.json', 'utf-8', (err, data) => {
 });
 
 // Endpoint truy vấn top tracks theo `id`
-// app.get('/artist/toptrack/:id', (req, res) => {
+
+// app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
 //     const { id } = req.params;
 
 //     // Lọc các bài hát có `id` khớp với tham số
@@ -748,8 +749,14 @@ fs.readFile('./data/topTrack.json', 'utf-8', (err, data) => {
 app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
 
-    // Lọc các bài hát có `id` khớp với tham số
-    const topTracks = tracksData.filter(track => track.id === id);
+    if (!Array.isArray(tracksData)) {
+        return res.status(500).json({ message: 'Dữ liệu không hợp lệ.' });
+    }
+
+    // Duyệt qua tất cả mảng con trong tracksData
+    const topTracks = tracksData.flatMap(tracks => 
+        tracks.filter(track => track.id === id)
+    );
 
     if (topTracks.length === 0) {
         return res.status(404).json({ message: `Không tìm thấy bài hát nào với id: ${id}` });
@@ -758,44 +765,268 @@ app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
     // Trả về danh sách bài hát
     res.json(topTracks);
 });
-let albumsData;
+
+// let albumsData;
+// fs.readFile('./data/popularAlbumReleases.json', 'utf-8', (err, data) => {
+//     if (err) {
+//         console.error('Không thể đọc file JSON:', err);
+//     } else {
+//         albumsData = JSON.parse(data);
+//     }
+// });
+
+// // Endpoint: Lấy thông tin popularReleaseAlbums của nghệ sĩ theo id
+// app.get('/artist/popularAlbumRelease/:id', authenticateToken, (req, res) => {
+//     const { id } = req.params;
+
+//     // Kiểm tra dữ liệu đã được tải lên
+//     if (!albumsData) {
+//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+//     }
+
+//     // Kiểm tra ID có khớp với artist_id trong dữ liệu
+//     if (albumsData.artist_id !== id) {
+//         return res.status(404).json({ message: `Không tìm thấy nghệ sĩ với id: ${id}` });
+//     }
+
+//     // Trả về danh sách popularReleaseAlbums
+//     const popularReleaseAlbums = albumsData.popularReleaseAlbums;
+//     if (!popularReleaseAlbums || popularReleaseAlbums.length === 0) {
+//         return res.status(404).json({ message: 'Không có album phổ biến nào.' });
+//     }
+//     const latestReleaseAlbums = albumsData.latest;
+//     if (!latestReleaseAlbums || latestReleaseAlbums.length === 0) {
+//         return res.status(404).json({ message: 'Không có album lastest nào.' });
+//     }
+//     res.json({
+//         artist_id: albumsData.artist_id,
+//         artist_name: albumsData.artist_name,
+//         popularReleaseAlbums: popularReleaseAlbums,
+//         latest: latestReleaseAlbums,
+//     });
+// });
+let albumsData = [];
+
+// Đọc file JSON khi server khởi động
 fs.readFile('./data/popularAlbumReleases.json', 'utf-8', (err, data) => {
     if (err) {
         console.error('Không thể đọc file JSON:', err);
     } else {
-        albumsData = JSON.parse(data);
+        try {
+            albumsData = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
     }
 });
-
-// Endpoint: Lấy thông tin popularReleaseAlbums của nghệ sĩ theo id
 app.get('/artist/popularAlbumRelease/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
 
     // Kiểm tra dữ liệu đã được tải lên
-    if (!albumsData) {
-        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+    if (!Array.isArray(albumsData)) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng hoặc không hợp lệ.' });
     }
 
-    // Kiểm tra ID có khớp với artist_id trong dữ liệu
-    if (albumsData.artist_id !== id) {
+    // Tìm nghệ sĩ có artist_id khớp với id
+    const artistData = albumsData.find(artist => artist.artist_id === id);
+
+    if (!artistData) {
         return res.status(404).json({ message: `Không tìm thấy nghệ sĩ với id: ${id}` });
     }
 
-    // Trả về danh sách popularReleaseAlbums
-    const popularReleaseAlbums = albumsData.popularReleaseAlbums;
+    // Kiểm tra dữ liệu popularReleaseAlbums và latest
+    const { popularReleaseAlbums, latest } = artistData;
+
     if (!popularReleaseAlbums || popularReleaseAlbums.length === 0) {
         return res.status(404).json({ message: 'Không có album phổ biến nào.' });
     }
-    const latestReleaseAlbums = albumsData.latest;
-    if (!latestReleaseAlbums || latestReleaseAlbums.length === 0) {
-        return res.status(404).json({ message: 'Không có album lastest nào.' });
+
+    if (!latest) {
+        return res.status(404).json({ message: 'Không có album mới nhất nào.' });
     }
+
+    // Trả về dữ liệu album
     res.json({
-        artist_id: albumsData.artist_id,
-        artist_name: albumsData.artist_name,
-        popularReleaseAlbums: popularReleaseAlbums,
-        latest: latestReleaseAlbums,
+        artist_id: artistData.artist_id,
+        artist_name: artistData.artist_name,
+        popularReleaseAlbums,
+        latest,
     });
+});
+
+let artistData;
+
+// Đọc file JSON khi server khởi động
+fs.readFile('./data/artistInfo.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        artistData = JSON.parse(data);
+        console.log('Dữ liệu nghệ sĩ đã được tải.');
+    }
+});
+
+// Endpoint lấy thông tin nghệ sĩ theo id
+// app.get('/artist/artistInfo/:id', authenticateToken, (req, res) => {
+//     const { id } = req.params;
+
+//     // Kiểm tra nếu `artistData` chưa được tải
+//     if (!artistData) {
+//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+//     }
+
+//     // Kiểm tra nếu ID khớp
+//     if (artistData.id !== id) {
+//         return res.status(404).json({ message: `Không tìm thấy thông tin nghệ sĩ nào với id: ${id}` });
+//     }
+
+//     // Trả về thông tin nghệ sĩ
+//     res.json(artistData);
+// });
+// Endpoint lấy thông tin nghệ sĩ theo id
+app.get('/artist/artistInfo/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    // Kiểm tra nếu `artistData` chưa được tải
+    if (!Array.isArray(artistData)) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng hoặc không hợp lệ.' });
+    }
+
+    // Tìm nghệ sĩ có id khớp
+    const artist = artistData.find(artist => artist.id === id);
+
+    if (!artist) {
+        return res.status(404).json({ message: `Không tìm thấy thông tin nghệ sĩ nào với id: ${id}` });
+    }
+
+    // Trả về thông tin nghệ sĩ
+    res.json(artist);
+});
+// let playlistData;
+
+// // Đọc file JSON khi server khởi động
+// fs.readFile('./data/artistPlaylists.json', 'utf-8', (err, data) => {
+//     if (err) {
+//         console.error('Không thể đọc file JSON:', err);
+//     } else {
+//         playlistData = JSON.parse(data);
+//         console.log('Dữ liệu playlist đã được tải.');
+//     }
+// });
+// // Endpoint lấy danh sách playlist theo artist_id
+// app.get('/artist/artistPlaylists/:id', authenticateToken, (req, res) => {
+//     const { id } = req.params;
+
+//     // Kiểm tra nếu dữ liệu chưa được tải
+//     if (!playlistData) {
+//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+//     }
+
+//     // So khớp `artist_id`
+//     if (playlistData.artist_id !== id) {
+//         return res.status(404).json({ message: `Không tìm thấy playlist nào với artist_id: ${id}` });
+//     }
+
+//     // Trả về danh sách playlist
+//     res.json(playlistData.playlists);
+// });
+let playlistData = [];
+
+// Đọc file JSON khi server khởi động
+fs.readFile('./data/artistPlaylists.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            playlistData = JSON.parse(data);
+            console.log('Dữ liệu playlist đã được tải.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+
+// Endpoint lấy danh sách playlist theo artist_id
+app.get('/artist/artistPlaylists/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    // Kiểm tra nếu dữ liệu chưa được tải
+    if (!Array.isArray(playlistData)) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng hoặc không hợp lệ.' });
+    }
+
+    // Tìm nghệ sĩ có `artist_id` khớp với `id`
+    const artistPlaylists = playlistData.find(artist => artist.artist_id === id);
+
+    if (!artistPlaylists) {
+        return res.status(404).json({ message: `Không tìm thấy playlist nào với artist_id: ${id}` });
+    }
+
+    // Trả về danh sách playlist
+    res.json(artistPlaylists.playlists);
+});
+
+// let relatedArtistsData;
+// fs.readFile('./data/artistRelated.json', 'utf-8', (err, data) => {
+//     if (err) {
+//         console.error('Không thể đọc file JSON:', err);
+//     } else {
+//         relatedArtistsData = JSON.parse(data);
+//         console.log('Dữ liệu nghệ sĩ liên quan đã được tải.');
+//     }
+// });
+// app.get('/artist/relatedArtists/:id', authenticateToken, (req, res) => {
+//     const { id } = req.params;
+
+//     // Kiểm tra nếu dữ liệu chưa được tải
+//     if (!relatedArtistsData) {
+//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
+//     }
+
+//     // So khớp `artist_id`
+//     if (relatedArtistsData.artist_id !== id) {
+//         return res.status(404).json({ message: `Không tìm thấy nghệ sĩ liên quan nào với artist_id: ${id}` });
+//     }
+
+//     // Trả về danh sách nghệ sĩ liên quan
+//     res.json(relatedArtistsData.related_artists);
+// });
+
+let relatedArtistsData = [];
+
+// Đọc file JSON khi server khởi động
+fs.readFile('./data/artistRelated.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            relatedArtistsData = JSON.parse(data);
+            console.log('Dữ liệu nghệ sĩ liên quan đã được tải.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+
+// Endpoint lấy danh sách nghệ sĩ liên quan theo artist_id
+app.get('/artist/relatedArtists/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    // Kiểm tra nếu dữ liệu chưa được tải
+    if (!Array.isArray(relatedArtistsData)) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng hoặc không hợp lệ.' });
+    }
+
+    // Tìm nghệ sĩ có artist_id khớp với id
+    const artistData = relatedArtistsData.find(artist => artist.artist_id === id);
+
+    if (!artistData) {
+        return res.status(404).json({ message: `Không tìm thấy nghệ sĩ liên quan nào với artist_id: ${id}` });
+    }
+
+    // Trả về danh sách nghệ sĩ liên quan
+    res.json(artistData.related_artists);
 });
 // Khởi động server
 // const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn

@@ -1,38 +1,121 @@
-import React from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, Dimensions } from 'react-native';
+
+import React, { useEffect, useState } from 'react';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  TouchableOpacity,
+  Linking,
+} from 'react-native';
 import HTMLView from 'react-native-htmlview';
+import tokenManager from '../services/TokenManager';
+import XIcon from '../assets/svg/XIcon.svg';
+import WikiIcon from '../assets/svg/WikiIcon.svg';
 
 const BioArtistScreen = ({ route }) => {
-  console.log("BIoArtistScreen", route.params);
-  const artist = {
-    name: 'Aimer',
-    monthlyListeners: '3,319,406',
-    description:
-      `<p>15歳の頃、歌唱による喉の酷使が原因で突如声が出なくなるアクシデントに見舞われるも、数年後には独特のハスキーで甘い歌声を得ることとなる。2011年にシングル「六等星の夜」でメジャーデビュー。\n代表曲「蝶々結び」などを収録した4thアルバム「daydream」を2016年9月にリリースし、iTunesアルバムチャート1位などを獲得した他、CDショップ大賞2017において準大賞も受賞。2019年には16枚目のシングル「I beg you  / 花びらたちのマーチ / Sailing」をリリースし、自身初のオリコン週間シングルランキング初登場1位を記録する。\n\nAt the age of 15, Aimer suddenly lost her voice due to overuse of her throat by singing, but a few years later she got a unique husky and sweet singing voice. In 2011, she made her major debut with single &#34;<a href="spotify:track:57hbqDXNpE9rMmYd2U9dUB" data-name="六等星の夜">六等星の夜</a> (Rokutosei no yoru)&#34;.\nIn September 2016, she released her 4th album &#34;<a href="spotify:album:0gTeVkaC6wyVZEXNQUA4gF" data-name="daydream">daydream</a>&#34; which includes her representative song &#34;Chouchou Musubi&#34;, and placed #1 on the iTunes album chart. In 2019, she released her 16th single &#34;<a href="spotify:album:2YLBHyegPO32zvOWFJzkLN" data-name="I beg you / 花びらたちのマーチ / Sailing">I beg you / 花びらたちのマーチ / Sailing</a>&#34; which ranked #1 in the weekly single Oricon chart for the first time in her career.  Her song ‘Zankyosanka’ for the worldwide popular anime “Demon Slayer: Kimetsu no Yaiba” as its season 2 opening theme became a global hit soon after release in 2021. She is coming out with mini album titled “Deep down” to celebrate her 10th anniversary since debut, and the album will include CHAINSAW MAN ending theme ‘Deep down’.</p>`,
-    imageUrl: 'https://i.scdn.co/image/ab6761610000e5eb23241889efb57a4ce8338932',
+  const artistId = route.params.artistId;
+  const [artist, setArtist] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handlePress = async (url) => {
+    try {
+      const supported = await Linking.canOpenURL(url);
+      if (supported) {
+        await Linking.openURL(url); // Mở URL
+      } else {
+        Alert.alert(`Không thể mở đường link: ${url}`);
+      }
+    } catch (error) {
+      Alert.alert('Đã xảy ra lỗi khi mở link!');
+    }
   };
+  const formatType = (type) => {
+    if (!type) return '';
+    return type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+  };
+  const formatPlaycount = (count) => {
+    return Number(count).toLocaleString().toString(); // Thêm dấu phẩy ngăn cách mỗi 3 chữ số
+  };
+  useEffect(() => {
+    const fetchArtist = async () => {
+      setLoading(true);
+      try {
+        const token = await tokenManager.getToken(); // Lấy token từ TokenManager
+        if (!token) {
+          console.error('Token is missing.');
+          return;
+        }
+        const response = await fetch(
+          `http://149.28.146.58:3000/artist/artistInfo/${artistId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        setArtist(data); // Lưu thông tin nghệ sĩ
+      } catch (err) {
+        console.error('Lỗi khi lấy dữ liệu:', err);
+        setError('Không thể tải dữ liệu.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArtist();
+  }, [artistId]);
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentScroll}>
       {/* Artist Image */}
-      <Image source={{ uri: artist.imageUrl }} style={styles.artistImage} />
+      {artist.artistImage && (
+        <Image source={{ uri: artist.gallery }} style={styles.artistImage} />
+      )}
 
       {/* Monthly Listeners */}
-      <Text style={styles.listenersCount}>{artist.monthlyListeners}</Text>
+      <Text style={styles.listenersCount}>{formatPlaycount(artist.monthlyListeners)}</Text>
       <Text style={styles.listenersText}>MONTHLY LISTENERS</Text>
 
       {/* Description */}
       <HTMLView
-        value={artist.description}
+        value={`<p>${artist.biography || ''}</p>`}
         stylesheet={htmlStyles}
-        addLineBreaks={false} // Giữ nguyên format HTML mà không tự động thêm xuống dòng
+        addLineBreaks={false}
       />
-      <View styles={styles.containerPost}>
-        <Image source={{uri:"https://i.scdn.co/image/ab6761610000e5eb23241889efb57a4ce8338932"}}/>
+<View style={styles.artistContainer}>
+        {artist.artistImage && (
+          <Image source={{ uri: artist.artistImage }} style={styles.artistImageLarge} />
+        )}
+        <Text style={styles.artistNameLarge}>Posted by {artist.name}</Text>
       </View>
-      
+      {/* Links Section */}
+      <View>
+        {artist.external_links &&
+          artist.external_links.map((link, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.item}
+              onPress={() => handlePress(link.url)}
+            >
+              {/* Icon logic */}
+              {link.name === 'TWITTER' ? (
+                <XIcon height={30} width={30} fill={'#fff'} style={styles.icon} />
+              ) : link.name === 'WIKIPEDIA' ? (
+                <WikiIcon height={30} width={30} fill={'#fff'} style={styles.icon} />
+              ) : null}
+              <Text style={styles.text}>{formatType(link.name)}</Text>
+            </TouchableOpacity>
+          ))}
+      </View>
     </ScrollView>
-
   );
 };
 
@@ -46,7 +129,7 @@ const styles = StyleSheet.create({
   artistImage: {
     width: '100%',
     height: 300,
-    borderRadius: 10,
+    borderRadius: 2,
     marginBottom: 20,
   },
   listenersCount: {
@@ -60,19 +143,49 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   contentScroll: {
-    paddingBottom: 50,
+    paddingBottom: 150,
+  },
+  artistContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  artistImageLarge: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    marginRight: 12,
+  },
+  artistNameLarge: {
+    fontSize: 16,
+    color: '#fff',
+    textAlign: 'left',
+  },
+  item: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  icon: {
+    width: 24, // Kích thước icon
+    height: 24,
+    marginRight: 20,
+  },
+  text: {
+    color: '#fff', // Màu chữ trắng
+    fontSize: 16, // Kích thước chữ
   },
 });
 
 const htmlStyles = StyleSheet.create({
-  a: {
-    color: '#1DB954', // Màu xanh lá đặc trưng của Spotify
-  },
   p: {
-    fontSize: 14,
+    fontSize: 15,
     color: '#fff',
     lineHeight: 22,
   },
+  a: {
+    color: '#1DB954',
+  }
 });
 
 export default BioArtistScreen;

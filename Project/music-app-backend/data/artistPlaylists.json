@@ -1,0 +1,44 @@
+[
+    {
+            "artist_id": "0bAsR2unSRpn6BQPEnNlZm",
+            "playlists": [
+                {
+                    "name": "Aimer - SACRA MUSIC MONTH",
+                    "__typename": "Playlist",
+                    "description": "Aimer Setlist - Riyadh Season 2022 (Dec 9, 2022)",
+                    "owner": "SACRA MUSIC",
+                    "uri": "5MPocL1wY3uBN4NKLoHxAp",
+                    "image": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72ca4a40623915926bfdd8dd1b8"
+                },
+                {
+                    "name": "This Is Aimer",
+                    "__typename": "Playlist",
+                    "description": "This is Aimer. The essential tracks, all in one playlist.",
+                    "owner": "Spotify",
+                    "uri": "37i9dQZF1DZ06evO02uS96",
+                    "image": "https://thisis-images.spotifycdn.com/37i9dQZF1DZ06evO02uS96-default.jpg"
+                },
+                {
+                    "name": "Aimer 10th Anniversary",
+                    "__typename": "Playlist",
+                    "description": "Aimerストリーミング全曲解禁とデビュー10周年を記念したベストトラックス",
+                    "owner": "Sony Music Japan",
+                    "uri": "1TkiRt3bMoYW8Z6eaJzYwC",
+                    "image": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000d72caa920d88dc3893fcb4014746"
+                }
+            ]
+    },
+    {
+        "artist_id": "45ft4DyTCEJfQwTBHXpdhM",
+        "playlists": [
+            {
+                "name": "This Is milet",
+                "__typename": "Playlist",
+                "description": "This is milet. The essential tracks, all in one playlist.",
+                "owner": "Spotify",
+                "uri": "37i9dQZF1DZ06evO2nU9H2",
+                "image": "https://thisis-images.spotifycdn.com/37i9dQZF1DZ06evO2nU9H2-default.jpg"
+            }
+        ]
+    }
+]

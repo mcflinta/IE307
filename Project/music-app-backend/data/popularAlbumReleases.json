@@ -1,83 +1,169 @@
-{
-    "artist_id": "0bAsR2unSRpn6BQPEnNlZm",
-    "artist_name": "Aimer",
-    "popularReleaseAlbums": [
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e0210179936604a42f16280835e",
-            "album_id": "1gfSftIuafqkGu28ely5z6",
-            "name": "残響散歌",
-            "type": "SINGLE",
-            "date": 2021
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02b56ada0ba61d7787fb213f72",
-            "album_id": "336m0kejdM5Fkw2HUX46Bw",
-            "name": "daydream",
-            "type": "ALBUM",
-            "date": 2016
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02e9c7a6eef73e74417c6ef679",
-            "album_id": "4BJ7PY6YSfHY9pu2nDFBiy",
-            "name": "Open α Door",
-            "type": "ALBUM",
-            "date": 2023
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02b54e91cdc2fc4e29efab4e4b",
-            "album_id": "7EHV2huu8yHAsPjzgmUjka",
-            "name": "DAWN",
-            "type": "ALBUM",
-            "date": 2015
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02146ee402c8243cf8db8630e6",
-            "album_id": "3iFkNa8SRNFHD7La40UqUz",
-            "name": "Walpurgis",
-            "type": "ALBUM",
-            "date": 2021
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02ac1a5a83790ba13920affe1e",
-            "album_id": "3PQH45Tw7K3IzTLsGze9UE",
-            "name": "おもかげ (produced by Vaundy)",
-            "type": "SINGLE",
-            "date": 2021
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e0230cf3673464552a8342b6ff3",
-            "album_id": "5WxSamBTcE3P1W6sT9My7B",
-            "name": "Penny Rain",
-            "type": "ALBUM",
-            "date": 2019
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e02189f203384af534b6b269e7d",
-            "album_id": "0FNWMFyb0nLCCHucsDfxmA",
-            "name": "Sun Dance",
-            "type": "ALBUM",
-            "date": 2019
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e023808da7201adab42669a26b9",
-            "album_id": "3ZrzXf0SU0XWmxOPBMpccD",
-            "name": "Sleepless Nights",
-            "type": "ALBUM",
-            "date": 2012
-        },
-        {
-            "coverArt": "https://i.scdn.co/image/ab67616d00001e0280b034fcb0ee1d2de095d060",
-            "album_id": "1mR8kxKKuBobjRXaZjHWw4",
-            "name": "星の消えた夜に",
-            "type": "ALBUM",
-            "date": 2022
+[
+    {
+        "artist_id": "0bAsR2unSRpn6BQPEnNlZm",
+        "artist_name": "Aimer",
+        "popularReleaseAlbums": [
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e0210179936604a42f16280835e",
+                "album_id": "1gfSftIuafqkGu28ely5z6",
+                "name": "残響散歌",
+                "type": "SINGLE",
+                "date": 2021
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02b56ada0ba61d7787fb213f72",
+                "album_id": "336m0kejdM5Fkw2HUX46Bw",
+                "name": "daydream",
+                "type": "ALBUM",
+                "date": 2016
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02e9c7a6eef73e74417c6ef679",
+                "album_id": "4BJ7PY6YSfHY9pu2nDFBiy",
+                "name": "Open α Door",
+                "type": "ALBUM",
+                "date": 2023
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02b54e91cdc2fc4e29efab4e4b",
+                "album_id": "7EHV2huu8yHAsPjzgmUjka",
+                "name": "DAWN",
+                "type": "ALBUM",
+                "date": 2015
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02146ee402c8243cf8db8630e6",
+                "album_id": "3iFkNa8SRNFHD7La40UqUz",
+                "name": "Walpurgis",
+                "type": "ALBUM",
+                "date": 2021
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02ac1a5a83790ba13920affe1e",
+                "album_id": "3PQH45Tw7K3IzTLsGze9UE",
+                "name": "おもかげ (produced by Vaundy)",
+                "type": "SINGLE",
+                "date": 2021
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e0230cf3673464552a8342b6ff3",
+                "album_id": "5WxSamBTcE3P1W6sT9My7B",
+                "name": "Penny Rain",
+                "type": "ALBUM",
+                "date": 2019
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02189f203384af534b6b269e7d",
+                "album_id": "0FNWMFyb0nLCCHucsDfxmA",
+                "name": "Sun Dance",
+                "type": "ALBUM",
+                "date": 2019
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e023808da7201adab42669a26b9",
+                "album_id": "3ZrzXf0SU0XWmxOPBMpccD",
+                "name": "Sleepless Nights",
+                "type": "ALBUM",
+                "date": 2012
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e0280b034fcb0ee1d2de095d060",
+                "album_id": "1mR8kxKKuBobjRXaZjHWw4",
+                "name": "星の消えた夜に",
+                "type": "ALBUM",
+                "date": 2022
+            }
+        ],
+        "latest": {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e0216943045e28eb56b11d2ebde",
+            "album_id": "268Fp4sOfh7kFOmChBsT4f",
+            "name": "Sign",
+            "type": "EP",
+            "date": 2024
         }
-    ],
-    "latest": {
-        "coverArt": "https://i.scdn.co/image/ab67616d00001e0216943045e28eb56b11d2ebde",
-        "album_id": "268Fp4sOfh7kFOmChBsT4f",
-        "name": "Sign",
-        "type": "EP",
-        "date": 2024
+
+    },
+    {
+        "artist_id": "45ft4DyTCEJfQwTBHXpdhM",
+        "artist_name": "milet",
+        "popularReleaseAlbums": [
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02cb6080eae6c43b7ed1bb44b4",
+                "album_id": "1xml9CR90tJdvTESDk4Q4s",
+                "name": "絆ノ奇跡",
+                "type": "SINGLE",
+                "date": 2023
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02c5d339e4346028648c72bc0b",
+                "album_id": "3FFBo52XG8Iqz2c9NvLJRn",
+                "name": "eyes",
+                "type": "ALBUM",
+                "date": 2020
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02226d5c168f602298610fb028",
+                "album_id": "66OrMbPN4equuw2hHbjA1X",
+                "name": "Anytime Anywhere",
+                "type": "SINGLE",
+                "date": 2023
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02ac1a5a83790ba13920affe1e",
+                "album_id": "3PQH45Tw7K3IzTLsGze9UE",
+                "name": "おもかげ (produced by Vaundy)",
+                "type": "SINGLE",
+                "date": 2021
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02efe7f500c598453480b16329",
+                "album_id": "1SawHGXZXBBST8mGV0uJgK",
+                "name": "visions",
+                "type": "ALBUM",
+                "date": 2022
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02505e9a0505f7fc56861909b6",
+                "album_id": "1dLcTY0iMPyX7i6yrz5KjP",
+                "name": "5am",
+                "type": "ALBUM",
+                "date": 2023
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02b2f3bd7c5cdf59dc0c3109ff",
+                "album_id": "0yiK7Xlg6Fbhn7UtxrWzxa",
+                "name": "Anytime Anywhere",
+                "type": "EP",
+                "date": 2024
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02af469b0589b1f11babf263ee",
+                "album_id": "71gRqLVrm4OMLRUYXMkWbu",
+                "name": "コイコガレ",
+                "type": "SINGLE",
+                "date": 2023
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e022d3163b1e7824ed328a78ded",
+                "album_id": "49CnHwBiS216An5m4r81qL",
+                "name": "We All Lie",
+                "type": "SINGLE",
+                "date": 2024
+            },
+            {
+                "coverArt": "https://i.scdn.co/image/ab67616d00001e02224afab1ea982b95e6eb6a68",
+                "album_id": "5fJgop47hvckqHRmF1Wv88",
+                "name": "inside you EP",
+                "type": "EP",
+                "date": 2019
+            }
+        ],
+        "latest": {
+            "coverArt": "https://i.scdn.co/image/ab67616d00001e02aa8c4dc29c57dc389f9f2b44",
+            "album_id": "2wUva48Jciq4Jp5xXSMAg7",
+            "name": "Out of the Loop",
+            "type": "SINGLE",
+            "date": 2024
+        }
     }
-}
+]

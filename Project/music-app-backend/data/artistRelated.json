@@ -1,0 +1,212 @@
+[
+        {
+        "artist_id": "0bAsR2unSRpn6BQPEnNlZm",
+        "related_artists": [
+            {
+                "id": "45ft4DyTCEJfQwTBHXpdhM",
+                "name": "milet",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebaca6904f2bb44ea5eade9577"
+            },
+            {
+                "id": "7gRg6C2qgQ1F01k3sgyEVt",
+                "name": "SPYAIR",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb05f666b46dfb8a7a37390283"
+            },
+            {
+                "id": "5WBO8UyOuJ1l7ZBqqBimpO",
+                "name": "YUI",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb8f1a9645d31010a8f81b7e89"
+            },
+            {
+                "id": "1snhtMLeb2DYoMOcVbb8iB",
+                "name": "Kenshi Yonezu",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebd7ca899f6e53b54976a8594b"
+            },
+            {
+                "id": "7kOrrFIBIBc8uCu2zbxbLv",
+                "name": "yama",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb25feb1ba3ec364ce810351a6"
+            },
+            {
+                "id": "4UK2Lzi6fBfUi9rpDt6cik",
+                "name": "Yorushika",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebe62cff9c6018ae5616b01eab"
+            },
+            {
+                "id": "0blbVefuxOGltDBa00dspv",
+                "name": "LiSA",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb774ac8933df7e2c8060fd1a2"
+            },
+            {
+                "id": "5YneEA2nLtAhkD5t2769lZ",
+                "name": "Ikimonogakari",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb149668ea458784ab019c16e7"
+            },
+            {
+                "id": "1YLxQZIGsaZq9rvFu8zeRz",
+                "name": "Sayuri",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebb1f57cab1a62f826a54dc887"
+            },
+            {
+                "id": "5Qeyh2XKoITt1mlEVtzazC",
+                "name": "Daoko",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb4bcd7dfa75039998db41f360"
+            },
+            {
+                "id": "6cutt8thPFUICMfxaYerWd",
+                "name": "MY FIRST STORY",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb04df1f5b551614aff7882b2f"
+            },
+            {
+                "id": "1EowJ1WwkMzkCkRomFhui7",
+                "name": "RADWIMPS",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebc9d443fb5ced1dd32d106632"
+            },
+            {
+                "id": "64tJ2EAv1R6UaZqc4iOCyj",
+                "name": "YOASOBI",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebbfdd8a29d0c6bc6950055234"
+            },
+            {
+                "id": "6whFEcaV75AmQMiwlfaxvc",
+                "name": "QUEEN BEE",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebda488f9ddaea253b510b367d"
+            },
+            {
+                "id": "4Mc3zbnQx4wRb0tYg7A8sG",
+                "name": "supercell",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebd513f8abaccf1dffb3c35c1f"
+            },
+            {
+                "id": "1qM11R4ylJyQiPJ0DffE9z",
+                "name": "Lilas Ikuta",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebb7261cb7c9979c9d4c26a101"
+            },
+            {
+                "id": "5Vo1hnCRmCM6M4thZCInCj",
+                "name": "OFFICIAL HIGE DANDISM",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebf9f7513528a90d1dde6d3aaa"
+            },
+            {
+                "id": "3PWp9R5HvbQgxI5KBx5kVd",
+                "name": "KANA-BOON",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb85101fe5a2b3c2945908f1cf"
+            },
+            {
+                "id": "6wxfx1yhyqjCPYwwxJktR2",
+                "name": "King Gnu",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eba37245f3231e8c66116638e1"
+            },
+            {
+                "id": "0ixzjrK1wkN2zWBXt3VW3W",
+                "name": "Yuuri",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb2f68be1a1a95221976c0fbba"
+            }
+        ]
+    },
+    {
+        "artist_id": "45ft4DyTCEJfQwTBHXpdhM",
+        "related_artists": [
+            {
+                "id": "0bAsR2unSRpn6BQPEnNlZm",
+                "name": "Aimer",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb23241889efb57a4ce8338932"
+            },
+            {
+                "id": "7gRg6C2qgQ1F01k3sgyEVt",
+                "name": "SPYAIR",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb05f666b46dfb8a7a37390283"
+            },
+            {
+                "id": "1qM11R4ylJyQiPJ0DffE9z",
+                "name": "Lilas Ikuta",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebb7261cb7c9979c9d4c26a101"
+            },
+            {
+                "id": "7kOrrFIBIBc8uCu2zbxbLv",
+                "name": "yama",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb25feb1ba3ec364ce810351a6"
+            },
+            {
+                "id": "6le80R1opKnTlP4o3KvA2k",
+                "name": "Uru",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb36ec45d5886071268cc63daf"
+            },
+            {
+                "id": "4UK2Lzi6fBfUi9rpDt6cik",
+                "name": "ヨルシカ",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebe62cff9c6018ae5616b01eab"
+            },
+            {
+                "id": "6cutt8thPFUICMfxaYerWd",
+                "name": "MY FIRST STORY",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb04df1f5b551614aff7882b2f"
+            },
+            {
+                "id": "4SJ7qRgJYNXB9Yttzs4aSa",
+                "name": "Ryokuoushoku Shakai",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb138c7129876e9cde33775ca3"
+            },
+            {
+                "id": "2yRnjWtHzmDELwYaUiX0Yh",
+                "name": "Atarayo",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb7230f91cc46fb48d4c05e70a"
+            },
+            {
+                "id": "5WBO8UyOuJ1l7ZBqqBimpO",
+                "name": "YUI",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb8f1a9645d31010a8f81b7e89"
+            },
+            {
+                "id": "1snhtMLeb2DYoMOcVbb8iB",
+                "name": "Kenshi Yonezu",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebd7ca899f6e53b54976a8594b"
+            },
+            {
+                "id": "1EowJ1WwkMzkCkRomFhui7",
+                "name": "RADWIMPS",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebc9d443fb5ced1dd32d106632"
+            },
+            {
+                "id": "6wxfx1yhyqjCPYwwxJktR2",
+                "name": "King Gnu",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eba37245f3231e8c66116638e1"
+            },
+            {
+                "id": "0ixzjrK1wkN2zWBXt3VW3W",
+                "name": "Yuuri",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb2f68be1a1a95221976c0fbba"
+            },
+            {
+                "id": "0jJmZHZHNe8n24Y33z5Nil",
+                "name": "DISH//",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebe6f3e7e458846002d1b6ba1e"
+            },
+            {
+                "id": "5Vo1hnCRmCM6M4thZCInCj",
+                "name": "OFFICIAL HIGE DANDISM",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebf9f7513528a90d1dde6d3aaa"
+            },
+            {
+                "id": "6whFEcaV75AmQMiwlfaxvc",
+                "name": "QUEEN BEE",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebda488f9ddaea253b510b367d"
+            },
+            {
+                "id": "5YneEA2nLtAhkD5t2769lZ",
+                "name": "Ikimonogakari",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb149668ea458784ab019c16e7"
+            },
+            {
+                "id": "1J6OD7vLbjEuFVgVRlusmS",
+                "name": "Riria.",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5eb74b7c65d42613170680f6335"
+            },
+            {
+                "id": "6n4SsAp5VjvIBg3s9QCcPX",
+                "name": "SUDA MASAKI",
+                "avatar": "https://i.scdn.co/image/ab6761610000e5ebe9fcaff28ae9db39738cc33f"
+            }
+        ]
+    }
+]
