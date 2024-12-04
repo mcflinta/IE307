@@ -325,7 +325,7 @@ const ArtistScreen = ({ route }) => {
     <View>
       <Animated.View style={[styles.headerContainer, { height: headerHeight }]}>
         <AnimatedImageBackground
-          source={{ uri: "https://i.scdn.co/image/ab6761610000e5eb23241889efb57a4ce8338932" }}
+          source={{ uri: artist.artistImage }}
           style={[styles.headerBackground, { opacity: headerImageOpacity }]}
         >
           <Animated.Text style={[styles.artistNameLarge, { opacity: largeTitleOpacity }]}>
