@@ -900,7 +900,6 @@ import RepeatIcon from '../assets/svg/RepeatIcon';
 import RepeatAllIcon from '../assets/svg/RepeatAllIcon';
 import RepeatOneIcon from '../assets/svg/RepeatOneIcon';
 import { useNavigation } from '@react-navigation/native'; // Import navigation hook
-
 const screenHeight = Dimensions.get('window').height;
 
 const FullPlayerScreen = ({onClose, user, token }) => {
@@ -913,7 +912,7 @@ const FullPlayerScreen = ({onClose, user, token }) => {
   const [shuffleMode, setShuffleMode] = useState(MusicPlayerService.shuffleMode);
   // console.log("Full Player  Screen:", currentSong)
   const navigation = useNavigation(); // Get navigation object from hook
-
+  // console.log("Full Player  Screen:", user, token)
   const translateY = useSharedValue(screenHeight);
   useEffect(() => {
     translateY.value = withSpring(0, { damping: 20 });
@@ -1120,14 +1119,38 @@ const FullPlayerScreen = ({onClose, user, token }) => {
           <View style={styles.artistInfoContainer}>
             
             <View style={styles.artistCard}>
-            <ImageBackground
-              source={{uri: currentSong.artistImages}}
-              style={styles.artistImage}
-            >
-              <Text style={styles.artistHeaderText}>About the Artist</Text>
-            </ImageBackground>
+              <TouchableOpacity onPress={() => {
+                onClose();
+                navigation.navigate('HomeTabs', {
+                  screen: 'HomeStack',
+                  params: user, token,
+                  params: {
+                    screen: 'ArtistScreen',
+                    params: user, token,
+
+                  },
+                });
+            }}>
+              <ImageBackground
+                source={{ uri: currentSong.artistImages }}
+                style={styles.artistImage}
+              >
+                <Text style={styles.artistHeaderText}>About the Artist</Text>
+              </ImageBackground>
+            </TouchableOpacity>
               <TouchableOpacity  style={styles.artistDetails}
-        onPress={() => navigation.navigate('BioArtistScreen')}>
+                onPress={() => {
+                  onClose();
+                  // console.log("User:", user, token)
+                  navigation.navigate('HomeTabs', {
+                    screen: 'HomeStack',
+                    params: user, token,
+                    params: {
+                      screen: 'BioArtistScreen',
+                      params:  user, token,
+                    },
+                  });
+                }}>
                 <Text style={styles.artistNameText}>SIXTYUPTOWN</Text>
                 <Text style={styles.artistStats}>200.5K monthly listeners</Text>
                 <Text style={styles.artistBio}>

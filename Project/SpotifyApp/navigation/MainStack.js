@@ -8,6 +8,8 @@ import MiniPlayer from '../components/MiniPlayer';
 import LoadingScreen from '../screens/LoadingScreen';
 import FullPlayerScreen from '../screens/FullPlayerScreen';
 import BioArtistScreen from '../screens/BioArtistScreen';
+import ArtistScreen from '../screens/ArtistScreen';
+import MusicPlayerService from '../services/MusicPlayerService';
 const MainStack = createStackNavigator();
 
 const MainStackNavigator = () => (
@@ -60,18 +62,33 @@ const MainStackNavigator = () => (
 
       }}
     />
-    <MainStack.Screen
+    {/* <MainStack.Screen
       name="BioArtistScreen"
       component={BioArtistScreen}
       options={{
-        // headerTitleAlign: 'center'
         title: 'Aimer',
         headerShown: true,
         headerStyle: { backgroundColor: '#2a2a2a' },
         headerTintColor: '#fff',
         headerTitleAlign: 'center',
       }}
+      initialParams={{
+        currentSong: MusicPlayerService.currentSong,
+        isPlaying: MusicPlayerService.isPlaying,
+      }}
     />
+    <MainStack.Screen
+      name="ArtistScreen"
+      component={ArtistScreen}
+      options={{
+        headerShown: false,
+      }}
+      initialParams={{
+        currentSong: MusicPlayerService.currentSong,
+        isPlaying: MusicPlayerService.isPlaying,
+      }}
+    /> */}
+
     {/* <MainStack.Screen
       name="FullPlayerScreen"
       component={FullPlayerScreen}

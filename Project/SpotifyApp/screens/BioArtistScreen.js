@@ -29,7 +29,9 @@ const BioArtistScreen = () => {
       <View styles={styles.containerPost}>
         <Image source={{uri:"https://i.scdn.co/image/ab6761610000e5eb23241889efb57a4ce8338932"}}/>
       </View>
+      
     </ScrollView>
+
   );
 };
 
