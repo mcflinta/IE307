@@ -4,9 +4,9 @@ import { Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 
 const AlbumCard = ({ album, onPress }) => (
   <TouchableOpacity style={styles.card} onPress={() => onPress(album)}>
-    <Image source={{ uri: album.image }} style={styles.image} />
+    <Image source={{ uri: album.albumImage }} style={styles.image} />
     <Text style={styles.text} numberOfLines={2} ellipsizeMode="tail">
-      {album.title}
+      {album.albumName}
     </Text>
   </TouchableOpacity>
 );
@@ -20,6 +20,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 4,
     alignItems: 'center',
     overflow: 'hidden',
+    // padding:,
   },
   image: {
     width: 58,

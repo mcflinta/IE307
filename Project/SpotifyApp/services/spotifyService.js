@@ -76,7 +76,7 @@ export const fetchAlbumsByIds = async (token) => {
     }
 };
   
-export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
+export const fetchAlbumsByArtistName = async (token, artistName, limit = 1) => {
     try {
       // Bước 1: Tìm ID của nghệ sĩ từ tên nghệ sĩ
       const searchResponse = await axios.get('https://api.spotify.com/v1/search', {
@@ -87,6 +87,7 @@ export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
           q: artistName,
           type: 'artist',
           limit: 1, // Chỉ lấy nghệ sĩ đầu tiên
+          // offset: 2,
         },
       });
   
@@ -104,7 +105,7 @@ export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          include_groups: 'album,single', // Bao gồm cả album và single
+          include_groups: 'album,single,playlist', // Bao gồm cả album và single
           limit,
         },
       });
@@ -120,7 +121,54 @@ export const fetchAlbumsByArtistName = async (token, artistName, limit = 4) => {
       throw error;
     }
 };
-  
+export const fetchPlaylistTracks = async (token, playlistId) => {
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.data.items.map((item) => ({
+      id: item.track.id,
+      name: item.track.name,
+      artist: item.track.artists.map((artist) => artist.name).join(', '),
+      album: item.track.album.name,
+      duration_ms: item.track.duration_ms,
+      image: item.track.album.images[0]?.url || 'https://via.placeholder.com/150',
+    }));
+  } catch (error) {
+    console.error('Error fetching playlist tracks:', error);
+    throw error;
+  }
+};
+
+export const fetchAlbumDetails = async (token, albumId) => {
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const album = response.data;
+    return {
+      id: album.id,
+      title: album.name,
+      image: album.images[0]?.url || 'https://via.placeholder.com/150',
+      artists: album.artists.map((artist) => artist.name).join(', '),
+      tracks: album.tracks.items.map((track) => ({
+        id: track.id,
+        name: track.name,
+        duration_ms: track.duration_ms,
+      })),
+    };
+  } catch (error) {
+    console.error('Error fetching album details:', error);
+    throw error;
+  }
+};
+
 // export const fetchAlbumTracks = async (token, albumId) => {
 //   try {
 //     const response = await axios.get(`https://api.spotify.com/v1/albums/${albumId}`, {

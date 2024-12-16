@@ -3,7 +3,7 @@
 // services/MusicPlayerService.js
 import { Audio } from 'expo-av';
 import { EventEmitter } from 'fbemitter';
-
+import { API_BASE_URL } from '../config/config';
 class MusicPlayerService {
   sound = null;
   currentSong = null;
@@ -48,13 +48,13 @@ class MusicPlayerService {
       this.playlist = playlist;
       this.currentIndex = index;
       this.currentSong = this.playlist[this.currentIndex];
-      const id = this.currentSong.id;
+      const id = this.currentSong.track_id;
 
       // Hiển thị trạng thái "Đang tải"
-      console.log('Loading song from server...');
-
+      // console.log('Loading song from server...');
+      // console.log("Music Player Service",this.currentSong)
       // Kiểm tra phản hồi từ server trước khi phát nhạc
-      const response = await fetch(`http://149.28.146.58:3000/music/by-id/${id}`);
+      const response = await fetch(`${API_BASE_URL}/music/by-id/${id}`);
       if (!response.ok) {
         console.error(`Failed to load song: ${response.status}`);
         throw new Error('Server error or song not found');
@@ -70,13 +70,13 @@ class MusicPlayerService {
 
       // Phát nhạc nếu phản hồi thành công và là file nhạc
       const { sound } = await Audio.Sound.createAsync(
-        { uri: `http://149.28.146.58:3000/music/by-id/${id}` },
+        { uri: `http://192.168.105.35:3000/music/by-id/${id}` },
         { shouldPlay: true },
         this.onPlaybackStatusUpdate
       );
       this.sound = sound;
       this.isPlaying = true;
-      console.log('This current song:', this.currentSong);
+      // console.log('This current song:', this.currentSong);
       // Phát sự kiện thay đổi bài hát
       this.emitter.emit('songChanged', {
         currentSong: this.currentSong,

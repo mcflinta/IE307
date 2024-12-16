@@ -16,48 +16,13 @@ import { useNavigation } from "@react-navigation/native";
 import VerifiedIcon from "../assets/svg/VerifiedIcon";
 import axios from "axios";
 import tokenManager from "../services/TokenManager";
+import { API_BASE_URL } from "../config/config";
 const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const formatPlaycount = (count) => {
   return Number(count).toLocaleString().toString(); // Thêm dấu phẩy ngăn cách mỗi 3 chữ số
 };
-
-
-const featuringData = [
-  { id: "1", title: "This Is Aimer", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "2", title: "Aimer Radio", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "3", title: "Anime One", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-];
-
-
-
-const artistPlaylistsData = [
-  {
-    id: "1",
-    title: "Aimer - SACRA MUSIC MONTH",
-    subtitle: "Aimer Setlist Riyadh Season 2022 (Dec 9, 2022)",
-    image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f",
-  },
-  {
-    id: "2",
-    title: "Aimer 10th Anniversary",
-    subtitle: "",
-    image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f",
-  },
-  {
-    id: "3",
-    title: "This Is Aimer",
-    subtitle: "",
-    image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f",
-  },
-];
-
-const fansAlsoLikeData = [
-  { id: "1", name: "milet", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "2", name: "SPYAIR", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-  { id: "3", name: "yama", image: "https://i.scdn.co/image/ab67616d0000b273334eb8d7beb80b5c1ca9db8f" },
-];
 
 const ArtistScreen = ({ route }) => {
   const [scrollY] = useState(new Animated.Value(0));
@@ -83,7 +48,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://149.28.146.58:3000/artist/toptrack/${artistId}`, {
+        const response = await fetch(`${API_BASE_URL}/artist/toptrack/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
@@ -111,7 +76,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://149.28.146.58:3000/artist/popularAlbumRelease/${artistId}`, {
+        const response = await fetch(`${API_BASE_URL}/artist/popularAlbumRelease/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -143,7 +108,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://149.28.146.58:3000/artist/artistInfo/${artistId}`, {
+        const response = await fetch(`${API_BASE_URL}/artist/artistInfo/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -172,7 +137,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://149.28.146.58:3000/artist/artistPlaylists/${artistId}`, {
+        const response = await fetch(`${API_BASE_URL}/artist/artistPlaylists/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -201,7 +166,7 @@ const ArtistScreen = ({ route }) => {
           console.error('Token is missing.');
           return;
         }
-        const response = await fetch(`http://149.28.146.58:3000/artist/relatedArtists/${artistId}`, {
+        const response = await fetch(`${API_BASE_URL}/artist/relatedArtists/${artistId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -289,7 +254,7 @@ const ArtistScreen = ({ route }) => {
 
   const navBarBackgroundColor = scrollY.interpolate({
     inputRange: [0, 80],
-    outputRange: ["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 1)"],
+    outputRange: ["rgba(104,120,128, 0)", "rgba(104,120, 128, 1)"],
     extrapolate: "clamp",
   });
 

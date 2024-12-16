@@ -10,7 +10,7 @@ const HomeStack = createStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
     const { user, token } = route.params || {};
-    console.log('HomeStackNavigator', user, token);
+    // console.log('HomeStackNavigator', user, token);
     return (
         <HomeStack.Navigator
             screenOptions={{
@@ -20,6 +20,7 @@ const HomeStackNavigator = ({ route }) => {
                 headerShown: false,
             }}
         >
+
             <HomeStack.Screen
                 name="HomeScreen"
                 component={HomeScreen}
@@ -67,6 +68,7 @@ const HomeStackNavigator = ({ route }) => {
                 isPlaying: MusicPlayerService.isPlaying,
               }}
             />
+            
         </HomeStack.Navigator>
     );
 };

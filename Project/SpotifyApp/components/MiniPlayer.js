@@ -10,13 +10,14 @@ import AddIcon from '../assets/svg/AddIcon';
 import LikedIcon from '../assets/svg/LikedIcon';
 import axios from 'axios';
 import tokenManager from '../services/TokenManager'; // Import TokenManager
+import { API_BASE_URL } from '../config/config';
 const MiniPlayer = ({ onPress, user}) => {
   const [currentSong, setCurrentSong] = useState(MusicPlayerService.currentSong);
   const [isPlaying, setIsPlaying] = useState(MusicPlayerService.isPlaying);
   const [isAdded, setIsAdded] = useState(false); // Trạng thái icon
   // console.log('MiniPlayer', user);
   const [progress, setProgress] = useState(MusicPlayerService.getProgress());
-
+  // console.log('MiniPlayer', currentSong);
   // console.log('MiniPlayer', currentSong);
   // console.log("MiniPlayer Token", token);
   useEffect(() => {
@@ -29,14 +30,14 @@ const MiniPlayer = ({ onPress, user}) => {
                 console.error('Token is missing.');
                 return;
               }
-                const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
+                const response = await axios.get(`${API_BASE_URL}/playlists`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 const playlists = response.data;
 
                 const defaultPlaylist = playlists.find(p => p.name === 'My Liked Songs');
                 if (defaultPlaylist) {
-                    const isSongInPlaylist = defaultPlaylist.songs.includes(currentSong.id);
+                    const isSongInPlaylist = defaultPlaylist.songs.includes(currentSong.track_id);
                     setIsAdded(isSongInPlaylist);
                 }
             } catch (error) {
@@ -58,7 +59,7 @@ const MiniPlayer = ({ onPress, user}) => {
         return;
       }
       // Lấy danh sách playlist của người dùng
-      const response = await axios.get(`http://149.28.146.58:3000/playlists`, {
+      const response = await axios.get(`${API_BASE_URL}/playlists`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const playlists = response.data;
@@ -69,7 +70,7 @@ const MiniPlayer = ({ onPress, user}) => {
       // Nếu chưa có playlist, tạo mới
       if (!defaultPlaylist) {
         const createResponse = await axios.post(
-          `http://149.28.146.58:3000/playlists`,
+          `${API_BASE_URL}/playlists`,
           { name: 'My Liked Songs' },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -80,7 +81,7 @@ const MiniPlayer = ({ onPress, user}) => {
       if (isAdded) {
         // Xóa bài hát
         await axios.delete(
-          `http://149.28.146.58:3000/playlists/${defaultPlaylist._id}/songs/${currentSong.id}`,
+          `${API_BASE_URL}/playlists/${defaultPlaylist._id}/songs/${currentSong.track_id}`,
           { headers: { Authorization: `Bearer ${token}` } }
       );
         setIsAdded(false);
@@ -88,8 +89,8 @@ const MiniPlayer = ({ onPress, user}) => {
       } else {
         // Thêm bài hát
         await axios.post(
-          `http://149.28.146.58:3000/playlists/${defaultPlaylist._id}/songs`,
-          { songId: currentSong.id }, // Gửi songId từ Spotify
+          `${API_BASE_URL}/playlists/${defaultPlaylist._id}/songs`,
+          { songId: currentSong.track_id }, // Gửi songId từ Spotify
           { headers: { Authorization: `Bearer ${token}` } }
       );
         setIsAdded(true);
@@ -136,11 +137,11 @@ const MiniPlayer = ({ onPress, user}) => {
   if (!currentSong) return null;
   return (
     <TouchableOpacity
-      style={styles.container}
+      style={[styles.container, { backgroundColor: currentSong.colorDark }]}
       onPress={onPress}
     >
       <View style={styles.contentContainer}>
-        <Image source={{ uri: currentSong.albumImages }} style={styles.image} />
+        <Image source={{ uri: currentSong.albumImage }} style={styles.image} />
       </View>
 
       <View style={styles.infoContainer}>
@@ -153,10 +154,10 @@ const MiniPlayer = ({ onPress, user}) => {
           marqueeDelay={1000}
           repeatSpacer={50}
         >
-          {currentSong.title}
+          {currentSong.track_name}
         </TextTicker>
         <Text style={styles.artistName} numberOfLines={1}>
-          {currentSong.artists[0]}
+          {currentSong.artistName}
         </Text>
       </View>
       {/* <TouchableOpacity style={styles.button} onPress={toggleIcon}>
@@ -190,7 +191,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#1e1e1e',
     padding: 6,
     // paddingTop: 8,
     borderTopWidth: 0,

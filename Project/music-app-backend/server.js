@@ -400,7 +400,7 @@ app.get('/music/by-id/:id', async (req, res) => {
 
                 // Tải nhạc từ Spotify
                 const downloadPath = path.join(__dirname, 'music');
-                const spotdlCommand = `spotdl --cookie cookies.txt "${spotifySong.external_urls}" --output "${downloadPath}"`;
+                const spotdlCommand = `spotdl "${spotifySong.external_urls}" --output "${downloadPath}"`;
 
                 console.log(`Downloading song from Spotify: ${spotifySong.name}`);
                 const { stdout, stderr } = await execPromise(spotdlCommand);
@@ -967,31 +967,6 @@ app.get('/artist/artistPlaylists/:id', authenticateToken, (req, res) => {
     res.json(artistPlaylists.playlists);
 });
 
-// let relatedArtistsData;
-// fs.readFile('./data/artistRelated.json', 'utf-8', (err, data) => {
-//     if (err) {
-//         console.error('Không thể đọc file JSON:', err);
-//     } else {
-//         relatedArtistsData = JSON.parse(data);
-//         console.log('Dữ liệu nghệ sĩ liên quan đã được tải.');
-//     }
-// });
-// app.get('/artist/relatedArtists/:id', authenticateToken, (req, res) => {
-//     const { id } = req.params;
-
-//     // Kiểm tra nếu dữ liệu chưa được tải
-//     if (!relatedArtistsData) {
-//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
-//     }
-
-//     // So khớp `artist_id`
-//     if (relatedArtistsData.artist_id !== id) {
-//         return res.status(404).json({ message: `Không tìm thấy nghệ sĩ liên quan nào với artist_id: ${id}` });
-//     }
-
-//     // Trả về danh sách nghệ sĩ liên quan
-//     res.json(relatedArtistsData.related_artists);
-// });
 
 let relatedArtistsData = [];
 
@@ -1028,9 +1003,50 @@ app.get('/artist/relatedArtists/:id', authenticateToken, (req, res) => {
     // Trả về danh sách nghệ sĩ liên quan
     res.json(artistData.related_artists);
 });
+
+let albumsDataArtist = [];
+
+// Đọc dữ liệu từ file JSON khi server khởi động
+fs.readFile('./data/albums.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            albumsDataArtist = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+
+// Endpoint tìm kiếm album dựa trên artistID và albumID
+app.get('/search/album/:artistId/:albumId', (req, res) => {
+    const { artistId, albumId } = req.params;
+
+    // Kiểm tra nếu dữ liệu chưa được tải thành công
+    if (!Array.isArray(albumsDataArtist) || albumsDataArtist.length === 0) {
+        return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng hoặc không hợp lệ.' });
+    }
+
+    // Tìm album khớp với artistID và albumID
+    const matchedAlbum = albumsDataArtist.find(album => 
+        album.artistID === artistId && album.albumID === albumId
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc thông báo lỗi
+    if (!matchedAlbum) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy album với artistID: ${artistId} và albumID: ${albumId}` 
+        });
+    }
+
+    res.json(matchedAlbum);
+});
+
 // Khởi động server
-// const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
-const HOST = '149.28.146.58';
+const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
+// const HOST = '149.28.146.58';
 app.listen(PORT, HOST, () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
 });

@@ -96,7 +96,7 @@ import ActionButtons from '../components/ActionButtons';
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import { API_BASE_URL } from '../config/config';
 const InitScreen = ({ navigation }) => {
   const [isCheckingToken, setIsCheckingToken] = useState(true);
 
@@ -111,7 +111,7 @@ const InitScreen = ({ navigation }) => {
         }
 
         // Gửi token trong headers để xác thực
-        const response = await axios.get('http://149.28.146.58:3000/api/verify-token', {
+        const response = await axios.get(`${API_BASE_URL}/api/verify-token`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -120,7 +120,8 @@ const InitScreen = ({ navigation }) => {
         if (response.status === 200) {
           const user = response.data.user;
           // console.log('User:', user);
-          navigation.replace('HomeTabs', {user, token});
+          // navigation.replace('HomeTabs', {user, token});
+          navigation.replace('DrawerNavigator', {user, token})
         } else {
           throw new Error('Invalid token');
         }

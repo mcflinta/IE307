@@ -10,6 +10,7 @@ import FullPlayerScreen from '../screens/FullPlayerScreen';
 import BioArtistScreen from '../screens/BioArtistScreen';
 import ArtistScreen from '../screens/ArtistScreen';
 import MusicPlayerService from '../services/MusicPlayerService';
+import DrawerNavigator from './DrawerNavigator'; // Import DrawerNavigator thay vì HomeTabs
 const MainStack = createStackNavigator();
 
 const MainStackNavigator = () => (
@@ -18,7 +19,7 @@ const MainStackNavigator = () => (
     initialRouteName="InitScreen"
     screenOptions={{
       headerShown: false,
-      gestureEnabled: true,
+      // gestureEnabled: true,
     }}
   >
     <MainStack.Screen
@@ -55,49 +56,21 @@ const MainStackNavigator = () => (
         headerTitleAlign: 'center',
       }}
     />
-    <MainStack.Screen
+    {/* <MainStack.Screen
       name="HomeTabs"
       component={HomeTabs}
       options={{
         headerShown: false,
 
       }}
-    />
-    {/* <MainStack.Screen
-      name="BioArtistScreen"
-      component={BioArtistScreen}
-      options={{
-        title: 'Aimer',
-        headerShown: true,
-        headerStyle: { backgroundColor: '#2a2a2a' },
-        headerTintColor: '#fff',
-        headerTitleAlign: 'center',
-      }}
-      initialParams={{
-        currentSong: MusicPlayerService.currentSong,
-        isPlaying: MusicPlayerService.isPlaying,
-      }}
-    />
+    /> */}
     <MainStack.Screen
-      name="ArtistScreen"
-      component={ArtistScreen}
+      name="DrawerNavigator" // Dùng drawer thay vì HomeTabs
+      component={DrawerNavigator}
       options={{
         headerShown: false,
       }}
-      initialParams={{
-        currentSong: MusicPlayerService.currentSong,
-        isPlaying: MusicPlayerService.isPlaying,
-      }}
-    /> */}
-
-    {/* <MainStack.Screen
-      name="FullPlayerScreen"
-      component={FullPlayerScreen}
-      options={{
-        presentation: 'modal', // Hiển thị dưới dạng modal (trượt từ dưới lên)
-        gestureDirection: 'vertical',
-      }}
-    /> */}
+    />
 
     </MainStack.Navigator>
 
