@@ -8,6 +8,7 @@ export const handleLogin = async (email, password, navigation, setLoading) => {
   try {
     const { user, token } = await loginUser({ email, password });
     await tokenManager.setToken(token); // Lưu token vào TokenManager
+    // console.log("AuthHandler", user);
     Alert.alert('Success', 'Login successful');
     navigation.replace('DrawerNavigator', { user }); // Điều hướng đến HomeTabs
   } catch (error) {

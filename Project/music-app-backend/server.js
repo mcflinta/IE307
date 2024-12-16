@@ -141,7 +141,7 @@ app.post('/api/register', async (req, res) => {
         await newUser.save();
         await createOrGetDefaultPlaylist(newUser._id);
         // Tạo token cho người dùng mới
-        const token = jwt.sign({ id: newUser._id, email: newUser.email }, SECRET_KEY, { expiresIn: '7d' });
+        const token = jwt.sign({ id: newUser._id, email: newUser.email, name: newUser.name, }, SECRET_KEY, { expiresIn: '7d' });
 
         res.status(201).json({ 
             message: 'Account created successfully.',
@@ -174,7 +174,7 @@ app.post('/api/login', async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({ message: 'Invalid email or password.' });
         }
-        const token = jwt.sign({ id: user._id, email: user.email }, SECRET_KEY, { expiresIn: '7d' }); // Token có hạn 7 ngày
+        const token = jwt.sign({ id: user._id, email: user.email, name: user.name}, SECRET_KEY, { expiresIn: '7d' }); // Token có hạn 7 ngày
         // Trả về thành công cùng với token
         res.status(200).json({ 
             message: 'Login successful.', 
@@ -188,10 +188,33 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Endpoint để xác thực token
-app.get('/api/verify-token', authenticateToken, (req, res) => {
-    res.status(200).json({ user: req.user });
-});
+// app.get('/api/verify-token', authenticateToken, (req, res) => {
+//     // console.log('User:', req);
 
+//     res.status(200).json({ user: req.user });
+// });
+app.get('/api/verify-token', authenticateToken, async (req, res) => {
+    try {
+        // Truy vấn thông tin người dùng từ MongoDB
+        const user = await User.findById(req.user.id).select('name email'); // Chỉ lấy 'name' và 'email'
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+
+        // Trả về thông tin user bao gồm 'name'
+        res.status(200).json({
+            user: {
+                id: req.user.id,
+                email: user.email,
+                name: user.name,
+            }
+        });
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+        res.status(500).json({ message: 'Internal server error.' });
+    }
+});
 
 
 // Trang chủ để kiểm tra server đang chạy
@@ -1044,6 +1067,106 @@ app.get('/search/album/:artistId/:albumId', (req, res) => {
     res.json(matchedAlbum);
 });
 
+let dailyMix = []
+fs.readFile('./data/dailyMix.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            dailyMix = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/dailyMix', (req, res) => {
+    res.json(dailyMix);
+});
+
+let topMix = []
+fs.readFile('./data/topMix.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            topMix = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/topMix', (req, res) => {
+    res.json(topMix);
+});
+
+let radioPlaylist = []
+fs.readFile('./data/radioPlaylist.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            radioPlaylist = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/radioPlaylist', (req, res) => {
+    res.json(radioPlaylist);
+});
+let turnOffPlaylist = []
+fs.readFile('./data/turnOffPlaylist.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            turnOffPlaylist = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/turnOffPlaylist', (req, res) => {
+    res.json(turnOffPlaylist);
+});
+
+let recommendStation = []
+fs.readFile('./data/recommendStation.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            recommendStation = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/recommendStation', (req, res) => {
+    res.json(recommendStation);
+});
+
+let bestOfArtist = []
+fs.readFile('./data/bestOfArtist.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            bestOfArtist = JSON.parse(data);
+            console.log('Dữ liệu album đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+app.get('/bestOfArtist', (req, res) => {
+    res.json(bestOfArtist);
+});
 // Khởi động server
 const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
 // const HOST = '149.28.146.58';

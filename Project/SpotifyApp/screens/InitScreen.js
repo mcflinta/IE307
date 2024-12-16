@@ -119,7 +119,7 @@ const InitScreen = ({ navigation }) => {
 
         if (response.status === 200) {
           const user = response.data.user;
-          // console.log('User:', user);
+          console.log('User:', user);
           // navigation.replace('HomeTabs', {user, token});
           navigation.replace('DrawerNavigator', {user, token})
         } else {

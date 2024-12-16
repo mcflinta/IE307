@@ -10,7 +10,7 @@ const HomeStack = createStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
     const { user, token } = route.params || {};
-    // console.log('HomeStackNavigator', user, token);
+    // console.log('HomeStackNavigator', user);
     return (
         <HomeStack.Navigator
             screenOptions={{
