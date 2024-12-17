@@ -204,7 +204,8 @@ class MusicPlayerService {
 //     } finally {
 //         this.loading = false; // Giải phóng cờ
 //     }
-// }
+  // }
+  
   async togglePlayPause() {
     if (this.sound) {
       if (this.isPlaying) {

@@ -1167,6 +1167,44 @@ fs.readFile('./data/bestOfArtist.json', 'utf-8', (err, data) => {
 app.get('/bestOfArtist', (req, res) => {
     res.json(bestOfArtist);
 });
+
+
+// Biến lưu trữ dữ liệu playlist
+let dailyMixDetail = [];
+
+// Đọc file JSON
+fs.readFile('./data/dailyMixDetail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            dailyMixDetail = JSON.parse(data);
+            console.log('Dữ liệu playlist đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin playlist theo ID
+app.get('/dailyMixDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm playlist khớp với ID từ file JSON
+    const matchedPlaylist = dailyMixDetail.find(playlist => 
+        playlist.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedPlaylist) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy playlist với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedPlaylist);
+});
+
 // Khởi động server
 const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
 // const HOST = '149.28.146.58';

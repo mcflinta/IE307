@@ -371,6 +371,44 @@ const HomeScreen = ({ route }) => {
     },
     [navigation]
   );
+  const handleDailyMixPress = useCallback( async (item) => {
+    // console.log("Pressed item:", item.id);
+    // navigation.navigate('PlaylistDetailScreen', );
+      setLoading(true);
+      try {
+        const response = await fetch(`${API_BASE_URL}/dailyMixDetail/${item.id}`);
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        // console.log('data', data.playlist_info.name);
+        navigation.navigate('PlaylistDetailScreen', data);
+        // navigation.navigate('AlbumTrackDetailScreen', {
+        //   albumName: albumData.albumName,
+        //   artistName: albumData.artistName,
+        //   tracks: albumData.tracks,
+        //   albumImage: albumData.albumImage,
+        //   artistImageUrl: albumData.artistImageUrl || null,
+        //   releaseYear: albumData.releaseYear,
+        //   fullReleaseDate: albumData.fullReleaseDate,
+        //   totalTracks: albumData.totalTracks,
+        //   totalDuration: albumData.totalDuration,
+        //   colorDark: albumData.colorDark,
+        //   albumType: albumData.albumType,
+        //   moreAlbumsByArtist: albumData.moreAlbumsByArtist,
+        //   copyright: albumData.copyright,
+        // });
+        // console.log('data', data);
+      } catch (err) {
+        console.error('Error fetching album details:', err);
+        Alert.alert('Error', 'Unable to fetch album details. Please try again.');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [navigation]
+  );
   function removeHtmlTags(input) {
     if (!input) return '';
     return input.replace(/<[^>]*>/g, '').trim();
@@ -508,13 +546,25 @@ const HomeScreen = ({ route }) => {
     );
   }
 
+  
   const renderHorizontalItem = ({ item }) => (
-    <View style={{ marginRight: 12, width: 150 }}>
-      <Image source={{ uri: item.playlist_url }} style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} />
-      {/* <Text style={{ color: '#fff', fontSize: 14, fontWeight: 'bold' }}>{item.name}</Text> */}
-      <Text style={{ color: '#ccc', fontSize: 12 }} numberOfLines={2}>{removeHtmlTags(item.description)}</Text>
-    </View>
+    <TouchableOpacity 
+      style={{ marginRight: 12, width: 150 }} 
+      onPress={() => handleDailyMixPress(item)} // Truyền tham số `item`
+    >
+      <Image 
+        source={{ uri: item.playlist_url }} 
+        style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+      />
+      <Text 
+        style={{ color: '#ccc', fontSize: 12 }} 
+        numberOfLines={2}
+      >
+        {removeHtmlTags(item.description)}
+      </Text>
+    </TouchableOpacity>
   );
+  
 
   return (
     <View style={styles.container}>

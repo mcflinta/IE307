@@ -5,6 +5,7 @@ import HomeScreen from '../screens/HomeScreen'; // Màn hình chính của Premi
 import BioArtistScreen from '../screens/BioArtistScreen';
 import AlbumTrackDetailScreen from '../screens/AlbumTrackDetailScreen';
 import ArtistScreen from '../screens/ArtistScreen';
+import PlaylistDetailScreen from '../screens/PlaylistDetailScreen';
 import MusicPlayerService from '../services/MusicPlayerService';
 const HomeStack = createStackNavigator();
 
@@ -67,6 +68,18 @@ const HomeStackNavigator = ({ route }) => {
                 currentSong: MusicPlayerService.currentSong,
                 isPlaying: MusicPlayerService.isPlaying,
               }}
+            />
+            <HomeStack.Screen
+                name="PlaylistDetailScreen"
+                component={PlaylistDetailScreen}
+                initialParams={{ user, token }}
+                options={{
+                    // title: 'AlbumTrackDetailScreen',
+                    // headerLeft: true
+                    // headerLeft: () => null,
+                    // headerTitle: false,
+                    // headerTitle: () => null,
+                 }}
             />
             
         </HomeStack.Navigator>
