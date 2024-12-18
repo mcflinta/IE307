@@ -804,34 +804,83 @@ const FullPlayerScreen = ({ onClose, user, token }) => {
   // console.log("fullPlayerScree: ", currentSong.albumVideo);
 
   // Hàm xử lý khi nhấn vào tên bài hát
+  // const handleAlbumPress = useCallback(async () => {
+  //   if (!currentSong.albumID) {
+  //     Alert.alert('Lỗi', 'Thông tin album không có sẵn.');
+  //     return;
+  //   }
+  
+  //   setLoading(true);
+  //   try {
+  //     const response = await fetch(`${API_BASE_URL}/search/album/${currentSong.artistID}/${currentSong.albumID}`);
+  //     if (!response.ok) {
+  //       throw new Error(`Server error: ${response.statusText}`);
+  //     }
+  
+  //     const albumData = await response.json();
+  //     navigation.navigate('HomeStack', { // Điều hướng tới HomeStack
+  //       screen: 'AlbumTrackDetailScreen', // Màn hình con trong HomeStack
+  //       params: {
+  //         albumName: albumData.albumName,
+  //         artistName: albumData.artistName,
+  //         tracks: albumData.tracks,
+  //         albumImage: albumData.albumImage,
+  //         artistImageUrl: albumData.artistImageUrl || null,
+  //         releaseYear: albumData.releaseYear,
+  //         fullReleaseDate: albumData.fullReleaseDate,
+  //         totalTracks: albumData.totalTracks,
+  //         totalDuration: albumData.totalDuration,
+  //         colorDark: albumData.colorDark,
+  //         albumType: albumData.albumType,
+  //         moreAlbumsByArtist: albumData.moreAlbumsByArtist,
+  //         copyright: albumData.copyright,
+  //       },
+  //     });
+  //   } catch (err) {
+  //     console.error('Error fetching album details:', err);
+  //     Alert.alert('Error', 'Unable to fetch album details. Please try again.');
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // }, [navigation, currentSong.albumID, currentSong.artistID]);
+
   const handleAlbumPress = useCallback(async () => {
     if (!currentSong.albumID) {
       Alert.alert('Lỗi', 'Thông tin album không có sẵn.');
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await fetch(`${API_BASE_URL}/search/album/${currentSong.artistID}/${currentSong.albumID}`);
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
       }
-
+  
       const albumData = await response.json();
-      navigation.navigate('AlbumTrackDetailScreen', {
-        albumName: albumData.albumName,
-        artistName: albumData.artistName,
-        tracks: albumData.tracks,
-        albumImage: albumData.albumImage,
-        artistImageUrl: albumData.artistImageUrl || null,
-        releaseYear: albumData.releaseYear,
-        fullReleaseDate: albumData.fullReleaseDate,
-        totalTracks: albumData.totalTracks,
-        totalDuration: albumData.totalDuration,
-        colorDark: albumData.colorDark,
-        albumType: albumData.albumType,
-        moreAlbumsByArtist: albumData.moreAlbumsByArtist,
-        copyright: albumData.copyright,
+      onClose(); // Đóng FullPlayerScreen trước khi điều hướng
+  
+      navigation.navigate('HomeTabs', {
+        screen: 'HomeStack',              // Navigator con// Điều hướng đến HomeStack
+        params: {
+          screen: 'AlbumTrackDetailScreen', // Màn hình con trong HomeStack
+          params: {
+            albumName: albumData.albumName,
+            artistName: albumData.artistName,
+            tracks: albumData.tracks,
+            albumImage: albumData.albumImage,
+            artistImageUrl: albumData.artistImageUrl || null,
+            releaseYear: albumData.releaseYear,
+            fullReleaseDate: albumData.fullReleaseDate,
+            totalTracks: albumData.totalTracks,
+            totalDuration: albumData.totalDuration,
+            colorDark: albumData.colorDark,
+            albumType: albumData.albumType,
+            moreAlbumsByArtist: albumData.moreAlbumsByArtist,
+            copyright: albumData.copyright,
+          },
+        }
+
       });
     } catch (err) {
       console.error('Error fetching album details:', err);
@@ -839,8 +888,7 @@ const FullPlayerScreen = ({ onClose, user, token }) => {
     } finally {
       setLoading(false);
     }
-  }, [navigation, currentSong.albumID, currentSong.artistID]);
-
+  }, [navigation, currentSong.albumID, currentSong.artistID, onClose]);
   return (
     <Animated.View style={[styles.container, animatedStyle]}>
       {useVideoBackground ? (
@@ -918,10 +966,16 @@ const FullPlayerScreen = ({ onClose, user, token }) => {
                 }}
                 style={styles.songThumbnail}
               />
-              {/* Nếu bạn muốn tên bài hát ở đây cũng có thể nhấn được */}
+                {/* Nếu bạn muốn tên bài hát ở đây cũng có thể nhấn được */}
+              <View style={styles.songInfoAlignedNoVideo}>
               <TouchableOpacity onPress={handleAlbumPress}>
                 <Text style={styles.songTitle}>{currentSong?.track_name || 'Unknown Title'}</Text>
-              </TouchableOpacity>
+                </TouchableOpacity>
+                <Text style={styles.artistName}>{currentSong?.artistName || 'Unknown Artist'}</Text>
+              </View>
+              
+
+
             </View>
           )}
           <View style={styles.progressContainer}>
@@ -1069,6 +1123,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 10,
   },
   songThumbnail: {
     width: 350,
@@ -1182,6 +1237,15 @@ const styles = StyleSheet.create({
   songInfoAligned: {
     flex: 1,
     justifyContent: 'center',
+  },
+  songInfoAlignedNoVideo: {
+    flex: 1,
+    // marginHorizontal: 10,
+    // justifyContent: 'center',
+    position: 'relative',
+    top: 5,   // Tùy chỉnh vị trí
+    left: -105,
+    // right: 0,
   },
 });
 

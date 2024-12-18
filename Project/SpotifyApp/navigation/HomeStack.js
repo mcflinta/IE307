@@ -7,6 +7,7 @@ import AlbumTrackDetailScreen from '../screens/AlbumTrackDetailScreen';
 import ArtistScreen from '../screens/ArtistScreen';
 import PlaylistDetailScreen from '../screens/PlaylistDetailScreen';
 import MusicPlayerService from '../services/MusicPlayerService';
+import WrappedScreen from '../screens/WrappedScreen';
 const HomeStack = createStackNavigator();
 
 const HomeStackNavigator = ({ route }) => {
@@ -81,7 +82,18 @@ const HomeStackNavigator = ({ route }) => {
                     // headerTitle: () => null,
                  }}
             />
-            
+            <HomeStack.Screen
+                name="WrappedScreen"
+                component={WrappedScreen}
+                initialParams={{ user, token }}
+                options={{
+                    // title: 'AlbumTrackDetailScreen',
+                    // headerLeft: true
+                    // headerLeft: () => null,
+                    headerTitle: false,
+                    // headerTitle: () => null,
+                 }}
+            />
         </HomeStack.Navigator>
     );
 };

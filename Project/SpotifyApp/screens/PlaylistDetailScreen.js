@@ -22,6 +22,7 @@ import MusicPlayerService from '../services/MusicPlayerService';
 import { useNavigation } from '@react-navigation/native';
 import tokenManager from '../services/TokenManager';
 import { API_BASE_URL } from '../config/config';
+import HTMLView from 'react-native-htmlview';
 
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 
@@ -167,6 +168,7 @@ const PlaylistDetailScreen = ({ route }) => {
     }
   };
 
+  console.log(description)
   // TrackItem Component: Add image for each song
   const TrackItem = React.memo(({ item, handleTrackPress, songIds }) => {
     const isLiked = songIds.includes(item.track_id);
@@ -212,9 +214,15 @@ const PlaylistDetailScreen = ({ route }) => {
           />
         </View>
         <View style={styles.detailsContainer}>
-          <Animated.Text style={[styles.description, { opacity: largeTitleOpacity }]}>
-            {description}
-          </Animated.Text>
+        <Animated.View style={{ opacity: largeTitleOpacity }}>
+          <HTMLView
+              // value={description}
+            value={`<p>${description || ''}</p>`} // Truyền chuỗi HTML thuần
+            stylesheet={htmlStyles}
+            under
+            addLineBreaks={false}
+          />
+        </Animated.View>
           <View style={styles.artistContainer}>
             {artistImageUrl && (
               <Image source={{ uri: artistImageUrl }} style={styles.artistImage} />
@@ -561,6 +569,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     opacity: 0.7,
   },
+  
 });
-
+const htmlStyles = StyleSheet.create({
+  p: {
+    fontSize: 15,
+    color: '#fff',
+    lineHeight: 22,
+  },
+  a: {
+    color: '#1DB954',
+  }
+});
 export default PlaylistDetailScreen;

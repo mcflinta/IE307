@@ -17,6 +17,7 @@ import LibraryFocusIcon from '../assets/svg/LibraryFocusIcon';
 import PremiumIcon from '../assets/svg/PremiumIcon';
 import BioArtistScreen from '../screens/BioArtistScreen';
 import MusicPlayerService from '../services/MusicPlayerService'; // Đảm bảo import dịch vụ phát nhạc
+import SearchStackNavigator from './SearchStack';
 const HomeBottomTab = createBottomTabNavigator();
 // const screenHeight = Dimensions.get('window').height;
 
@@ -88,6 +89,7 @@ const HomeTabs = ({route, navigation}) => {
           },
           tabBarActiveTintColor: '#fff',
           tabBarInactiveTintColor: '#888',
+          keyboardHidesTabBar: true, // Ẩn tabBar khi bàn phím xuất hiện
         }}
       >
         <HomeBottomTab.Screen
@@ -106,8 +108,8 @@ const HomeTabs = ({route, navigation}) => {
         />
 
         <HomeBottomTab.Screen
-          name="SearchScreen"
-          component={SearchScreen}
+          name="SearchStack"
+          component={SearchStackNavigator}
           options={{
             tabBarLabel: 'Search',
             tabBarIcon: ({ color, size }) => (
