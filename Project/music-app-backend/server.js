@@ -179,7 +179,7 @@ app.post('/api/login', async (req, res) => {
         // Trả về thành công cùng với token
         res.status(200).json({ 
             message: 'Login successful.', 
-            user: { email: user.email, name: user.name, gender: user.gender },
+            user: { email: user.email, name: user.name, gender: user.gender, id: user.id },
             token // Thêm token vào phản hồi
         });
     } catch (error) {
@@ -289,90 +289,6 @@ const serveFile = (filePath, req, res) => {
     });
 };
 
-// app.get('/music/by-id/:id', async (req, res) => {
-//     const { id } = req.params;
-
-//     try {
-//         // 1. Kiểm tra trong MongoDB
-//         let song = await Song.findOne({ id });
-
-//         if (!song) {
-//             console.log(`Song with ID ${id} not found in the database. Fetching from Spotify...`);
-
-//             // 2. Tìm bài hát từ Spotify API
-//             const spotifySong = await fetchSongFromSpotify(id);
-
-//             if (!spotifySong) {
-//                 return res.status(404).send('Song not found in database or on Spotify.');
-//             }
-
-//             // 3. Trả về phản hồi "Processing" ngay lập tức
-//             res.status(202).json({
-//                 message: 'Song is being downloaded. Please try again later.',
-//                 id: spotifySong.id,
-//                 name: spotifySong.name,
-//                 external_urls: spotifySong.external_urls,
-//             });
-
-//             // 4. Xử lý tải nhạc từ Spotify trong nền
-//             const downloadPath = path.join(__dirname, 'music');
-//             const spotdlCommand = `spotdl --cookie cookies.txt "${spotifySong.external_urls}" --output "${downloadPath}"`;
-
-//             console.log(`Downloading song from Spotify: ${spotifySong.name}`);
-//             const { stdout, stderr } = await execPromise(spotdlCommand);
-
-//             if (stderr) {
-//                 console.error(`Error downloading song: ${stderr}`);
-//                 return;
-//             }
-
-//             console.log(`Download completed: ${stdout}`);
-
-//             // 5. Lấy file mới tải về
-//             const downloadedFiles = fs.readdirSync(downloadPath)
-//                 .map(file => ({
-//                     name: file,
-//                     time: fs.statSync(path.join(downloadPath, file)).mtime.getTime(),
-//                 }))
-//                 .sort((a, b) => b.time - a.time); // Sắp xếp theo thời gian chỉnh sửa
-
-//             if (downloadedFiles.length === 0) {
-//                 console.error('No file downloaded.');
-//                 return;
-//             }
-
-//             const downloadedFile = downloadedFiles[0].name; // File mới nhất
-//             const oldFilePath = path.join(downloadPath, downloadedFile);
-
-//             // 6. Đổi tên file
-//             const newFileName = `${spotifySong.name.replace(/[<>:"/\\|?*]/g, '')}.mp3`; // Xử lý tên file
-//             const newFilePath = path.join(downloadPath, newFileName);
-
-//             fs.renameSync(oldFilePath, newFilePath);
-//             console.log(`Renamed file to: ${newFileName}`);
-
-//             // 7. Lưu bài hát vào MongoDB
-//             const newSong = new Song({
-//                 id: spotifySong.id,
-//                 name: spotifySong.name,
-//                 path: path.join('music', newFileName), // Đường dẫn file
-//             });
-
-//             await newSong.save();
-
-//             console.log(`Song ${spotifySong.name} added to the database.`);
-//             return;
-//         }
-
-//         // 8. Nếu bài hát đã có, trả về file
-//         const filePath = path.join(__dirname, song.path);
-//         serveFile(filePath, req, res);
-
-//     } catch (error) {
-//         console.error('Error:', error);
-//         res.status(500).send('Internal server error.');
-//     }
-// });
 
 app.get('/music/by-id/:id', async (req, res) => {
     const { id } = req.params;
@@ -387,9 +303,10 @@ app.get('/music/by-id/:id', async (req, res) => {
             // 2. Quét thư mục `music` để tìm bài hát
             const musicPath = path.join(__dirname, 'music');
             const files = fs.readdirSync(musicPath);
-
+            // console.log(files);
             const matchedFile = files.find(file => file.includes(id));
-
+            // console.log(matchedFile);
+            
             if (matchedFile) {
                 console.log(`Found song with ID ${id} in the local folder: ${matchedFile}`);
 
@@ -526,6 +443,7 @@ app.delete('/playlists/:id', authenticateToken, async (req, res) => {
 app.get('/playlists', authenticateToken, async (req, res) => {
     try {
         const playlists = await Playlist.find({ userId: req.user.id }).populate('songs', 'id name');
+        // console.log(playlists)
         res.status(200).json(playlists);
     } catch (error) {
         console.error('Error fetching playlists:', error);
@@ -601,7 +519,7 @@ app.get('/playlists/:id/songs', authenticateToken, async (req, res) => {
         }
 
         const songs = await Song.find({ id: { $in: playlist.songs } });
-
+        // console.log(songs)
         res.status(200).json(songs);
     } catch (error) {
         console.error('Error fetching songs from playlist:', error);
@@ -755,21 +673,6 @@ fs.readFile('./data/topTrack.json', 'utf-8', (err, data) => {
     }
 });
 
-// Endpoint truy vấn top tracks theo `id`
-
-// app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
-//     const { id } = req.params;
-
-//     // Lọc các bài hát có `id` khớp với tham số
-//     const topTracks = tracksData.filter(track => track.id === id);
-
-//     if (topTracks.length === 0) {
-//         return res.status(404).json({ message: `Không tìm thấy bài hát nào với id: ${id}` });
-//     }
-
-//     // Trả về danh sách bài hát
-//     res.json(topTracks);
-// });
 app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
 
@@ -790,45 +693,6 @@ app.get('/artist/toptrack/:id', authenticateToken, (req, res) => {
     res.json(topTracks);
 });
 
-// let albumsData;
-// fs.readFile('./data/popularAlbumReleases.json', 'utf-8', (err, data) => {
-//     if (err) {
-//         console.error('Không thể đọc file JSON:', err);
-//     } else {
-//         albumsData = JSON.parse(data);
-//     }
-// });
-
-// // Endpoint: Lấy thông tin popularReleaseAlbums của nghệ sĩ theo id
-// app.get('/artist/popularAlbumRelease/:id', authenticateToken, (req, res) => {
-//     const { id } = req.params;
-
-//     // Kiểm tra dữ liệu đã được tải lên
-//     if (!albumsData) {
-//         return res.status(500).json({ message: 'Dữ liệu chưa sẵn sàng.' });
-//     }
-
-//     // Kiểm tra ID có khớp với artist_id trong dữ liệu
-//     if (albumsData.artist_id !== id) {
-//         return res.status(404).json({ message: `Không tìm thấy nghệ sĩ với id: ${id}` });
-//     }
-
-//     // Trả về danh sách popularReleaseAlbums
-//     const popularReleaseAlbums = albumsData.popularReleaseAlbums;
-//     if (!popularReleaseAlbums || popularReleaseAlbums.length === 0) {
-//         return res.status(404).json({ message: 'Không có album phổ biến nào.' });
-//     }
-//     const latestReleaseAlbums = albumsData.latest;
-//     if (!latestReleaseAlbums || latestReleaseAlbums.length === 0) {
-//         return res.status(404).json({ message: 'Không có album lastest nào.' });
-//     }
-//     res.json({
-//         artist_id: albumsData.artist_id,
-//         artist_name: albumsData.artist_name,
-//         popularReleaseAlbums: popularReleaseAlbums,
-//         latest: latestReleaseAlbums,
-//     });
-// });
 let albumsData = [];
 
 // Đọc file JSON khi server khởi động
@@ -1319,7 +1183,7 @@ fs.readFile('./data/topMixDetail.json', 'utf-8', (err, data) => {
         console.error('Không thể đọc file JSON:', err);
     } else {
         try {
-            wrappedAlbumDetail = JSON.parse(data);
+            topMixDetail = JSON.parse(data);
             console.log('Dữ liệu playlist đã được tải thành công.');
         } catch (parseError) {
             console.error('Lỗi phân tích cú pháp JSON:', parseError);
@@ -1332,7 +1196,41 @@ app.get('/topMixDetail/:id', (req, res) => {
     const { id } = req.params;
 
     // Tìm playlist khớp với ID từ file JSON
-    const matchedPlaylist = wrappedAlbumDetail.find(playlist => 
+    const matchedPlaylist = topMixDetail.find(playlist => 
+        playlist.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedPlaylist) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy playlist với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedPlaylist);
+});
+let radioPlaylistDetail = [];
+
+// Đọc file JSON
+fs.readFile('./data/radioPlaylistDetail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            radioPlaylistDetail = JSON.parse(data);
+            console.log('Dữ liệu playlist đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin playlist theo ID
+app.get('/radioPlaylistDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm playlist khớp với ID từ file JSON
+    const matchedPlaylist = radioPlaylistDetail.find(playlist => 
         playlist.playlist_info.id === id
     );
 
@@ -1346,19 +1244,250 @@ app.get('/topMixDetail/:id', (req, res) => {
     res.json(matchedPlaylist);
 });
 
-// Load dữ liệu track.json vào bộ nhớ khi server khởi động
-let tracks = [];
+let turnOffPlaylistDetail = [];
 
+// Đọc file JSON
+fs.readFile('./data/turnOffPlaylistDetail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON turnOffPlaylistDetail:', err);
+    } else {
+        try {
+            turnOffPlaylistDetail = JSON.parse(data);
+            console.log('Dữ liệu turnOffPlaylistDetail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON turnOffPlaylistDetail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin turnOffPlaylist theo ID
+app.get('/turnOffPlaylistDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm playlist khớp với ID từ file JSON
+    const matchedPlaylist = turnOffPlaylistDetail.find(playlist => 
+        playlist.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedPlaylist) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy turnOffPlaylist với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedPlaylist);
+});
+
+let recommendStationDetail = [];
+
+// Đọc file JSON
+fs.readFile('./data/recommendStationDetail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON recommendStationDetail:', err);
+    } else {
+        try {
+            recommendStationDetail = JSON.parse(data);
+            console.log('Dữ liệu recommendStationDetail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON recommendStationDetail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin recommendStation theo ID
+app.get('/recommendStationDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm station khớp với ID từ file JSON
+    const matchedStation = recommendStationDetail.find(station => 
+        station.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedStation) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy recommendStation với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedStation);
+});
+let bestOfArtistDetail = [];
+
+// Đọc file JSON
+fs.readFile('./data/bestOfArtistDetail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON bestOfArtistDetail:', err);
+    } else {
+        try {
+            bestOfArtistDetail = JSON.parse(data);
+            console.log('Dữ liệu bestOfArtistDetail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON bestOfArtistDetail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin bestOfArtist theo ID
+app.get('/bestOfArtistDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm artist khớp với ID từ file JSON
+    const matchedArtist = bestOfArtistDetail.find(artist => 
+        artist.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedArtist) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy bestOfArtist với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedArtist);
+});
+let topArtistTrackDetail = [];
+
+// Đọc file JSON
+fs.readFile('./data/topArtistTrack2024Detail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON topArtistTrackDetail:', err);
+    } else {
+        try {
+            topArtistTrackDetail = JSON.parse(data);
+            console.log('Dữ liệu topArtistTrackDetail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON topArtistTrackDetail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin topArtistTrack theo ID
+app.get('/topArtistTrackDetail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm track khớp với ID từ file JSON
+    const matchedTrack = topArtistTrackDetail.find(track => 
+        track.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedTrack) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy topArtistTrack với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedTrack);
+});
+let theBest2024Detail = [];
+
+// Đọc file JSON
+fs.readFile('./data/theBest2024Detail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON theBest2024Detail:', err);
+    } else {
+        try {
+            theBest2024Detail = JSON.parse(data);
+            console.log('Dữ liệu theBest2024Detail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON theBest2024Detail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin theBest2024 theo ID
+app.get('/theBest2024Detail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm mục khớp với ID từ file JSON
+    const matchedItem = theBest2024Detail.find(item => 
+        item.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedItem) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy theBest2024 với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedItem);
+});
+let loopBack2024Detail = [];
+
+// Đọc file JSON
+fs.readFile('./data/loopBack2024Detail.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON loopBack2024Detail:', err);
+    } else {
+        try {
+            loopBack2024Detail = JSON.parse(data);
+            console.log('Dữ liệu loopBack2024Detail đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON loopBack2024Detail:', parseError);
+        }
+    }
+});
+
+// Endpoint: Lấy thông tin loopBack2024 theo ID
+app.get('/loopBack2024Detail/:id', (req, res) => {
+    const { id } = req.params;
+
+    // Tìm mục khớp với ID từ file JSON
+    const matchedItem = loopBack2024Detail.find(item => 
+        item.playlist_info.id === id
+    );
+
+    // Trả về kết quả nếu tìm thấy hoặc báo lỗi
+    if (!matchedItem) {
+        return res.status(404).json({ 
+            message: `Không tìm thấy loopBack2024 với ID: ${id}` 
+        });
+    }
+
+    res.json(matchedItem);
+});
+
+
+let tracks = [];
+let albums = [];
+let artists = [];
+
+// Hàm tải dữ liệu từ tracks.json
 const loadTracks = () => {
-  const filePath = './data/tracks.json'
+  const filePath = './data/tracks.json';
   fs.readFile(filePath, 'utf-8', (err, data) => {
     if (err) {
-      console.error('Lỗi khi đọc file track.json:', err);
-      process.exit(1); // Dừng server nếu không thể đọc dữ liệu
+      console.error('Lỗi khi đọc file tracks.json:', err);
+      process.exit(1);
     }
     try {
-      tracks = JSON.parse(data);
-      console.log(`Đã tải thành công ${tracks.length} track từ track.json`);
+      const parsedTracks = JSON.parse(data).map((track) => ({
+        trackId: track.track_id,
+        trackName: track.track_name,
+        artistName: track.artistName,
+        albumImage: track.albumImage,
+        uri: track.uri,
+        colorDark: track.colorDark,
+        colorLight: track.colorLight,
+          albumID: track.albumID,
+          albumName: track.albumName,
+          artistID: track.artistID,
+          artistImageUrl: track.artistImageUrl,
+        albumVideo: track.albumVideo,
+        Type: 'Song',
+      }));
+
+      const uniqueTracksMap = new Map();
+      parsedTracks.forEach((track) => {
+        if (track.trackId && !uniqueTracksMap.has(track.trackId)) {
+          uniqueTracksMap.set(track.trackId, track);
+        }
+      });
+      tracks = Array.from(uniqueTracksMap.values());
+      console.log(`Đã tải thành công ${tracks.length} track từ tracks.json`);
     } catch (parseError) {
       console.error('Lỗi khi phân tích cú pháp JSON:', parseError);
       process.exit(1);
@@ -1366,8 +1495,77 @@ const loadTracks = () => {
   });
 };
 
-// Gọi hàm loadTracks khi server khởi động
+// Hàm tải dữ liệu từ albums.json
+const loadAlbums = () => {
+  const filePath = './data/albums.json';
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error('Lỗi khi đọc file albums.json:', err);
+      process.exit(1);
+    }
+    try {
+      const parsedAlbums = JSON.parse(data).map((album) => ({
+        albumId: album.albumID,
+        albumName: album.albumName,
+        artistName: album.artistName,
+        albumImage: album.albumImage,
+        albumType: album.albumType,
+        artistID: album.artistID,
+        Type:'Album'
+      }));
+
+      const uniqueAlbumsMap = new Map();
+      parsedAlbums.forEach((album) => {
+        if (album.albumId && !uniqueAlbumsMap.has(album.albumId)) {
+          uniqueAlbumsMap.set(album.albumId, album);
+        }
+      });
+      albums = Array.from(uniqueAlbumsMap.values());
+      
+      console.log(`Đã tải thành công ${albums.length} album từ albums.json`);
+    } catch (parseError) {
+      console.error('Lỗi khi phân tích cú pháp JSON:', parseError);
+      process.exit(1);
+    }
+  });
+};
+
+// Hàm tải dữ liệu từ artistInfo.json
+const loadArtists = () => {
+  const filePath = './data/artistInfo.json';
+  fs.readFile(filePath, 'utf-8', (err, data) => {
+    if (err) {
+      console.error('Lỗi khi đọc file artistInfo.json:', err);
+      process.exit(1);
+    }
+    try {
+      const parsedArtists = JSON.parse(data).map((artist) => ({
+        artistId: artist.id,
+        artistName: artist.name,
+        albumImage: artist.artistImage,
+        Type: 'Artist',
+      }));
+
+      const uniqueArtistsMap = new Map();
+      parsedArtists.forEach((artist) => {
+        if (artist.artistId && !uniqueArtistsMap.has(artist.artistId)) {
+          uniqueArtistsMap.set(artist.artistId, artist);
+        }
+      });
+      artists = Array.from(uniqueArtistsMap.values());
+      
+      console.log(`Đã tải thành công ${artists.length} artist từ artistInfo.json`);
+    } catch (parseError) {
+      console.error('Lỗi khi phân tích cú pháp JSON:', parseError);
+      process.exit(1);
+    }
+  });
+};
+
+// Gọi hàm load
 loadTracks();
+loadAlbums();
+loadArtists();
 
 // Endpoint /search
 app.get('/search', (req, res) => {
@@ -1377,106 +1575,253 @@ app.get('/search', (req, res) => {
     return res.status(400).json({ error: 'Query là bắt buộc' });
   }
 
-  // Lọc các track có artistName chứa query (không phân biệt hoa/thường)
-  const filteredResults = tracks.filter((track) =>
-    track.artistName.toLowerCase().includes(query.toLowerCase())
+  const lowerCaseQuery = query.toLowerCase();
+
+  const safeIncludes = (field) => {
+    return typeof field === 'string' && field.toLowerCase().includes(lowerCaseQuery);
+  };
+
+  const filteredTracks = tracks.filter((track) =>
+    safeIncludes(track.artistName) ||
+    safeIncludes(track.trackName)
   );
 
-  // Giới hạn kết quả tối đa là 20
-  const limitedResults = filteredResults.slice(0, 20);
+  const filteredAlbums = albums.filter((album) =>
+    safeIncludes(album.artistName) ||
+    safeIncludes(album.albumName)
+  );
 
+  const filteredArtists = artists.filter((artist) =>
+    safeIncludes(artist.artistName)
+  );
+
+  const combinedResults = [];
+  const seenIds = new Set();
+
+  filteredArtists.forEach((artist) => {
+    const uniqueKey = `Artist-${artist.artistId}`;
+    if (!seenIds.has(uniqueKey)) {
+      combinedResults.push(artist);
+      seenIds.add(uniqueKey);
+    }
+  });
+
+  filteredTracks.forEach((track) => {
+    const uniqueKey = `Song-${track.trackId}`;
+    if (!seenIds.has(uniqueKey)) {
+      combinedResults.push(track);
+      seenIds.add(uniqueKey);
+    }
+  });
+
+  filteredAlbums.forEach((album) => {
+    const uniqueKey = `Album-${album.albumId}`;
+    if (!seenIds.has(uniqueKey)) {
+      combinedResults.push(album);
+      seenIds.add(uniqueKey);
+    }
+  });
+
+  const limitedResults = combinedResults.slice(0, 20);
+  console.log(limitedResults)
   return res.json(limitedResults);
 });
 
 // POST /search/history - Save a search history item
 app.post('/search/history', async (req, res) => {
-    const { userId, trackId, trackName, artistName, albumImage } = req.body;
-  
-    if (!userId || !trackId || !trackName || !artistName || !albumImage) {
-      return res.status(400).json({ message: 'All fields are required.' });
+  const { userId, trackId, trackName, albumId, albumName, artistId, artistName, albumImage, Type, uri, colorDark, colorLight, albumID, artistID, artistImageUrl, albumVideo } = req.body;
+
+  if (!userId || !artistName || !albumImage || !Type ||
+      (Type === 'Song' && (!trackId || !trackName)) ||
+      (Type === 'Album' && (!albumId || !albumName)) ||
+      (Type === 'Artist' && (!artistId || !artistName))) {
+    return res.status(400).json({ message: 'Invalid request body based on Type.' });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
     }
-  
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
+
+    const updateData = {
+      artistName,
+      albumImage,
+      Type,
+      timestamp: new Date(),
+    };
+
+    if (Type === 'Song') {
+      updateData.trackId = trackId;
+      updateData.trackName = trackName;
+        updateData.uri = uri;
+        updateData.colorDark = colorDark;
+        updateData.colorLight = colorLight;
+        updateData.albumID = albumID;
+        updateData.artistID = artistID;
+        updateData.artistImageUrl = artistImageUrl;
+        updateData.albumVideo = albumVideo;
+        updateData.albumName = albumName;
+      
+    } else if (Type === 'Album') {
+      updateData.albumId = albumId;
+      updateData.albumName = albumName;
+      updateData.artistID = artistID;
+    } else if (Type === 'Artist') {
+      updateData.artistId = artistId;
+    }
+
+    const matchCondition = { user: userId, Type };
+    if (Type === 'Song') {
+      matchCondition.trackId = trackId;
+    } else if (Type === 'Album') {
+      matchCondition.albumId = albumId;
+    } else if (Type === 'Artist') {
+      matchCondition.artistId = artistId;
+    }
+
+    const updatedHistory = await SearchHistory.findOneAndUpdate(
+      matchCondition,
+      updateData,
+      { 
+        new: true,
+        upsert: true,
+        setDefaultsOnInsert: true
       }
-  
-      // Sử dụng findOneAndUpdate để kiểm tra trùng và ghi đè
-      const updatedHistory = await SearchHistory.findOneAndUpdate(
-        { user: userId, trackId }, // Điều kiện: userId và trackId đã tồn tại
-        { 
-          trackName, 
-          artistName, 
-          albumImage, 
-          timestamp: new Date() // Cập nhật thời gian nếu cần
-        },
-        { 
-          new: true, // Trả về bản ghi đã cập nhật
-          upsert: true, // Thêm mới nếu không tìm thấy
-          setDefaultsOnInsert: true // Áp dụng default schema nếu thêm mới
+    );
+
+    res.status(201).json({ message: 'Search history saved successfully.', history: updatedHistory });
+  } catch (error) {
+    console.error('Error saving search history:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// GET /search/history - Get search history for a user
+app.get('/search/history', async (req, res) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ message: 'userId is required as a query parameter.' });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const history = await SearchHistory.find({ user: userId })
+      .sort({ timestamp: -1 })
+      .limit(50);
+
+    res.status(200).json({ history });
+  } catch (error) {
+    console.error('Error fetching search history:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+// DELETE /search/history - Delete a search history item
+app.delete('/search/history', async (req, res) => {
+  const { userId, trackId, albumId, artistId, Type } = req.body;
+
+  if (!userId || !Type || 
+      (Type === 'Song' && !trackId) ||
+      (Type === 'Album' && !albumId) ||
+      (Type === 'Artist' && !artistId)) {
+    return res.status(400).json({ message: 'Required fields are missing based on Type.' });
+  }
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const deleteCondition = { user: userId, Type };
+
+    if (Type === 'Song') {
+      deleteCondition.trackId = trackId;
+    } else if (Type === 'Album') {
+      deleteCondition.albumId = albumId;
+    } else if (Type === 'Artist') {
+      deleteCondition.artistId = artistId;
+    }
+
+    const deletedHistory = await SearchHistory.findOneAndDelete(deleteCondition);
+
+    if (!deletedHistory) {
+      return res.status(404).json({ message: 'History not found.' });
+    }
+
+    res.status(200).json({ message: 'Search history deleted successfully.', history: deletedHistory });
+  } catch (error) {
+    console.error('Error deleting search history:', error);
+    res.status(500).json({ message: 'Server error.' });
+  }
+});
+
+let tracksHistoryData = [];
+
+// Đọc file JSON chứa thông tin bài hát từ lịch sử
+fs.readFile('./data/tracks.json', 'utf-8', (err, data) => {
+    if (err) {
+        console.error('Không thể đọc file JSON:', err);
+    } else {
+        try {
+            tracksHistoryData = JSON.parse(data);
+            console.log('Dữ liệu lịch sử bài hát đã được tải thành công.');
+        } catch (parseError) {
+            console.error('Lỗi phân tích cú pháp JSON:', parseError);
         }
-      );
-  
-      res.status(201).json({ message: 'Search history saved successfully.', history: updatedHistory });
-    } catch (error) {
-      console.error('Error saving search history:', error);
-      res.status(500).json({ message: 'Server error.' });
     }
-  });
-  
-  
-  // GET /search/history - Get search history for a user
-  app.get('/search/history', async (req, res) => {
-    const { userId } = req.query;
-  
-    if (!userId) {
-      return res.status(400).json({ message: 'userId is required as a query parameter.' });
-    }
-  
+});
+
+// Endpoint: Lấy thông tin playlist và chi tiết các bài hát từ lịch sử
+app.get('/playlists-with-tracks', authenticateToken, async (req, res) => {
     try {
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-      }
-  
-      const history = await SearchHistory.find({ user: userId })
-        .sort({ timestamp: -1 })
-        .limit(50);
-  
-      res.status(200).json({ history });
+        // Lấy danh sách playlists từ database
+        const playlists = await Playlist.find({ userId: req.user.id }).populate('songs', 'id name');
+
+        // Tạo danh sách trả về với playlist_info được gắn cứng
+        const response = playlists.map(playlist => {
+            // Playlist info tùy chỉnh
+            const playlistInfo = {
+                name: "Liked Songs",
+                description: "My Liekd Songs",
+                id: "37i9dQZF1EQpVaHRDcozEz",
+                followers: 0,
+                image: "https://misc.scdn.co/liked-songs/liked-songs-300.jpg",
+                color: "#9400ff",
+                owner: {
+                    name: req.user.name,
+                    image: "https://i.scdn.co/image/ab67757000003b8255c25988a6ac314394d3fbf5"
+                },
+                total_duration: {
+                    minutes: 165,
+                    seconds: 42
+                }
+            };
+
+            // Lấy chi tiết bài hát từ tracksHistoryData
+            const tracksDetails = playlist.songs.map(songId => {
+                const track = tracksHistoryData.find(track => track.track_id === songId);
+                return track || { track_id: songId, message: 'Không tìm thấy bài hát này trong lịch sử.' };
+            });
+
+            return {
+                playlist_info: playlistInfo,
+                tracks: tracksDetails
+            };
+        });
+
+        res.status(200).json(response);
     } catch (error) {
-      console.error('Error fetching search history:', error);
-      res.status(500).json({ message: 'Server error.' });
+        console.error('Error fetching playlists and tracks:', error);
+        res.status(500).json({ message: 'Internal server error.' });
     }
-  });
-  app.delete('/search/history', async (req, res) => {
-    const { userId, trackId } = req.body;
-    // console.log(req.body)
-    if (!userId || !trackId) {
-      return res.status(400).json({ message: 'UserId and TrackId are required.' });
-    }
-  
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        return res.status(404).json({ message: 'User not found.' });
-      }
-  
-      // Xóa một bản ghi cụ thể từ SearchHistory
-      const deletedHistory = await SearchHistory.findOneAndDelete({ user: userId, trackId });
-  
-      if (!deletedHistory) {
-        return res.status(404).json({ message: 'History not found.' });
-      }
-  
-      res.status(200).json({ message: 'Search history deleted successfully.', history: deletedHistory });
-    } catch (error) {
-      console.error('Error deleting search history:', error);
-      res.status(500).json({ message: 'Server error.' });
-    }
-  });
-  
+});
 // Khởi động server
 const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
 // const HOST = '149.28.146.58';

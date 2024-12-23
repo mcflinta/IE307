@@ -4,29 +4,6 @@ const { Buffer } = require('buffer');
 const path = require('path');
 const fs = require('fs');
 
-// Hàm tìm bài hát qua Spotify API
-// const fetchSongFromSpotify = async (id) => {
-//     try {
-//         const token = await getAccessToken(); // Lấy Access Token
-//         const response = await axios.get(`https://api.spotify.com/v1/tracks/${id}`, {
-//             headers: {
-//                 Authorization: `Bearer ${token}`,
-//             },
-//         });
-//         return {
-//             id: response.data.id,
-//             name: response.data.name,
-//             artist: response.data.artists.map(artist => artist.name).join(', '),
-//             album: response.data.album.name,
-//             // preview_url: response.data.preview_url, // URL xem trước bài hát
-//             image: response.data.album.images[0]?.url,
-//             external_urls: response.data.external_urls.spotify,
-//         };
-//     } catch (error) {
-//         console.error('Error fetching song from Spotify:', error.response?.data || error.message);
-//         return null; // Trả về null nếu không tìm thấy bài hát
-//     }
-// };
 
 const getLocalData = () => {
     const data = fs.readFileSync('/home/flinta/My_work/IE307/Project/music-app-backend/data/tracks.json', 'utf8'); // Đọc file JSON

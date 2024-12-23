@@ -126,6 +126,7 @@ const HomeScreen = ({ route }) => {
         }
 
         const data = await response.json();
+        // console.log("Daily Mix: ")
         navigation.navigate('PlaylistDetailScreen', data);
       } catch (err) {
         console.error('Error fetching album details:', err);
@@ -136,10 +137,131 @@ const HomeScreen = ({ route }) => {
     },
     [navigation]
   );
+  const handleRadioPlaylistPress = useCallback(async (item) => {
+    setLoading(true);
+    try {
+        const response = await fetch(`${API_BASE_URL}/radioPlaylistDetail/${item.id}`);
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        navigation.navigate('PlaylistDetailScreen',  data );
+    } catch (err) {
+        console.error('Error fetching radio playlist details:', err);
+        Alert.alert('Error', 'Unable to fetch radio playlist details. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+  }, [navigation]);
+  const handleTurnOffPlaylistPress = useCallback(async (item) => {
+    setLoading(true);
+    try {
+        const response = await fetch(`${API_BASE_URL}/turnOffPlaylistDetail/${item.id}`);
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        navigation.navigate('PlaylistDetailScreen',  data );
+    } catch (err) {
+        console.error('Error fetching turn off playlist details:', err);
+        Alert.alert('Error', 'Unable to fetch turn off playlist details. Please try again.');
+    } finally {
+        setLoading(false);
+    }
+}, [navigation]);
+const handleRecommendStationPress = useCallback(async (item) => {
+  setLoading(true);
+  try {
+      const response = await fetch(`${API_BASE_URL}/recommendStationDetail/${item.id}`);
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      navigation.navigate('PlaylistDetailScreen',  data );
+  } catch (err) {
+      console.error('Error fetching recommend station details:', err);
+      Alert.alert('Error', 'Unable to fetch recommend station details. Please try again.');
+  } finally {
+      setLoading(false);
+  }
+}, [navigation]);
+const handleBestOfArtistPress = useCallback(async (item) => {
+  setLoading(true);
+  try {
+      const response = await fetch(`${API_BASE_URL}/bestOfArtistDetail/${item.id}`);
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      navigation.navigate('PlaylistDetailScreen',  data );
+  } catch (err) {
+      console.error('Error fetching best of artist details:', err);
+      Alert.alert('Error', 'Unable to fetch best of artist details. Please try again.');
+  } finally {
+      setLoading(false);
+  }
+}, [navigation]);
+const handleTopArtistTrackPress = useCallback(async (item) => {
+  setLoading(true);
+  try {
+      const response = await fetch(`${API_BASE_URL}/topArtistTrackDetail/${item.id}`);
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      navigation.navigate('PlaylistDetailScreen',  data );
+  } catch (err) {
+      console.error('Error fetching top artist track details:', err);
+      Alert.alert('Error', 'Unable to fetch top artist track details. Please try again.');
+  } finally {
+      setLoading(false);
+  }
+}, [navigation]);
+const handleTheBest2024Press = useCallback(async (item) => {
+  setLoading(true);
+  try {
+      const response = await fetch(`${API_BASE_URL}/theBest2024Detail/${item.id}`);
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      navigation.navigate('PlaylistDetailScreen',  data );
+  } catch (err) {
+      console.error('Error fetching theBest2024 details:', err);
+      Alert.alert('Error', 'Unable to fetch theBest2024 details. Please try again.');
+  } finally {
+      setLoading(false);
+  }
+}, [navigation]);
+const handleLoopBack2024Press = useCallback(async (item) => {
+  setLoading(true);
+  try {
+      const response = await fetch(`${API_BASE_URL}/loopBack2024Detail/${item.id}`);
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      navigation.navigate('PlaylistDetailScreen',  data );
+  } catch (err) {
+      console.error('Error fetching loopBack2024 details:', err);
+      Alert.alert('Error', 'Unable to fetch loopBack2024 details. Please try again.');
+  } finally {
+      setLoading(false);
+  }
+}, [navigation]);
+
   const handleAlbumWrappedPress = useCallback(async (item) => {
     setLoading(true);
     try {
-      const response = await fetch(`${API_BASE_URL}/WrappedAlbumDetail/${item.id}`);
+      const response = await fetch(`${API_BASE_URL}/wrappedAlbumDetail/${item.id}`);
+      // console.log(response.data)
       if (!response.ok) {
         throw new Error(`Server error: ${response.statusText}`);
       }
@@ -243,6 +365,7 @@ const HomeScreen = ({ route }) => {
           throw new Error(`Error fetching daily mix: ${response.statusText}`);
         }
         const data = await response.json();
+        // console.log("Turn off data",data)
         setTurnOffPlaylist(data);
       } catch (err) {
         console.error('Error fetching daily mix:', err);
@@ -261,6 +384,7 @@ const HomeScreen = ({ route }) => {
           throw new Error(`Error fetching daily mix: ${response.statusText}`);
         }
         const data = await response.json();
+        // console.log("Recommend data",data)
         setRecommendStation(data);
       } catch (err) {
         console.error('Error fetching daily mix:', err);
@@ -421,7 +545,7 @@ const HomeScreen = ({ route }) => {
             <FlatList
               data={radioPlaylist}
               horizontal
-              renderItem={renderHorizontalItem}
+              renderItem={renderHorizontalItemRadioPlaylist}
               keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
             />
@@ -432,7 +556,7 @@ const HomeScreen = ({ route }) => {
             <FlatList
               data={turnOffPlaylist}
               horizontal
-              renderItem={renderHorizontalItem}
+              renderItem={renderHorizontalItemTurnOffPlaylist}
               keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
             />
@@ -442,7 +566,7 @@ const HomeScreen = ({ route }) => {
             <FlatList
               data={recommendStation}
               horizontal
-              renderItem={renderHorizontalItem}
+              renderItem={renderHorizontalItemRecommendStation}
               keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
             />
@@ -452,7 +576,7 @@ const HomeScreen = ({ route }) => {
             <FlatList
               data={bestOfArtists}
               horizontal
-              renderItem={renderHorizontalItem}
+              renderItem={renderHorizontalItemBestOfArtist}
               keyExtractor={(item) => item.id}
               showsHorizontalScrollIndicator={false}
             />
@@ -491,7 +615,7 @@ const HomeScreen = ({ route }) => {
           <FlatList
             data={topArtistTrack2024}
             horizontal
-            renderItem={renderHorizontalItem}
+            renderItem={renderHorizontalItemTopArtistTrack}
             keyExtractor={(item) => item.id}
             showsHorizontalScrollIndicator={false}
           />
@@ -502,7 +626,7 @@ const HomeScreen = ({ route }) => {
           <FlatList
             data={theBest2024}
             horizontal
-            renderItem={renderHorizontalItem}
+            renderItem={renderHorizontalItemTheBest2024}
             keyExtractor={(item) => item.id}
             showsHorizontalScrollIndicator={false}
           />
@@ -512,7 +636,7 @@ const HomeScreen = ({ route }) => {
           <FlatList
             data={loopBack2024}
             horizontal
-            renderItem={renderHorizontalItem}
+            renderItem={renderHorizontalItemLoopBack2024}
             keyExtractor={(item) => item.id}
             showsHorizontalScrollIndicator={false}
           />
@@ -575,6 +699,125 @@ const HomeScreen = ({ route }) => {
       </Text>
     </TouchableOpacity>
   );
+  const renderHorizontalItemRadioPlaylist = ({ item }) => (
+    <TouchableOpacity 
+      style={{ marginRight: 12, width: 150 }} 
+      onPress={() => handleRadioPlaylistPress(item)}
+    >
+      <Image 
+        source={{ uri: item.playlist_url }} 
+        style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+      />
+      <Text 
+        style={{ color: '#ccc', fontSize: 12 }} 
+        numberOfLines={2}
+      >
+        {removeHtmlTags(item.description)}
+      </Text>
+    </TouchableOpacity>
+  );
+  const renderHorizontalItemTurnOffPlaylist = ({ item }) => (
+    <TouchableOpacity 
+      style={{ marginRight: 12, width: 150 }} 
+      onPress={() => handleTurnOffPlaylistPress(item)}
+    >
+      <Image 
+        source={{ uri: item.playlist_url }} 
+        style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+      />
+      <Text 
+        style={{ color: '#ccc', fontSize: 12 }} 
+        numberOfLines={2}
+      >
+        {removeHtmlTags(item.description)}
+      </Text>
+    </TouchableOpacity>
+);
+const renderHorizontalItemRecommendStation = ({ item }) => (
+  <TouchableOpacity 
+    style={{ marginRight: 12, width: 150 }} 
+    onPress={() => handleRecommendStationPress(item)}
+  >
+    <Image 
+      source={{ uri: item.playlist_url }} 
+      style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+    />
+    <Text 
+      style={{ color: '#ccc', fontSize: 12 }} 
+      numberOfLines={2}
+    >
+      {removeHtmlTags(item.description)}
+    </Text>
+  </TouchableOpacity>
+);
+const renderHorizontalItemBestOfArtist = ({ item }) => (
+  <TouchableOpacity 
+    style={{ marginRight: 12, width: 150 }} 
+    onPress={() => handleBestOfArtistPress(item)}
+  >
+    <Image 
+      source={{ uri: item.playlist_url }} 
+      style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+    />
+    <Text 
+      style={{ color: '#ccc', fontSize: 12 }} 
+      numberOfLines={2}
+    >
+      {removeHtmlTags(item.artist_name)}
+    </Text>
+  </TouchableOpacity>
+);
+const renderHorizontalItemTopArtistTrack = ({ item }) => (
+  <TouchableOpacity 
+    style={{ marginRight: 12, width: 150 }} 
+    onPress={() => handleTopArtistTrackPress(item)}
+  >
+    <Image 
+      source={{ uri: item.playlist_url }} 
+      style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+    />
+    <Text 
+      style={{ color: '#ccc', fontSize: 12 }} 
+      numberOfLines={2}
+    >
+      {removeHtmlTags(item.track_title)}
+    </Text>
+  </TouchableOpacity>
+);
+const renderHorizontalItemTheBest2024 = ({ item }) => (
+  <TouchableOpacity 
+    style={{ marginRight: 12, width: 150 }} 
+    onPress={() => handleTheBest2024Press(item)}
+  >
+    <Image 
+      source={{ uri: item.playlist_url }} 
+      style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+    />
+    <Text 
+      style={{ color: '#ccc', fontSize: 12 }} 
+      numberOfLines={2}
+    >
+      {removeHtmlTags(item.item_title)}
+    </Text>
+  </TouchableOpacity>
+);
+const renderHorizontalItemLoopBack2024 = ({ item }) => (
+  <TouchableOpacity 
+    style={{ marginRight: 12, width: 150 }} 
+    onPress={() => handleLoopBack2024Press(item)}
+  >
+    <Image 
+      source={{ uri: item.playlist_url }} 
+      style={{ width: 150, height: 150, borderRadius: 8, marginBottom: 8 }} 
+    />
+    <Text 
+      style={{ color: '#ccc', fontSize: 12 }} 
+      numberOfLines={2}
+    >
+      {removeHtmlTags(item.item_title)}
+    </Text>
+  </TouchableOpacity>
+);
 
 
 
@@ -671,7 +914,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-    paddingTop:30,
+    paddingTop: 30,
+    paddingBottom: 80,
   },
   headerContainer: {
     flexDirection: 'row',

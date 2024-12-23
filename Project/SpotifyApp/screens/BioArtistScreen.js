@@ -14,6 +14,7 @@ import HTMLView from 'react-native-htmlview';
 import tokenManager from '../services/TokenManager';
 import XIcon from '../assets/svg/XIcon.svg';
 import WikiIcon from '../assets/svg/WikiIcon.svg';
+import { API_BASE_URL } from '../config/config';
 
 const BioArtistScreen = ({ route }) => {
   const artistId = route.params.artistId;
@@ -50,7 +51,7 @@ const BioArtistScreen = ({ route }) => {
           return;
         }
         const response = await fetch(
-          `http://149.28.146.58:3000/artist/artistInfo/${artistId}`,
+          `${API_BASE_URL}/artist/artistInfo/${artistId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }

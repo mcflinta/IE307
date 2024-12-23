@@ -48,7 +48,7 @@ const MainStackNavigator = () => (
       name="LoginFlow"
       component={LoginFlow}
       options={{
-        headerShown: false,
+        headerShown: true,
         title: '',
         headerStyle: { backgroundColor: '#121212' },
         headerTintColor: '#fff',
@@ -71,6 +71,7 @@ const MainStackNavigator = () => (
         headerShown: false,
       }}
     />
+    
 
     </MainStack.Navigator>
 
