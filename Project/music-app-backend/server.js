@@ -290,42 +290,162 @@ const serveFile = (filePath, req, res) => {
 };
 
 
+// app.get('/music/by-id/:id', async (req, res) => {
+//     const { id } = req.params;
+
+//     try {
+//         // 1. Kiểm tra trong MongoDB
+//         let song = await Song.findOne({ id });
+
+//         if (!song) {
+//             console.log(`Song with ID ${id} not found in the database. Checking local folder...`);
+
+//             // 2. Quét thư mục `music` để tìm bài hát
+//             const musicPath = path.join(__dirname, 'music');
+//             const files = fs.readdirSync(musicPath);
+//             // console.log(files);
+//             const matchedFile = files.find(file => file.includes(id));
+//             // console.log(matchedFile);
+            
+//             if (matchedFile) {
+//                 console.log(`Found song with ID ${id} in the local folder: ${matchedFile}`);
+
+//                 // 3. Thêm bài hát vào MongoDB
+//                 const newSong = new Song({
+//                     id: id,
+//                     name: path.basename(matchedFile, '.mp3'), // Loại bỏ phần mở rộng
+//                     path: path.join('music', matchedFile),
+//                 });
+
+//                 await newSong.save();
+//                 console.log(`Song ${matchedFile} added to the database.`);
+
+//                 // 4. Tiếp tục xử lý như khi bài hát đã tồn tại trong database
+//                 song = newSong;
+//             } else {
+//                 console.log(`Song with ID ${id} not found in the local folder. Fetching from Spotify...`);
+
+//                 // Tiếp tục với logic tải bài hát từ Spotify như trong đoạn mã gốc
+//                 const spotifySong = await fetchSongFromSpotify(id);
+
+//                 if (!spotifySong) {
+//                     return res.status(404).send('Song not found in database, local folder, or on Spotify.');
+//                 }
+
+//                 res.status(202).json({
+//                     message: 'Song is being downloaded. Please try again later.',
+//                     id: spotifySong.id,
+//                     name: spotifySong.name,
+//                     external_urls: spotifySong.external_urls,
+//                 });
+
+//                 // Tải nhạc từ Spotify
+//                 const downloadPath = path.join(__dirname, 'music');
+//                 const spotdlCommand = `spotdl "${spotifySong.external_urls}" --output "${downloadPath}"`;
+
+//                 console.log(`Downloading song from Spotify: ${spotifySong.name}`);
+//                 const { stdout, stderr } = await execPromise(spotdlCommand);
+
+//                 if (stderr) {
+//                     console.error(`Error downloading song: ${stderr}`);
+//                     return;
+//                 }
+
+//                 console.log(`Download completed: ${stdout}`);
+
+//                 const downloadedFiles = fs.readdirSync(downloadPath)
+//                     .map(file => ({
+//                         name: file,
+//                         time: fs.statSync(path.join(downloadPath, file)).mtime.getTime(),
+//                     }))
+//                     .sort((a, b) => b.time - a.time);
+
+//                 if (downloadedFiles.length === 0) {
+//                     console.error('No file downloaded.');
+//                     return;
+//                 }
+
+//                 const downloadedFile = downloadedFiles[0].name;
+//                 const oldFilePath = path.join(downloadPath, downloadedFile);
+
+//                 const newFileName = `${spotifySong.name.replace(/[<>:"/\\|?*]/g, '')}.mp3`;
+//                 const newFilePath = path.join(downloadPath, newFileName);
+
+//                 fs.renameSync(oldFilePath, newFilePath);
+//                 console.log(`Renamed file to: ${newFileName}`);
+
+//                 const newSpotifySong = new Song({
+//                     id: spotifySong.id,
+//                     name: spotifySong.name,
+//                     path: path.join('music', newFileName),
+//                 });
+
+//                 await newSpotifySong.save();
+
+//                 console.log(`Song ${spotifySong.name} added to the database.`);
+//                 return;
+//             }
+//         }
+
+//         // 5. Nếu bài hát đã có (hoặc vừa được thêm vào từ thư mục), trả về file
+//         const filePath = path.join(__dirname, song.path);
+//         serveFile(filePath, req, res);
+
+//     } catch (error) {
+//         console.error('Error:', error);
+//         res.status(500).send('Internal server error.');
+//     }
+// });
+
+
 app.get('/music/by-id/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
-        // 1. Kiểm tra trong MongoDB
+        // 1. Lấy thông tin bài hát từ mảng `tracks`
+        const songInfo = tracks.find(track => track.trackId === id);
+
+        if (!songInfo) {
+            return res.status(404).send('Bài hát không tìm thấy trong dữ liệu đã tải.');
+        }
+
+        // 2. Kiểm tra trong MongoDB
         let song = await Song.findOne({ id });
 
         if (!song) {
             console.log(`Song with ID ${id} not found in the database. Checking local folder...`);
 
-            // 2. Quét thư mục `music` để tìm bài hát
+            // 3. Quét thư mục `music` để tìm bài hát dựa trên tên bài hát
             const musicPath = path.join(__dirname, 'music');
             const files = fs.readdirSync(musicPath);
-            // console.log(files);
-            const matchedFile = files.find(file => file.includes(id));
-            // console.log(matchedFile);
-            
-            if (matchedFile) {
-                console.log(`Found song with ID ${id} in the local folder: ${matchedFile}`);
 
-                // 3. Thêm bài hát vào MongoDB
+            // Sanitize tên bài hát để khớp với tên file
+            const sanitizedTrackName = songInfo.trackName.replace(/[<>:"/\\|?*]/g, '').toLowerCase();
+
+            // Tìm file có tên khớp với tên bài hát đã sanitize
+            const matchedFile = files.find(file => {
+                const fileName = path.basename(file, path.extname(file)).replace(/[<>:"/\\|?*]/g, '').toLowerCase();
+                return fileName === sanitizedTrackName;
+            });
+
+            if (matchedFile) {
+                console.log(`Found song "${songInfo.trackName}" in the local folder: ${matchedFile}`);
+
+                // 4. Thêm bài hát vào MongoDB
                 const newSong = new Song({
                     id: id,
-                    name: path.basename(matchedFile, '.mp3'), // Loại bỏ phần mở rộng
+                    name: songInfo.trackName, // Sử dụng tên từ JSON
                     path: path.join('music', matchedFile),
                 });
 
                 await newSong.save();
-                console.log(`Song ${matchedFile} added to the database.`);
+                console.log(`Song "${matchedFile}" added to the database.`);
 
-                // 4. Tiếp tục xử lý như khi bài hát đã tồn tại trong database
                 song = newSong;
             } else {
-                console.log(`Song with ID ${id} not found in the local folder. Fetching from Spotify...`);
+                console.log(`Song "${songInfo.trackName}" not found in the local folder. Fetching from Spotify...`);
 
-                // Tiếp tục với logic tải bài hát từ Spotify như trong đoạn mã gốc
+                // Tiếp tục với logic tải bài hát từ Spotify
                 const spotifySong = await fetchSongFromSpotify(id);
 
                 if (!spotifySong) {
@@ -368,7 +488,9 @@ app.get('/music/by-id/:id', async (req, res) => {
                 const downloadedFile = downloadedFiles[0].name;
                 const oldFilePath = path.join(downloadPath, downloadedFile);
 
-                const newFileName = `${spotifySong.name.replace(/[<>:"/\\|?*]/g, '')}.mp3`;
+                // Sanitize tên bài hát trước khi đổi tên file
+                const sanitizedFileName = spotifySong.name.replace(/[<>:"/\\|?*]/g, '');
+                const newFileName = `${sanitizedFileName}.mp3`;
                 const newFilePath = path.join(downloadPath, newFileName);
 
                 fs.renameSync(oldFilePath, newFilePath);
@@ -382,7 +504,7 @@ app.get('/music/by-id/:id', async (req, res) => {
 
                 await newSpotifySong.save();
 
-                console.log(`Song ${spotifySong.name} added to the database.`);
+                console.log(`Song "${spotifySong.name}" added to the database.`);
                 return;
             }
         }
@@ -396,7 +518,6 @@ app.get('/music/by-id/:id', async (req, res) => {
         res.status(500).send('Internal server error.');
     }
 });
-
 
 // Endpoint: Tạo playlist mới
 app.post('/playlists', authenticateToken, async (req, res) => {

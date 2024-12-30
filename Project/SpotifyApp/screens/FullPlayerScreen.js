@@ -667,14 +667,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   songInfoAlignedNoVideo: {
-    // flex: 1,
+    flex: 1,
+    width:'80%',
     // marginHorizontal: 10,
-    marginRight: 200,
-    justifyContent: 'center',
-    // position: 'relative',
-    // top: 5,   // Tùy chỉnh vị trí
-    // left: -105,
-    // right: 0,
+    marginRight: 50,
+    marginTop: 20,
+    // paddingRight: 100,
+
   },
 });
 
