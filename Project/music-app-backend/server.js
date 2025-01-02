@@ -1944,7 +1944,7 @@ app.get('/playlists-with-tracks', authenticateToken, async (req, res) => {
     }
 });
 // Khởi động server
-const HOST = '192.168.105.35'; // Thay bằng địa chỉ IP bạn muốn
+const HOST = '192.168.105.33'; // Thay bằng địa chỉ IP bạn muốn
 // const HOST = '149.28.146.58';
 app.listen(PORT, HOST, () => {
     console.log(`Server is running on http://${HOST}:${PORT}`);
