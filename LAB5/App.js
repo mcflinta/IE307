@@ -1,44 +1,89 @@
-
 import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { TouchableOpacity } from 'react-native';
 
 import { requestNotificationPermission } from './services/notification';
-
+// 21521901 - Mai Quốc Cường
 import PlaceListScreen from './screens/PlaceListScreen';
 import AddPlaceScreen from './screens/AddPlaceScreen';
 import PlaceDetailScreen from './screens/PlaceDetailScreen';
 import MapScreen from './screens/MapScreen';
 import MediaLibraryScreen from './screens/MediaLibraryScreen';
 import RecordVideoScreen from './screens/RecordVideoScreen';
-// 21521901 - Mai Quốc Cường
+import MapDetail from './screens/MapDetail';
+
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+
+const handleSavePress = (location) => {
+  if (location) {
+    console.log('Saved Location:', location);
+    alert(`Saved Location: ${location.latitude}, ${location.longitude}`);
+  } else {
+    alert('No location selected to save.');
+  }
+};
 
 function PlacesStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen 
+      <Stack.Screen
         name="PlaceList"
         component={PlaceListScreen}
-        options={{ title: 'Danh sách địa điểm' }}
+        options={{ title: 'Place List' }}
       />
-      <Stack.Screen 
+      <Stack.Screen
         name="AddPlace"
         component={AddPlaceScreen}
-        options={{ title: 'Thêm địa điểm' }}
+        options={{ title: 'Add Place' }}
       />
       <Stack.Screen
         name="PlaceDetail"
         component={PlaceDetailScreen}
-        options={{ title: 'Chi tiết địa điểm' }}
+        options={({ route, navigation }) => ({
+          title: 'Place Details',
+          headerRight: () => (
+            <TouchableOpacity 
+              style={{ marginRight: 10 }}
+              onPress={() => {
+                const { latitude, longitude, address } = route.params.place;
+                navigation.navigate('MapDetail', { 
+                  location: { latitude, longitude, address } 
+                });
+              }}
+            >
+              <Ionicons name="map-outline" size={24} color="black" />
+            </TouchableOpacity>
+          ),
+        })}
       />
       <Stack.Screen
         name="Map"
         component={MapScreen}
-        options={{ title: 'Bản đồ' }}
+        initialParams={{ location: null }} 
+        options={({ route }) => ({
+          title: 'Map',
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() => handleSavePress(route.params?.location)}
+            >
+              <Ionicons
+                name="bookmark-outline"
+                size={24}
+                color="black"
+                style={{ marginRight: 10 }}
+              />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="MapDetail"
+        component={MapDetail}
+        options={{ title: 'Place Details' }}
       />
     </Stack.Navigator>
   );
@@ -50,12 +95,12 @@ function MediaStack() {
       <Stack.Screen
         name="MediaLibrary"
         component={MediaLibraryScreen}
-        options={{ title: 'Thư viện' }}
+        options={{ title: 'Library' }}
       />
       <Stack.Screen
         name="RecordVideo"
         component={RecordVideoScreen}
-        options={{ title: 'Quay video' }}
+        options={{ title: 'Record Video' }}
       />
     </Stack.Navigator>
   );

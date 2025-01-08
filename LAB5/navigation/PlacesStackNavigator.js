@@ -6,7 +6,7 @@ import PlaceListScreen from '../screens/places/PlaceListScreen';
 import AddPlaceScreen from '../screens/places/AddPlaceScreen';
 import PlaceDetailScreen from '../screens/places/PlaceDetailScreen';
 import MapScreen from '../screens/places/MapScreen';
-
+import MapDetail from '../screens/MapDetail';
 const Stack = createStackNavigator();
 
 function PlacesStackNavigator() {
@@ -31,6 +31,11 @@ function PlacesStackNavigator() {
         name="Map"
         component={MapScreen}
         options={{ title: 'Map' }}
+      />
+      <Stack.Screen
+        name="MapDetail"
+        component={MapDetail}
+        options={{ title: 'Map Detail' }}
       />
     </Stack.Navigator>
   );

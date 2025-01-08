@@ -6,6 +6,7 @@ import { fetchPlaces } from '../storage';
 
 export default function PlaceListScreen({ navigation }) {
   const [places, setPlaces] = useState([]);
+  const [locationAddress, setLocationAddress] = useState(''); // State for storing address
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
@@ -33,7 +34,8 @@ export default function PlaceListScreen({ navigation }) {
       <View style={{ marginLeft: 10, flex: 1 }}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.subtitle}>
-          Lat: {item.latitude?.toFixed(5)}, Lng: {item.longitude?.toFixed(5)}
+          {/* Lat: {item.latitude?.toFixed(5)}, Lng: {item.longitude?.toFixed(5)} */}
+          {item.address}
         </Text>
       </View>
     </TouchableOpacity>

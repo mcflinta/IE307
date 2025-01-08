@@ -1,14 +1,15 @@
-
 import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { Camera, CameraType } from 'expo-camera';
+import { Camera, CameraType, CameraView } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 import { Ionicons } from '@expo/vector-icons';
-// 21521901 - Mai Quốc Cường
 import { showNotification } from '../services/notification';
+import { useNavigation } from '@react-navigation/native';
 
-export default function RecordVideoScreen({ navigation }) {
+export default function RecordVideoScreen() {
   const cameraRef = useRef(null);
+  const navigation = useNavigation();
+
   const [hasCameraPerm, setHasCameraPerm] = useState(null);
   const [hasMicPerm, setHasMicPerm] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -40,12 +41,12 @@ export default function RecordVideoScreen({ navigation }) {
     if (!recordedUri) return;
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Quyền bị từ chối', 'Bạn phải cấp quyền lưu video vào thư viện!');
+      Alert.alert('Permission Denied', 'You need to grant permission to save video to library!');
       return;
     }
     await MediaLibrary.saveToLibraryAsync(recordedUri);
-    showNotification('Đã lưu video', 'Video được thêm vào thư viện thành công!');
-    navigation.goBack();  
+    showNotification('Video Saved', 'Video was successfully added to the library!');
+    navigation.goBack();
   };
 
   const reRecord = () => {
@@ -55,14 +56,14 @@ export default function RecordVideoScreen({ navigation }) {
   if (hasCameraPerm === null || hasMicPerm === null) {
     return (
       <View style={styles.container}>
-        <Text>Đang yêu cầu quyền camera/micro...</Text>
+        <Text>Requesting camera/microphone permissions...</Text>
       </View>
     );
   }
   if (!hasCameraPerm || !hasMicPerm) {
     return (
       <View style={styles.container}>
-        <Text>Không có quyền truy cập camera hoặc micro!</Text>
+        <Text>No access to camera or microphone!</Text>
       </View>
     );
   }
@@ -70,7 +71,7 @@ export default function RecordVideoScreen({ navigation }) {
   if (recordedUri) {
     return (
       <View style={styles.containerPreview}>
-        <Text style={styles.previewText}>Đã quay xong, bạn muốn lưu hay quay lại?</Text>
+        <Text style={styles.previewText}>Recording finished, do you want to save or re-record?</Text>
         <View style={styles.btnRow}>
           <TouchableOpacity style={styles.btn} onPress={saveVideo}>
             <Ionicons name="save" size={24} color="#fff" />
@@ -87,10 +88,10 @@ export default function RecordVideoScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Camera
+      <CameraView
         ref={cameraRef}
         style={styles.camera}
-        type={CameraType.back}
+        type={CameraView.contextType.back}
       />
       <View style={styles.controls}>
         {!isRecording ? (
@@ -106,7 +107,7 @@ export default function RecordVideoScreen({ navigation }) {
     </View>
   );
 }
-// 21521901 - Mai Quốc Cường
+
 const styles = StyleSheet.create({
   container: { flex: 1 },
   camera: { flex: 1 },
