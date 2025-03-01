@@ -2,6 +2,7 @@
 ![Screen 0](images/Login_Register_Screen.png)
 ![Screen 1](images/Screen1.png)
 ![Screen 2](images/Screen2.png)
+![Screen 3](images/Screen3.png)
 ![Screen 4](images/Screen4.png)
 ![Screen 5](images/Screen5.png)
 ![Screen 6](images/Screen6.png)
